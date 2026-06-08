@@ -97,3 +97,76 @@ Large files: Python urllib not curl.
 Start each session: full repo tree inventory via GitHub tree API with recursive=1 parameter.
 Platform parent /platform is intentionally not in nav. Do not delete it.
 Email MX and all Microsoft/Teams DNS records: DO NOT TOUCH under any circumstances.
+## Blog Asset Files — How to Handle Visuals and Diagrams
+
+### The Rule
+Never reference raw.githubusercontent.com URLs in blog posts or any page.
+raw.githubusercontent.com serves files with content-type: text/plain and X-Frame-Options: deny.
+Iframes pointing there will display raw source code, not rendered content.
+Images served from there may also have CORS and content-type issues.
+
+### Where Assets Live
+All blog companion files (HTML diagrams, images, charts) go in blog/assets/[topic-slug]/.
+Examples already in the repo:
+  blog/assets/xai/Diagram1_ExplanationContext_Flow.html
+  blog/assets/xai/Diagram2_ExplanationStep_Anatomy.html
+  blog/assets/ford-mit/EPS_TTR_DualPath_Visual1.html
+
+GitHub Pages serves these with correct content types and no iframe restrictions.
+The base URL for all blog assets is:
+  https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/blog/assets/
+
+### Process for Adding a New Blog Post With Visuals
+
+Step 1 — Identify companion files.
+Read the source markdown in Blogs/. Look for INSERT VISUAL markers, DIAGRAM references,
+or companion HTML files in the same folder as the markdown source.
+Check the Blogs/[category]/[post-folder]/ directory for any .html files alongside the .md.
+
+Step 2 — Copy companion files to blog/assets/.
+Use the GitHub contents API to fetch the raw bytes of each companion file.
+Push them to blog/assets/[post-slug]/[filename].html.
+Example: Blogs/Product/Ford-MIT-Case_Study/EPS_TTR_DualPath_Visual1.html
+  -> blog/assets/ford-mit/EPS_TTR_DualPath_Visual1.html
+
+Step 3 — Construct the GitHub Pages URL.
+Pattern: https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/blog/assets/[post-slug]/[filename].html
+
+Step 4 — Embed in the blog post HTML as an iframe.
+Use this standard embed block:
+  <div class="diagram-wrap">
+    <div class="diagram-label">Caption or figure title here</div>
+    <iframe src="[GITHUB_PAGES_URL]"
+      title="Descriptive title"
+      loading="lazy" scrolling="no"
+      style="width:100%;border:none;display:block;min-height:480px;">
+    </iframe>
+  </div>
+The diagram-wrap and diagram-label CSS is already defined in the post stylesheet template.
+
+Step 5 — For PNG/JPG images (not HTML diagrams).
+If a blog post references PNG or JPG assets (charts, screenshots), copy them to
+blog/assets/[post-slug]/ and reference with a standard img tag:
+  <img src="[GITHUB_PAGES_URL]" alt="Description" style="width:100%;border-radius:8px;margin:24px 0;">
+
+### Tariff and Trade Compliance Posts — Known Assets
+The ReusableArtifacts/Tariff and Tade Compliance Risks/ folder contains:
+  ECC_Asset1_T1Blindspot.html
+  ECC_Asset3_ResolutionPipeline.html
+  ECC_Asset8_UFLPA_EntityToBOM.html
+  ECC_Asset13_OnePager.html
+  chart1_uflpa.png
+  chart2_duties.png
+  chart3_corporate.png
+These are the visual assets for the S2 Trade Risk Uncovered blog series.
+Before building each post, check which assets it references and copy them to
+blog/assets/tariff/ first, then build the post HTML with the correct GitHub Pages URLs.
+The GitHub Pages base for these will be:
+  https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/blog/assets/tariff/
+
+### iframe Height
+For HTML diagram files, set min-height based on the visual's content:
+  - Simple flow diagrams: min-height:380px
+  - Complex multi-panel diagrams: min-height:480px
+  - Full-width architecture diagrams: min-height:520px
+The diagram will scale to fill the iframe width automatically if the HTML uses width:100%.
