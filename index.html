@@ -377,9 +377,8 @@ footer{padding:52px 0 40px;border-top:1px solid var(--border);}
           </a>
         </div>
       </div>
-      <a href="/platform">Platform</a>
-      <a href="https://www.ecocomitychain.ai/blog">Resources</a>
-      <a href="#">About</a>
+      <a href="https://www.ecocomitychain.ai/blog">Blog</a>
+      <a href="#pilot">How It Works</a>
     </div>
     <a class="nav-cta" href="#pilot">Request Pilot Access</a>
   </div>
@@ -518,6 +517,13 @@ footer{padding:52px 0 40px;border-top:1px solid var(--border);}
         <polygon points="860,78 852,73 852,91" fill="rgba(255,255,255,0.15)"/>
       </svg>
     </div>
+
+    <!-- PLATFORM INTELLIGENCE LAYERS DIAGRAM -->
+    <div class="stack-diagram-wrap fade-up" style="margin:36px 0 8px;width:100%;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.07);">
+      <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#4a5570;padding:12px 20px 0 20px;background:#07090f;">Platform Architecture — Four Intelligence Layers</div>
+      <iframe src="https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/ReusableArtifacts/Platform_Layered_Architecture/ECC_Stack_Diagram_Web.html" title="ECC Platform Intelligence Layers" style="width:100%;height:460px;border:none;display:block;background:#07090f;" id="stackDiagramFrame" loading="lazy" scrolling="no"></iframe>
+    </div>
+
 
     <div class="platform-grid">
 
@@ -1100,13 +1106,25 @@ async function submitReportGate() {
   btn.style.background = 'var(--green)';
   btn.style.color = '#07090f';
   setTimeout(() => {
-    window.open('https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/resources/PMG_Platform_Technical_Brief.pdf', '_blank');
+    window.open('https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/Website/resources/PMG_Platform_Technical_Brief.pdf', '_blank');
     closeReportGate();
   }, 800);
 }
 document.getElementById('reportGateModal').addEventListener('click', function(e) {
   if (e.target === this) closeReportGate();
 });
+
+// Stack diagram iframe responsive height
+(function() {
+  function resizeStack() {
+    var f = document.getElementById('stackDiagramFrame');
+    if (!f) return;
+    f.style.height = Math.round(f.offsetWidth * (1080/1920)) + 'px';
+  }
+  window.addEventListener('load', resizeStack);
+  window.addEventListener('resize', resizeStack);
+  setTimeout(resizeStack, 300);
+})();
 document.addEventListener('keydown', function(e){
   if(document.getElementById('platformModal').classList.contains('open')) {
     if(e.key==='Escape') closeCarousel();
