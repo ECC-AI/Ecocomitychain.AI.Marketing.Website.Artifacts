@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog | EcocomityChain.AI</title>
+<meta name="description" content="Supply chain intelligence, material risk analysis, and engineering insights from EcocomityChain.AI.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07090f;--bg-c:#0c1018;--amber:#eca030;--blue:#3aa0d8;--green:#32d282;--t1:#dde2f0;--t2:#8898b8;--t3:#4a5570;--border:rgba(255,255,255,0.07);--display:'Syne',sans-serif;--body:'Space Grotesk',sans-serif;--mono:'Space Mono',monospace;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);color:var(--t1);font-family:var(--body);line-height:1.6;}
+a{color:inherit;text-decoration:none;}
+nav{position:sticky;top:0;z-index:100;background:rgba(7,9,15,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+.nav-inner{max-width:900px;margin:0 auto;padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{font-family:var(--display);font-weight:800;font-size:16px;color:var(--t1);}
+.nav-logo span{color:var(--amber);}
+.nav-home{font-size:13px;color:var(--t2);}
+.nav-home:hover{color:var(--t1);}
+.blog-header{max-width:900px;margin:0 auto;padding:64px 24px 48px;}
+.blog-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:14px;}
+.blog-title{font-family:var(--display);font-size:clamp(32px,5vw,48px);font-weight:800;letter-spacing:-.02em;margin-bottom:14px;}
+.blog-sub{font-size:16px;color:var(--t2);max-width:520px;line-height:1.65;}
+.filter-bar{max-width:900px;margin:0 auto;padding:0 24px 32px;display:flex;gap:10px;flex-wrap:wrap;}
+.filter-btn{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:6px 14px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:var(--t3);cursor:pointer;transition:all .2s;}
+.filter-btn.active,.filter-btn:hover{border-color:var(--amber);color:var(--amber);background:rgba(236,160,48,0.06);}
+.posts-grid{max-width:900px;margin:0 auto;padding:0 24px 80px;display:grid;gap:20px;}
+.post-card{background:var(--bg-c);border:1px solid var(--border);border-radius:10px;padding:28px 32px;transition:border-color .2s;display:block;}
+.post-card:hover{border-color:rgba(255,255,255,0.15);}
+.card-meta{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.card-cat{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;padding:3px 9px;border-radius:4px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);}
+.cat-product{color:var(--amber);}
+.cat-engineering{color:var(--blue);}
+.cat-trade{color:var(--green);}
+.card-date{font-family:var(--mono);font-size:11px;color:var(--t3);}
+.card-title{font-family:var(--display);font-size:20px;font-weight:700;color:var(--t1);margin-bottom:10px;line-height:1.3;letter-spacing:-.01em;}
+.card-excerpt{font-size:14px;color:var(--t2);line-height:1.65;margin-bottom:18px;}
+.card-link{font-size:13px;color:var(--amber);font-weight:500;}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="/">Ecocomity<span>Chain</span>.AI</a>
+    <a class="nav-home" href="/">← Back to site</a>
+  </div>
+</nav>
+<div class="blog-header">
+  <div class="blog-eyebrow">EcocomityChain.AI</div>
+  <h1 class="blog-title">Intelligence, grounded in material science.</h1>
+  <p class="blog-sub">Supply chain risk analysis, material intelligence research, and engineering insights from the ECC team.</p>
+</div>
+<div class="filter-bar">
+  <button class="filter-btn active" onclick="filterPosts('all', this)">All posts</button>
+  <button class="filter-btn" onclick="filterPosts('product', this)">Product Intelligence</button>
+  <button class="filter-btn" onclick="filterPosts('engineering', this)">Engineering Excellence</button>
+</div>
+<div class="posts-grid" id="postsGrid">
+
+  <a class="post-card" href="/blog/posts/five-disruptions-supplier-tools-cannot-predict/" data-cat="product">
+    <div class="card-meta">
+      <span class="card-cat cat-product">Product Intelligence</span>
+      <span class="card-date">June 2026</span>
+    </div>
+    <div class="card-title">Five Supply Chain Disruptions That Supplier-Level Tools Could Not Predict</div>
+    <p class="card-excerpt">Five disruptions. Five different industries, materials, and geographies. One structural similarity: the risk was not at the supplier. It was one or more levels deeper, in the material properties, process chemistry, or geographic concentration that the supplier relationship made invisible.</p>
+    <span class="card-link">Read post →</span>
+  </a>
+
+  <a class="post-card" href="/blog/posts/ford-mit-q4-problem-material-depth/" data-cat="product">
+    <div class="card-meta">
+      <span class="card-cat cat-product">Product Intelligence</span>
+      <span class="card-date">June 2026</span>
+    </div>
+    <div class="card-title">The Q4 Problem: What Ford and MIT Discovered, and What Material Depth Reveals Next</div>
+    <p class="card-excerpt">A landmark study proved supply chain risk is not where companies think it is. A decade later, the same methodology has a deeper problem that most risk teams have not noticed yet.</p>
+    <span class="card-link">Read post →</span>
+  </a>
+
+  <a class="post-card" href="/blog/posts/cross-cutting-context-objects-explainability/" data-cat="engineering">
+    <div class="card-meta">
+      <span class="card-cat cat-engineering">Engineering Excellence</span>
+      <span class="card-date">June 2026</span>
+    </div>
+    <div class="card-title">Cross-Cutting Context Objects: Threading Structured Evidence Through a Multi-Engine Pipeline</div>
+    <p class="card-excerpt">Explainability is infrastructure, not a feature. How we built a cross-cutting context object that accumulates structured reasoning across independent scoring engines — and why post-hoc reconstruction is not enough.</p>
+    <span class="card-link">Read post →</span>
+  </a>
+
+</div>
+<script>
+function filterPosts(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('.post-card').forEach(function(card) {
+    card.style.display = (cat === 'all' || card.dataset.cat === cat) ? 'block' : 'none';
+  });
+}
+</script>
+</body>
+</html>

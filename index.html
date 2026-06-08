@@ -377,9 +377,8 @@ footer{padding:52px 0 40px;border-top:1px solid var(--border);}
           </a>
         </div>
       </div>
-      <a href="/platform">Platform</a>
-      <a href="https://www.ecocomitychain.ai/blog">Resources</a>
-      <a href="#">About</a>
+      <a href="/blog">Blog</a>
+      <a href="#pilot">How It Works</a>
     </div>
     <a class="nav-cta" href="#pilot">Request Pilot Access</a>
   </div>
@@ -517,6 +516,19 @@ footer{padding:52px 0 40px;border-top:1px solid var(--border);}
         <!-- Arrow at end -->
         <polygon points="860,78 852,73 852,91" fill="rgba(255,255,255,0.15)"/>
       </svg>
+    </div>
+
+    <!-- PLATFORM INTELLIGENCE LAYERS DIAGRAM -->
+    <div class="stack-diagram-wrap fade-up" style="margin:36px 0 8px;width:100%;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.07);">
+      <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#4a5570;padding:12px 20px 8px 20px;background:#07090f;">Platform Architecture — Four Intelligence Layers</div>
+      <div style="position:relative;width:100%;padding-bottom:56.25%;background:#07090f;">
+        <iframe src="https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/ReusableArtifacts/Platform_Layered_Architecture/ECC_Stack_Diagram_Web.html"
+          title="ECC Platform Intelligence Layers"
+          style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;display:block;"
+          id="stackDiagramFrame" loading="lazy" scrolling="no"
+          allowtransparency="true">
+        </iframe>
+      </div>
     </div>
 
     <div class="platform-grid">
@@ -695,7 +707,7 @@ footer{padding:52px 0 40px;border-top:1px solid var(--border);}
         <h3 class="case-title">The signals were there. The visibility wasn't.</h3>
         <p class="case-body">In the months before the 2021 Renesas Naka semiconductor plant fire, the structural fragility of the automotive chip supply base was present in verifiable public data — a single facility producing 30% of global automotive microcontrollers, in a seismically active region, with a documented earthquake disruption at the same plant just one month prior, and zero qualified alternate processing paths at sub-tier level. No OEM had structured visibility into that node. Toyota, Honda, Nissan and Volkswagen all stated on the day of the fire they were "gathering information to assess impact." The fire turned an already fragile situation into a 3-month production halt and contributed to an estimated $210 billion in lost automotive revenue in 2021.</p>
         <div class="case-insight">"A manufacturer with eight-level supply network visibility and geographic concentration analysis would have had a structural flag on this node — long before March 19. The earthquake one month earlier was a documented precursor. The response could have started then."</div>
-        <a class="case-link" href="/Website/resources/renesas-case/" target="_blank">Read the Case Brief →</a>
+        <a class="case-link" href="/resources/renesas-case/">Read the Case Brief →</a>
       </div>
 
       <!-- REACTIVE CASE -->
@@ -705,7 +717,7 @@ footer{padding:52px 0 40px;border-top:1px solid var(--border);}
         <h3 class="case-title">Visibility existed. Strategy didn't.</h3>
         <p class="case-body">China's power crisis forced 35 of its 50 magnesium smelters to close in September 2021. The EU depended on China for 95% of its magnesium supply. By October 24 — when ACEA and ten other European industry bodies issued a joint emergency statement — European stocks were projected to reach zero within five weeks. The warning was public. The dependency was known. What was missing was a system that could answer: which of my assemblies contain magnesium? Which aluminium alloys, in which components? What is my revenue exposure per week of shortage? And given that every European OEM was simultaneously competing for the same shrinking pool of alternatives, what is the ranked, feasible response — not "build inventory and dual source," but an optimised plan under real constraints?</p>
         <div class="case-insight">"The issue was not absence of warning. ACEA's alarm was unambiguous. The issue was the absence of a system that could translate that warning into a constraint-aware, prioritised response — faster than a war room could assemble one."</div>
-        <a class="case-link" href="/Website/resources/magnesium-case/" target="_blank">Read the Case Brief →</a>
+        <a class="case-link" href="/resources/magnesium-case/">Read the Case Brief →</a>
       </div>
 
     </div>
@@ -874,7 +886,7 @@ footer{padding:52px 0 40px;border-top:1px solid var(--border);}
         <div class="footer-col">
           <div class="footer-col-head">Resources</div>
           <a href="#">Research Report</a>
-          <a href="https://www.ecocomitychain.ai/blog">Blog</a>
+          <a href="/blog">Blog</a>
           <a href="#">About ECC</a>
           <a href="#pilot">Request Pilot</a>
         </div>
@@ -1107,6 +1119,7 @@ async function submitReportGate() {
 document.getElementById('reportGateModal').addEventListener('click', function(e) {
   if (e.target === this) closeReportGate();
 });
+
 document.addEventListener('keydown', function(e){
   if(document.getElementById('platformModal').classList.contains('open')) {
     if(e.key==='Escape') closeCarousel();

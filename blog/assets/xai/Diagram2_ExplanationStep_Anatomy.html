@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECC PMG · ExplanationStep Anatomy</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #07090f; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 48px 24px; }
+.canvas { width: 1100px; background: #07090f; }
+svg { width: 100%; height: auto; color: #ffffff; }
+:root { --font-mono: "Space Mono", monospace; }
+
+text.t  { font-family: "Space Grotesk", sans-serif; font-size: 14px; fill: #dde2f0; }
+text.ts { font-family: "Space Grotesk", sans-serif; font-size: 12px; fill: #8898b8; }
+text.th { font-family: "Space Grotesk", sans-serif; font-size: 14px; font-weight: 600; fill: #dde2f0; }
+
+rect.box { fill: #0d1117; stroke: rgba(255,255,255,0.1); }
+
+.c-amber > rect  { fill: rgba(236,160,48,0.12); stroke: none; }
+.c-amber > text.th { fill: #f0c060; }
+.c-amber > text.ts { fill: #d4a040; }
+</style>
+</head>
+<body>
+<div class="canvas">
+<svg viewBox="0 0 680 448" role="img">
+<title>ExplanationStep anatomy — six fields, impact field highlighted</title>
+<desc>Card diagram showing the structure of a single ExplanationStep. The impact field is declared by the engine at computation time, not inferred after the fact.</desc>
+
+<text class="ts" x="340" y="18" text-anchor="middle" dominant-baseline="central">Not a log line. A structured evidence record with declared impact direction.</text>
+
+<rect class="box" x="30" y="30" width="620" height="330" rx="8" stroke-width="0.5"/>
+
+<!-- engine -->
+<text class="ts" x="55" y="58" dominant-baseline="central" style="font-family:var(--font-mono)">engine</text>
+<text class="t"  x="195" y="58" dominant-baseline="central" style="font-family:var(--font-mono)">RISK_SEVERITY</text>
+<line x1="32" y1="76" x2="648" y2="76" stroke="currentColor" stroke-width="0.5" opacity="0.15"/>
+
+<!-- step_id -->
+<text class="ts" x="55" y="96" dominant-baseline="central" style="font-family:var(--font-mono)">step_id</text>
+<text class="t"  x="195" y="96" dominant-baseline="central" style="font-family:var(--font-mono)">RISK_SEVERITY_003</text>
+<line x1="32" y1="114" x2="648" y2="114" stroke="currentColor" stroke-width="0.5" opacity="0.15"/>
+
+<!-- description -->
+<text class="ts" x="55" y="132" dominant-baseline="central" style="font-family:var(--font-mono)">description</text>
+<text class="t"  x="195" y="128">"Vector D (Geopolitical): score=0.65,</text>
+<text class="t"  x="195" y="146"> weight=25%, contribution=0.16.</text>
+<text class="t"  x="195" y="164"> Taiwan concentration 85% exceeds threshold."</text>
+<line x1="32" y1="182" x2="648" y2="182" stroke="currentColor" stroke-width="0.5" opacity="0.15"/>
+
+<!-- technical_detail -->
+<text class="ts" x="55" y="200" dominant-baseline="central" style="font-family:var(--font-mono)">technical_detail</text>
+<text class="ts" x="195" y="196" style="font-family:var(--font-mono)">{ "dimension": "geo_concentration",</text>
+<text class="ts" x="195" y="214" style="font-family:var(--font-mono)">  "score": 0.65, "weight": 0.25,</text>
+<text class="ts" x="195" y="232" style="font-family:var(--font-mono)">  "contribution": 0.16 }</text>
+<line x1="32" y1="250" x2="648" y2="250" stroke="currentColor" stroke-width="0.5" opacity="0.15"/>
+
+<!-- impact — highlighted row -->
+<g class="c-amber">
+<rect x="32" y="252" width="616" height="54" rx="0" stroke-width="0"/>
+<text class="ts" x="55" y="273" dominant-baseline="central" style="font-family:var(--font-mono)">impact</text>
+<text class="th" x="195" y="273" dominant-baseline="central">INCREASES_RISK ▲</text>
+<text class="ts" x="505" y="273" dominant-baseline="central">← declared, not inferred</text>
+<text class="ts" x="195" y="292" style="font-family:var(--font-mono)">also: DECREASES_RISK · NEUTRAL · SETS_CONTEXT</text>
+</g>
+<line x1="32" y1="306" x2="648" y2="306" stroke="currentColor" stroke-width="0.5" opacity="0.15"/>
+
+<!-- timestamp -->
+<text class="ts" x="55" y="328" dominant-baseline="central" style="font-family:var(--font-mono)">timestamp</text>
+<text class="ts" x="195" y="328" dominant-baseline="central" style="font-family:var(--font-mono)">2026-04-25T08:12:03Z</text>
+
+<!-- Annotations -->
+<text class="ts" x="340" y="378" text-anchor="middle" dominant-baseline="central" opacity="0.6">The impact field is the only one the engine actively declares.</text>
+<text class="ts" x="340" y="398" text-anchor="middle" dominant-baseline="central" opacity="0.6">Downstream consumers get signal direction without reverse-engineering the scoring math.</text>
+<text class="ts" x="340" y="418" text-anchor="middle" dominant-baseline="central" opacity="0.4">Schema is identical across deterministic engines and agentic tariff workflows.</text>
+</svg>
+</div>
+</body>
+</html>
