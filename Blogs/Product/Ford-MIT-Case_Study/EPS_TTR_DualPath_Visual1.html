@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EPS Supply Chain — Where TTR Really Lives</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #07090f;
+    font-family: "Space Grotesk", sans-serif;
+    color: #e8eaf2;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 24px;
+  }
+
+  .canvas {
+    width: 1100px;
+    background: #07090f;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  /* ── Header ─────────────────────────────── */
+  .header {
+    padding: 36px 48px 28px;
+    border-bottom: 1px solid rgba(255,255,255,.07);
+  }
+  .header-tag {
+    font-family: "Space Mono", monospace;
+    font-size: 11px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: #4a6a90;
+    margin-bottom: 10px;
+  }
+  .header-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #dde2f0;
+    line-height: 1.15;
+    margin-bottom: 8px;
+    letter-spacing: -.02em;
+  }
+  .header-sub {
+    font-size: 15px;
+    color: #6a748a;
+    line-height: 1.5;
+    max-width: 700px;
+  }
+
+  /* ── T1 anchor ──────────────────────────── */
+  .t1-anchor {
+    margin: 28px 48px 0;
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 10px;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .t1-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .t1-badge {
+    font-family: "Space Mono", monospace;
+    font-size: 9px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: #c8d0e8;
+    background: rgba(200,208,232,.1);
+    border: 1px solid rgba(200,208,232,.2);
+    border-radius: 4px;
+    padding: 3px 9px;
+  }
+  .t1-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #dde2f0;
+  }
+  .t1-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+  }
+  .t1-declared {
+    font-family: "Space Mono", monospace;
+    font-size: 11px;
+    color: #e08050;
+  }
+  .t1-suppliers {
+    font-family: "Space Mono", monospace;
+    font-size: 10px;
+    color: #4a6a90;
+    letter-spacing: .06em;
+  }
+
+  /* ── Connector from T1 down ─────────────── */
+  .t1-connectors {
+    margin: 0 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 40px;
+    padding-top: 0;
+  }
+  .connector-line {
+    border-left: 2px dashed rgba(255,255,255,.12);
+    height: 20px;
+    margin-left: calc(50% - 1px);
+  }
+
+  /* ── Branches ───────────────────────────── */
+  .branches {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 40px;
+    margin: 0 48px;
+    padding-bottom: 36px;
+  }
+
+  .branch {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* Branch header */
+  .branch-header {
+    border-radius: 8px 8px 0 0;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 0;
+  }
+  .branch-header.chem { background: rgba(236,160,48,.1); border: 1px solid rgba(236,160,48,.25); border-bottom: none; }
+  .branch-header.tool { background: rgba(107,88,255,.1); border: 1px solid rgba(107,88,255,.25); border-bottom: none; }
+
+  .branch-type-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex: none;
+  }
+  .chem .branch-type-dot { background: #eca030; box-shadow: 0 0 8px rgba(236,160,48,.6); }
+  .tool .branch-type-dot { background: #6b58ff; box-shadow: 0 0 8px rgba(107,88,255,.6); }
+
+  .branch-type-label {
+    font-family: "Space Mono", monospace;
+    font-size: 10px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+  }
+  .chem .branch-type-label { color: #eca030; }
+  .tool .branch-type-label { color: #8878ff; }
+
+  /* Nodes */
+  .node-stack {
+    border-left: 1px solid rgba(255,255,255,.07);
+    border-right: 1px solid rgba(255,255,255,.07);
+    border-bottom: 1px solid rgba(255,255,255,.07);
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+  }
+
+  .node-row {
+    display: flex;
+    align-items: stretch;
+    border-bottom: 1px solid rgba(255,255,255,.05);
+    transition: background .15s;
+    position: relative;
+  }
+  .node-row:last-child { border-bottom: none; }
+
+  .node-level {
+    width: 44px;
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Space Mono", monospace;
+    font-size: 10px;
+    color: #3a4460;
+    background: rgba(255,255,255,.02);
+    border-right: 1px solid rgba(255,255,255,.05);
+    letter-spacing: .04em;
+  }
+
+  .node-content {
+    flex: 1;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .node-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: #b0b8d0;
+    line-height: 1.3;
+  }
+
+  .node-type {
+    font-family: "Space Mono", monospace;
+    font-size: 9px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: #3a4460;
+  }
+
+  .node-ttr {
+    font-family: "Space Mono", monospace;
+    font-size: 11px;
+    font-weight: 700;
+    margin-top: 2px;
+  }
+
+  /* Highlighted nodes */
+  .node-row.highlight-chem {
+    background: rgba(236,160,48,.07);
+    border-left: 3px solid #eca030;
+  }
+  .node-row.highlight-chem .node-level { color: #eca030; }
+  .node-row.highlight-chem .node-name { color: #f0c060; }
+  .node-row.highlight-chem .node-ttr { color: #eca030; }
+  .node-row.highlight-chem .node-type { color: rgba(236,160,48,.5); }
+
+  .node-row.highlight-tool {
+    background: rgba(107,88,255,.07);
+    border-left: 3px solid #6b58ff;
+  }
+  .node-row.highlight-tool .node-level { color: #8878ff; }
+  .node-row.highlight-tool .node-name { color: #a899ff; }
+  .node-row.highlight-tool .node-ttr { color: #8878ff; }
+  .node-row.highlight-tool .node-type { color: rgba(107,88,255,.5); }
+
+  /* Deep nodes (L5-L8) — slightly muted */
+  .node-row.deep { background: rgba(255,255,255,.01); }
+  .node-row.deep .node-name { color: #6a7488; }
+  .node-row.deep .node-type { color: #2e3448; }
+  .node-row.deep .node-ttr { color: #c85030; }
+
+  /* Escalation badge on L5 */
+  .escalate-badge {
+    font-family: "Space Mono", monospace;
+    font-size: 9px;
+    color: #c85030;
+    background: rgba(200,80,48,.1);
+    border: 1px solid rgba(200,80,48,.2);
+    border-radius: 3px;
+    padding: 2px 6px;
+    width: fit-content;
+    margin-top: 3px;
+    letter-spacing: .06em;
+  }
+
+  /* Geo flag */
+  .geo-flag {
+    font-family: "Space Mono", monospace;
+    font-size: 9px;
+    color: #e05050;
+    background: rgba(224,80,80,.08);
+    border: 1px solid rgba(224,80,80,.2);
+    border-radius: 3px;
+    padding: 2px 6px;
+    width: fit-content;
+    margin-top: 3px;
+    letter-spacing: .05em;
+  }
+
+  /* Chip tags on highlighted nodes */
+  .chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 4px;
+  }
+  .chip {
+    font-family: "Space Mono", monospace;
+    font-size: 9px;
+    letter-spacing: .08em;
+    padding: 2px 7px;
+    border-radius: 3px;
+  }
+  .chip-chem {
+    color: rgba(236,160,48,.9);
+    background: rgba(236,160,48,.1);
+    border: 1px solid rgba(236,160,48,.2);
+  }
+  .chip-tool {
+    color: rgba(107,88,255,.9);
+    background: rgba(107,88,255,.1);
+    border: 1px solid rgba(107,88,255,.2);
+  }
+
+  /* ── Computed TTR comparison bar ─────────── */
+  .comparison-bar {
+    margin: 0 48px 36px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+  .comp-card {
+    border-radius: 8px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .comp-card.chem {
+    background: rgba(236,160,48,.07);
+    border: 1px solid rgba(236,160,48,.18);
+  }
+  .comp-card.tool {
+    background: rgba(107,88,255,.07);
+    border: 1px solid rgba(107,88,255,.18);
+  }
+  .comp-label {
+    font-family: "Space Mono", monospace;
+    font-size: 10px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+  }
+  .comp-card.chem .comp-label { color: rgba(236,160,48,.7); }
+  .comp-card.tool .comp-label { color: rgba(107,88,255,.7); }
+
+  .comp-ttr-row {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+  }
+  .comp-ttr-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .comp-ttr-value {
+    font-family: "Space Mono", monospace;
+    font-size: 22px;
+    font-weight: 700;
+  }
+  .comp-card.chem .comp-ttr-value.actual { color: #eca030; }
+  .comp-card.tool .comp-ttr-value.actual { color: #8878ff; }
+  .comp-ttr-value.declared { color: #e05050; }
+
+  .comp-ttr-desc {
+    font-size: 11px;
+    color: #4a5470;
+    letter-spacing: .04em;
+  }
+
+  .comp-arrow {
+    font-size: 18px;
+    color: #3a4060;
+    align-self: center;
+  }
+
+  .comp-insight {
+    font-size: 12px;
+    color: #5a6480;
+    line-height: 1.5;
+    margin-top: 2px;
+  }
+
+  /* ── Footer note ────────────────────────── */
+  .footer-note {
+    margin: 0 48px 28px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .footer-note-text {
+    font-size: 13px;
+    font-style: italic;
+    color: #5a6480;
+    max-width: 700px;
+    line-height: 1.55;
+  }
+  .footer-note-text strong { color: #8898b0; font-style: normal; }
+  .footer-brand {
+    font-family: "Space Mono", monospace;
+    font-size: 10px;
+    color: #2e3850;
+    letter-spacing: .1em;
+    text-align: right;
+  }
+</style>
+</head>
+<body>
+<div class="canvas">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-tag">ECC · PMG Platform · Illustrative EPS Supply Chain</div>
+    <div class="header-title">Where TTR Actually Lives</div>
+    <div class="header-sub">A single EPS assembly contains two structurally different risk types at the same tier depth — both invisible to the Tier 1 supplier's own TTR estimate.</div>
+  </div>
+
+  <!-- T1 Anchor -->
+  <div class="t1-anchor">
+    <div class="t1-left">
+      <span class="t1-badge">L1 · Assembly</span>
+      <span class="t1-name">Electric Power Steering (Column-Mount BLDC, 48V)</span>
+    </div>
+    <div class="t1-right">
+      <span class="t1-declared">T1 declared TTR: 8–12 weeks</span>
+      <span class="t1-suppliers">T1: JTEKT · ZF Friedrichshafen · Marelli</span>
+    </div>
+  </div>
+
+  <!-- Connector lines -->
+  <div class="t1-connectors">
+    <div class="connector-line"></div>
+    <div class="connector-line"></div>
+  </div>
+
+  <!-- Two branches -->
+  <div class="branches">
+
+    <!-- LEFT BRANCH: Chemical Complexity (NdFeB path) -->
+    <div class="branch">
+      <div class="branch-header chem">
+        <span class="branch-type-dot"></span>
+        <span class="branch-type-label">Chemical Process Complexity — NdFeB Path</span>
+      </div>
+      <div class="node-stack">
+
+        <div class="node-row">
+          <div class="node-level">L2</div>
+          <div class="node-content">
+            <div class="node-name">BLDC Assist Motor (48V, 1.5 kW Peak)</div>
+            <div class="node-type">SubAssembly</div>
+          </div>
+        </div>
+
+        <div class="node-row">
+          <div class="node-level">L3</div>
+          <div class="node-content">
+            <div class="node-name">Rotor Magnets (Neodymium Iron Boron)</div>
+            <div class="node-type">Component</div>
+          </div>
+        </div>
+
+        <div class="node-row highlight-chem">
+          <div class="node-level">L4</div>
+          <div class="node-content">
+            <div class="node-name">Neodymium Iron Boron (NdFeB)</div>
+            <div class="node-type">ComponentMaterial · CAS: Nd₂Fe₁₄B</div>
+            <div class="chip-row">
+              <span class="chip chip-chem">mfg_complexity = 4</span>
+              <span class="chip chip-chem">single_source = true</span>
+            </div>
+            <div class="node-ttr">TTR 240 days</div>
+          </div>
+        </div>
+
+        <div class="node-row deep highlight-chem" style="background: rgba(200,80,40,.07); border-left: 3px solid #c85030;">
+          <div class="node-level" style="color:#c85030">L5</div>
+          <div class="node-content">
+            <div class="node-name" style="color:#d07050">Sintered NdFeB Block (N52 grade)</div>
+            <div class="node-type" style="color:rgba(200,80,40,.5)">SemiFinishedMaterial</div>
+            <div class="chip-row">
+              <span class="chip" style="color:rgba(200,80,40,.9);background:rgba(200,80,40,.1);border:1px solid rgba(200,80,40,.2)">mfg_complexity = 5 ↑ MAX</span>
+              <span class="chip" style="color:rgba(200,80,40,.9);background:rgba(200,80,40,.1);border:1px solid rgba(200,80,40,.2)">tooling = true</span>
+            </div>
+            <div class="escalate-badge">↑ Escalates from 240d → 365d at this node</div>
+            <div class="node-ttr" style="color:#c85030">TTR 365 days</div>
+          </div>
+        </div>
+
+        <div class="node-row deep">
+          <div class="node-level">L6</div>
+          <div class="node-content">
+            <div class="node-name">Neodymium (Nd) Metal</div>
+            <div class="node-type">PrimaryMaterial · tooling = true · single_source = true</div>
+            <div class="geo-flag">Baotou Steel Rare Earth — China (T6 supplier)</div>
+            <div class="node-ttr">TTR 365 days</div>
+          </div>
+        </div>
+
+        <div class="node-row deep">
+          <div class="node-level">L7</div>
+          <div class="node-content">
+            <div class="node-name">NdPrOx — Mixed Rare Earth Oxide</div>
+            <div class="node-type">PrecursorMaterial · export-restricted mineral precursor</div>
+          </div>
+        </div>
+
+        <div class="node-row deep">
+          <div class="node-level">L8</div>
+          <div class="node-content">
+            <div class="node-name">Bastnäsite Ore (REO-bearing mineral)</div>
+            <div class="node-type">RawMaterial</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RIGHT BRANCH: Tooling Lock-in (Galfenol path) -->
+    <div class="branch">
+      <div class="branch-header tool">
+        <span class="branch-type-dot"></span>
+        <span class="branch-type-label">Physical Tooling Lock-in — Galfenol Path</span>
+      </div>
+      <div class="node-stack">
+
+        <div class="node-row">
+          <div class="node-level">L2</div>
+          <div class="node-content">
+            <div class="node-name">Magnetostrictive Torque Sensor</div>
+            <div class="node-type">SubAssembly · Supplier: Denso Corp / Continental Regensburg</div>
+          </div>
+        </div>
+
+        <div class="node-row">
+          <div class="node-level">L3</div>
+          <div class="node-content">
+            <div class="node-name">Torque Sensor Shaft (Magnetostrictive Alloy)</div>
+            <div class="node-type">Component</div>
+          </div>
+        </div>
+
+        <div class="node-row highlight-tool">
+          <div class="node-level">L4</div>
+          <div class="node-content">
+            <div class="node-name">Magnetostrictive Alloy (Galfenol)</div>
+            <div class="node-type">ComponentMaterial</div>
+            <div class="chip-row">
+              <span class="chip chip-tool">tooling_required = true</span>
+              <span class="chip chip-tool">single_source = true</span>
+              <span class="chip chip-tool">mfg_complexity = 4</span>
+            </div>
+            <div class="node-ttr">TTR 240 days</div>
+          </div>
+        </div>
+
+        <!-- Spacer explanation cards filling the visual space -->
+        <div class="node-row" style="background:rgba(107,88,255,.03); border-left: 3px solid transparent; padding: 0;">
+          <div style="width:44px;flex:none;background:rgba(255,255,255,.01);border-right:1px solid rgba(255,255,255,.05);"></div>
+          <div style="flex:1;padding:14px 16px;display:flex;flex-direction:column;gap:8px;">
+
+            <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(107,88,255,.55);">Why the constraint lives here</div>
+
+            <div style="font-size:13px;color:#5a6480;line-height:1.55;">
+              The Galfenol alloy requires a proprietary magnetic field alignment fixture during casting — a process tool held by one qualified supplier globally. Substitution requires:
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:6px;margin-top:2px;">
+              <div style="display:flex;gap:10px;align-items:flex-start;">
+                <span style="font-family:'Space Mono',monospace;font-size:11px;color:rgba(107,88,255,.6);flex:none;">01</span>
+                <span style="font-size:12px;color:#5a6480;">New fixture fabrication — 8–10 weeks minimum</span>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start;">
+                <span style="font-family:'Space Mono',monospace;font-size:11px;color:rgba(107,88,255,.6);flex:none;">02</span>
+                <span style="font-size:12px;color:#5a6480;">Magnetostrictive property validation — 6–8 weeks</span>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start;">
+                <span style="font-family:'Space Mono',monospace;font-size:11px;color:rgba(107,88,255,.6);flex:none;">03</span>
+                <span style="font-size:12px;color:#5a6480;">OEM PPAP re-qualification — 8–12 weeks</span>
+              </div>
+            </div>
+
+            <div style="margin-top:6px;padding:8px 12px;background:rgba(107,88,255,.07);border:1px solid rgba(107,88,255,.15);border-radius:6px;">
+              <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;color:rgba(107,88,255,.65);margin-bottom:3px;">TOOLING PRECEDENT</div>
+              <div style="font-size:12px;color:#6a7490;line-height:1.5;">Land Rover / UPF Thomson (2001): chassis tooling transfer took 6–9 months despite Land Rover <em>owning</em> the dies. The bottleneck is always qualification, not transport.</div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Computed TTR comparison -->
+  <div class="comparison-bar">
+    <div class="comp-card chem">
+      <div class="comp-label">NdFeB Path — PMG Computed vs Declared</div>
+      <div class="comp-ttr-row">
+        <div class="comp-ttr-item">
+          <div class="comp-ttr-value declared">8–12 wk</div>
+          <div class="comp-ttr-desc">T1 declared TTR</div>
+        </div>
+        <div class="comp-arrow">→</div>
+        <div class="comp-ttr-item">
+          <div class="comp-ttr-value actual">52+ wk</div>
+          <div class="comp-ttr-desc">PMG computed (L5 root)</div>
+        </div>
+      </div>
+      <div class="comp-insight">Root cause: sintered NdFeB block production (vacuum cast → jet mill → magnetic field press → vacuum sinter at 1060°C). Only a handful of facilities globally produce N52 grade.</div>
+    </div>
+    <div class="comp-card tool">
+      <div class="comp-label">Galfenol Path — PMG Computed vs Declared</div>
+      <div class="comp-ttr-row">
+        <div class="comp-ttr-item">
+          <div class="comp-ttr-value declared">8–12 wk</div>
+          <div class="comp-ttr-desc">T1 declared TTR</div>
+        </div>
+        <div class="comp-arrow">→</div>
+        <div class="comp-ttr-item">
+          <div class="comp-ttr-value actual">34+ wk</div>
+          <div class="comp-ttr-desc">PMG computed (tooling recut)</div>
+        </div>
+      </div>
+      <div class="comp-insight">Root cause: tooling_required = true on the same node as single_source = true. The TTR is tooling recut + qualification time, not lead time.</div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer-note">
+    <div class="footer-note-text">
+      <strong>Neither node is visible to the T1 supplier.</strong> Their 8–12 week estimate reflects their own operational capacity — not the physics of the chain beneath them. The Ford-MIT model takes TTR as a supplier-declared parameter. PMG computes it from the material graph.
+    </div>
+    <div class="footer-brand">EcocomityChain.AI<br>PMG Platform · Illustrative data</div>
+  </div>
+
+</div>
+</body>
+</html>

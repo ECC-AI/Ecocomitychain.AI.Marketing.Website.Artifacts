@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Proactive Resilience — ECC Stack Diagram</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --type-title: 80px; --type-sub: 54px;
+    --type-label: 28px; --type-cap: 17px; --type-tag: 17px;
+    --iso-x: 58deg; --gap: 126px; --tile: 280px; --thick: 32px;
+    --bg: #07060a; --ink: #f4f2f8; --ink-dim: #b9b4c7;
+    --line: rgba(190,180,220,.5);
+  }
+  [data-palette="pmg"] {
+    --p1a:#38306a; --p1b:#6658aa;
+    --p2a:#7c3fd4; --p2b:#b06bff;
+    --p3a:#c47b1a; --p3b:#eca030;
+    --p4a:#1868a8; --p4b:#3aa0d8;
+  }
+  .l1{--from:var(--p1a);--to:var(--p1b);}
+  .l2{--from:var(--p2a);--to:var(--p2b);}
+  .l3{--from:var(--p3a);--to:var(--p3b);}
+  .l4{--from:var(--p4a);--to:var(--p4b);}
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:#07090f;font-family:"Space Grotesk",system-ui,sans-serif;}
+  #viewport{width:100%;position:relative;overflow:hidden;display:block;}
+  #stage{
+    width:1920px;height:1080px;
+    transform-origin:top left;
+    position:relative;
+  }
+  .slide{
+    position:absolute;inset:0;
+    background:
+      radial-gradient(120% 80% at 50% -10%,rgba(124,92,255,.10),transparent 55%),
+      radial-gradient(90% 70% at 50% 120%,rgba(31,200,192,.07),transparent 60%),
+      var(--bg);
+    overflow:hidden;color:var(--ink);
+  }
+  .slide::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(130% 100% at 50% 45%,transparent 60%,rgba(0,0,0,.55));
+  }
+  .header{
+    position:absolute;top:64px;left:0;right:0;
+    display:flex;flex-direction:column;align-items:center;
+    z-index:100;text-align:center;
+  }
+  .title-glow{
+    position:absolute;top:-130px;left:50%;transform:translateX(-50%);
+    width:1500px;height:540px;border-radius:50%;
+    filter:blur(95px);opacity:.48;pointer-events:none;z-index:-1;
+    background:conic-gradient(from 200deg,#7c5cff,#f0428c,#ff6a3d,#ffb23d,#1fc8c0,#4da6ff,#7c5cff);
+  }
+  .tag{
+    font-family:"Space Mono",monospace;
+    font-size:var(--type-tag);letter-spacing:.26em;text-transform:uppercase;
+    color:var(--ink-dim);padding:8px 18px;
+    border:1px solid rgba(190,180,220,.28);border-radius:999px;
+    margin-bottom:26px;background:rgba(255,255,255,.02);
+  }
+  .title{font-size:var(--type-title);font-weight:700;line-height:.98;letter-spacing:-.02em;margin:0;}
+  .title .l-a{color:var(--ink);}
+  .title .l-b{color:var(--ink-dim);font-weight:500;font-size:var(--type-sub);}
+  .diagram{
+    position:absolute;left:50%;top:648px;
+    transform:translate(-50%,-50%);
+    display:flex;flex-direction:column;align-items:center;
+  }
+  .layer-row{
+    display:grid;grid-template-columns:380px 480px 380px;
+    align-items:center;height:var(--gap);position:relative;
+  }
+  .layer-ghost{opacity:.42;}
+  .lbl-l{display:flex;align-items:center;justify-content:flex-end;gap:26px;padding-right:4px;}
+  .lbl-title{font-size:var(--type-label);font-weight:600;line-height:1.1;text-align:right;color:var(--ink);max-width:300px;text-wrap:balance;}
+  .bracket{flex:none;width:20px;height:calc(var(--gap)*0.52);border:2px solid var(--line);border-right:none;border-radius:4px 0 0 4px;}
+  .tile-cell{position:relative;display:grid;place-items:center;}
+  .tile-glow{
+    position:absolute;left:50%;top:52%;width:460px;height:230px;
+    transform:translate(-50%,-50%);
+    background:radial-gradient(ellipse at center,var(--from),transparent 68%);
+    filter:blur(50px);opacity:.42;pointer-events:none;transition:opacity .3s;
+  }
+  .tile{position:relative;width:var(--tile);height:var(--tile);transform-style:preserve-3d;transform:rotateX(var(--iso-x)) rotateZ(45deg);}
+  .face{position:absolute;inset:0;border-radius:30px;}
+  .face.top{
+    background:
+      linear-gradient(135deg,
+        color-mix(in srgb, var(--from) 62%, transparent),
+        color-mix(in srgb, var(--to) 28%, transparent)),
+      radial-gradient(120% 120% at 30% 25%,
+        color-mix(in srgb, var(--from) 42%, transparent), transparent 60%),
+      rgba(10,9,16,.18);
+    box-shadow:
+      inset 0 0 0 1.6px color-mix(in srgb, var(--from) 90%, transparent),
+      inset 0 0 80px color-mix(in srgb, var(--from) 28%, transparent),
+      inset 0 1px 28px rgba(255,255,255,.14);
+    backdrop-filter:blur(3px);
+  }
+  .face.under{transform:translateZ(calc(-1*var(--thick)));background:rgba(8,7,12,.5);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--from) 30%,transparent);}
+  [data-layerstyle="transparent"] .tile-glow{opacity:.35;}
+  [data-layerstyle="transparent"] .face.top{
+    background:rgba(6,5,10,.30);
+    box-shadow:
+      inset 0 0 0 2px rgba(255,255,255,.58),
+      inset 0 0 60px rgba(255,255,255,.08),
+      inset 0 1px 32px rgba(255,255,255,.14),
+      0 0 28px rgba(255,255,255,.06);
+    backdrop-filter:blur(6px);
+  }
+  [data-layerstyle="transparent"] .face.under{background:rgba(2,1,6,.75);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.22);}
+  [data-layerstyle="transparent"] .dot{background:rgba(190,180,220,.55);box-shadow:none;}
+  .lbl-r{display:flex;align-items:center;padding-left:4px;}
+  .conn{flex:none;width:140px;height:1px;background:linear-gradient(90deg,rgba(190,180,220,.06),var(--line));}
+  .dot{flex:none;width:7px;height:7px;border-radius:50%;background:var(--from);box-shadow:0 0 10px var(--from);margin:0 14px 0 2px;transition:background .3s,box-shadow .3s;}
+  .cap{font-family:"Space Mono",monospace;font-size:var(--type-cap);font-style:italic;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim);line-height:1.5;max-width:220px;}
+  .competitor-marker{width:1240px;display:flex;align-items:center;gap:18px;padding:10px 0;z-index:60;position:relative;}
+  .comp-line{flex:1;height:1px;border-top:1px dashed rgba(210,60,60,.42);}
+  .comp-label{font-family:"Space Mono",monospace;font-size:13px;letter-spacing:.10em;text-transform:uppercase;color:rgba(220,75,75,.65);padding:5px 16px;border:1px solid rgba(210,55,55,.22);border-radius:999px;background:rgba(25,5,5,.75);white-space:nowrap;}
+  .prescriptive-spine{position:absolute;right:-262px;top:0;height:calc(4*var(--gap)+48px);width:200px;z-index:200;}
+  .spine-tag{position:absolute;top:-46px;left:50%;transform:translateX(-50%);font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.20em;text-transform:uppercase;color:rgba(50,210,130,.90);border:1px solid rgba(50,210,130,.30);border-radius:999px;padding:5px 16px;background:rgba(50,210,130,.06);white-space:nowrap;}
+  .spine-bar{position:absolute;left:50%;transform:translateX(-50%);top:0;bottom:0;width:2px;background:linear-gradient(180deg,rgba(50,210,130,.92) 0%,rgba(50,210,130,.58) 55%,rgba(30,160,90,.20) 100%);border-radius:1px;}
+  .spine-node{position:absolute;left:50%;transform:translateX(-50%);width:10px;height:10px;border-radius:50%;background:#32d282;box-shadow:0 0 16px 3px rgba(50,210,130,.5);z-index:1;}
+  .spine-node::before{content:'';position:absolute;right:100%;top:50%;transform:translateY(-50%);width:262px;height:1px;background:linear-gradient(90deg,rgba(50,210,130,0) 0%,rgba(50,210,130,.18) 100%);}
+  .spine-sub{position:absolute;bottom:-44px;left:50%;transform:translateX(-50%);font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.10em;text-transform:uppercase;color:rgba(50,210,130,.35);text-align:center;line-height:1.65;white-space:nowrap;}
+</style>
+</head>
+<body>
+<div id="viewport">
+  <div id="stage">
+    <div class="slide" data-palette="pmg" data-layerstyle="transparent">
+      <div class="header">
+        <div class="title-glow"></div>
+        <span class="tag">ECC · Value Chain Resilience</span>
+        <h1 class="title">
+          <span class="l-a">Proactive Resilience</span><br />
+          <span class="l-b">ECC's Approach</span>
+        </h1>
+      </div>
+      <div class="diagram">
+        <div class="layer-row l1 layer-ghost" style="z-index:50">
+          <div class="lbl-l">
+            <span class="lbl-title">Digital Product Passport &amp; Sustainability</span>
+            <span class="bracket"></span>
+          </div>
+          <div class="tile-cell">
+            <div class="tile-glow"></div>
+            <div class="tile"><div class="face under"></div><div class="face top"></div></div>
+          </div>
+          <div class="lbl-r">
+            <span class="conn"></span><span class="dot"></span>
+            <span class="cap">Roadmap<br>DPP Export · CBAM<br>Scope 3 · 3TG</span>
+          </div>
+        </div>
+        <div class="layer-row l2" style="z-index:40">
+          <div class="lbl-l">
+            <span class="lbl-title">Regulatory Compliance Resilience</span>
+            <span class="bracket"></span>
+          </div>
+          <div class="tile-cell">
+            <div class="tile-glow"></div>
+            <div class="tile"><div class="face under"></div><div class="face top"></div></div>
+          </div>
+          <div class="lbl-r">
+            <span class="conn"></span><span class="dot"></span>
+            <span class="cap">REACH · RoHS · ELV<br>CRM · SVHC<br>~80% Validated</span>
+          </div>
+        </div>
+        <div class="layer-row l3" style="z-index:30">
+          <div class="lbl-l">
+            <span class="lbl-title">Trade &amp; Tariff Resilience</span>
+            <span class="bracket"></span>
+          </div>
+          <div class="tile-cell">
+            <div class="tile-glow"></div>
+            <div class="tile"><div class="face under"></div><div class="face top"></div></div>
+          </div>
+          <div class="lbl-r">
+            <span class="conn"></span><span class="dot"></span>
+            <span class="cap">49 Measures<br>CBP Exposure<br>Before Audit</span>
+          </div>
+        </div>
+        <div class="competitor-marker">
+          <div class="comp-line"></div>
+          <span class="comp-label">Competitor ceiling · supplier alerts only · no material graph</span>
+          <div class="comp-line"></div>
+        </div>
+        <div class="layer-row l4" style="z-index:20">
+          <div class="lbl-l">
+            <span class="lbl-title">Proactive Supply Chain Resilience</span>
+            <span class="bracket"></span>
+          </div>
+          <div class="tile-cell">
+            <div class="tile-glow"></div>
+            <div class="tile"><div class="face under"></div><div class="face top"></div></div>
+          </div>
+          <div class="lbl-r">
+            <span class="conn"></span><span class="dot"></span>
+            <span class="cap">T1–T8 · L1→L8<br>Dual-Node Scoring<br>XAI · TTR/PI</span>
+          </div>
+        </div>
+        <div class="prescriptive-spine">
+          <div class="spine-tag">Prescriptive Intelligence</div>
+          <div class="spine-bar"></div>
+          <div class="spine-node" style="top:63px"></div>
+          <div class="spine-node" style="top:189px"></div>
+          <div class="spine-node" style="top:315px"></div>
+          <div class="spine-node" style="top:489px"></div>
+          <div class="spine-sub">Partner intelligence network<br>Material · Sourcing · + growing</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var viewport = document.getElementById('viewport');
+  var stage    = document.getElementById('stage');
+  function fit(){
+    var s = viewport.offsetWidth / 1920;
+    stage.style.transform = 'scale(' + s + ')';
+    viewport.style.height = Math.round(1080 * s) + 'px';
+  }
+  window.addEventListener('resize', fit);
+  fit();
+})();
+</script>
+</body>
+</html>

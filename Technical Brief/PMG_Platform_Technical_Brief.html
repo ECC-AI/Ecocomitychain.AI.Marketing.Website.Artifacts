@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PMG Platform — Technical Brief | EcocomityChain.AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:     #07090f;
+  --bg-r:   #0c1018;
+  --bg-c:   #101622;
+  --border: rgba(255,255,255,0.08);
+  --bhi:    rgba(255,255,255,0.14);
+  --amber:  #eca030;
+  --adim:   rgba(236,160,48,0.10);
+  --blue:   #3aa0d8;
+  --green:  #32d282;
+  --t1: #dde2f0; --t2: #8898b8; --t3: #4a5570;
+  --mono: "Space Mono", monospace;
+  --body: "Space Grotesk", sans-serif;
+  --disp: "Syne", sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #1a1a1a; font-family: var(--body); -webkit-font-smoothing: antialiased; }
+
+/* ── Page shell ───────────────────────────────── */
+.page {
+  width: 794px;
+  min-height: 1123px;
+  background: var(--bg);
+  margin: 24px auto;
+  padding: 64px 72px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 40px rgba(0,0,0,.6);
+}
+.page:first-child { margin-top: 0; }
+
+/* ── Typography ───────────────────────────────── */
+.disp    { font-family: var(--disp); }
+.mono    { font-family: var(--mono); }
+.t1      { color: var(--t1); }
+.t2      { color: var(--t2); }
+.t3      { color: var(--t3); }
+.amber   { color: var(--amber); }
+
+/* ── Shared elements ──────────────────────────── */
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 10px; letter-spacing: .22em;
+  text-transform: uppercase; color: var(--amber);
+  margin-bottom: 12px;
+}
+.section-title {
+  font-family: var(--disp);
+  font-size: 26px; font-weight: 700;
+  letter-spacing: -.02em; color: var(--t1);
+  line-height: 1.15; margin-bottom: 10px;
+}
+.section-sub {
+  font-size: 13.5px; color: var(--t2);
+  line-height: 1.65; margin-bottom: 28px;
+  max-width: 560px;
+}
+.rule { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+p { font-size: 13.5px; color: var(--t2); line-height: 1.7; margin-bottom: 12px; }
+p strong { color: var(--t1); font-weight: 500; }
+
+/* ── Header strip (on each non-cover page) ─────── */
+.page-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-bottom: 20px; border-bottom: 1px solid var(--border);
+  margin-bottom: 36px;
+}
+.page-header-logo {
+  font-family: var(--disp); font-size: 12px; font-weight: 700;
+  letter-spacing: .06em; color: var(--t3);
+}
+.page-header-logo span { color: var(--amber); }
+.page-header-section {
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: .14em; color: var(--t3);
+  text-transform: uppercase;
+}
+
+/* ── Footer strip ─────────────────────────────── */
+.page-footer {
+  margin-top: auto; padding-top: 20px;
+  border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.page-footer-conf {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: .12em; color: var(--t3);
+  text-transform: uppercase;
+}
+.page-footer-num {
+  font-family: var(--mono); font-size: 10px; color: var(--t3);
+}
+
+/* ── Cover page ───────────────────────────────── */
+.cover-logo {
+  font-family: var(--disp); font-size: 18px; font-weight: 700;
+  letter-spacing: .04em; color: var(--t2);
+  margin-bottom: auto;
+}
+.cover-logo span { color: var(--amber); }
+.cover-center { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 40px 0; }
+.cover-eyebrow {
+  font-family: var(--mono); font-size: 11px;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--amber); margin-bottom: 20px;
+}
+.cover-title {
+  font-family: var(--disp); font-size: 44px; font-weight: 800;
+  letter-spacing: -.02em; color: var(--t1); line-height: 1.05;
+  margin-bottom: 16px;
+}
+.cover-subtitle {
+  font-family: var(--disp); font-size: 20px; font-weight: 400;
+  color: var(--t2); margin-bottom: 36px; line-height: 1.3;
+}
+.cover-desc {
+  font-size: 14px; color: var(--t2); line-height: 1.7;
+  max-width: 480px;
+}
+.cover-rule { width: 48px; height: 2px; background: var(--amber); margin: 32px 0; }
+.cover-meta { display: flex; gap: 32px; align-items: center; }
+.cover-meta-item { display: flex; flex-direction: column; gap: 3px; }
+.cover-meta-label { font-family: var(--mono); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--t3); }
+.cover-meta-value { font-size: 12px; color: var(--t2); }
+
+/* ── Stat block (hero stat on P2) ──────────────── */
+.stat-pair {
+  display: flex; align-items: stretch;
+  border: 1px solid var(--bhi); border-radius: 8px;
+  overflow: hidden; margin: 20px 0; width: fit-content;
+}
+.stat-cell { padding: 16px 24px; display: flex; flex-direction: column; gap: 4px; }
+.stat-cell:first-child { background: rgba(224,80,80,0.08); border-right: 1px solid var(--border); }
+.stat-cell:last-child  { background: rgba(50,210,130,0.08); }
+.stat-label { font-family: var(--mono); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--t3); }
+.stat-number { font-family: var(--disp); font-size: 28px; font-weight: 800; letter-spacing: -.03em; }
+.stat-cell:first-child .stat-number { color: #e05050; }
+.stat-cell:last-child  .stat-number { color: var(--green); }
+.stat-desc { font-size: 11px; color: var(--t3); line-height: 1.4; }
+.stat-arrow { padding: 0 14px; display: flex; align-items: center; color: var(--t3); font-size: 18px; }
+
+/* ── Key facts bar ────────────────────────────── */
+.facts-bar {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 2px; border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden; margin: 24px 0;
+}
+.fact-cell {
+  background: var(--bg-c); padding: 16px 14px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.fact-number {
+  font-family: var(--disp); font-size: 22px; font-weight: 800;
+  color: var(--amber); letter-spacing: -.02em;
+}
+.fact-label { font-size: 11px; color: var(--t2); line-height: 1.4; }
+
+/* ── Architecture visual ──────────────────────── */
+.arch-visual {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 24px; margin: 20px 0;
+}
+.arch-stack { display: flex; flex-direction: column; gap: 2px; }
+.arch-node {
+  display: flex; align-items: center; gap: 12px;
+  padding: 8px 14px; background: var(--bg-c);
+  border: 1px solid var(--border); border-radius: 4px;
+  position: relative;
+}
+.arch-node.highlight {
+  border-color: rgba(236,160,48,0.35);
+  background: var(--adim);
+}
+.arch-node-level {
+  font-family: var(--mono); font-size: 9px; letter-spacing: .1em;
+  color: var(--t3); width: 20px; flex: none;
+}
+.arch-node.highlight .arch-node-level { color: var(--amber); }
+.arch-node-label { font-size: 12px; color: var(--t2); }
+.arch-node.highlight .arch-node-label { color: var(--t1); font-weight: 500; }
+.arch-node-ttr {
+  margin-left: auto; font-family: var(--mono);
+  font-size: 10px; color: var(--amber);
+}
+.arch-connector { text-align: center; font-family: var(--mono); font-size: 9px; color: var(--t3); padding: 1px 0; }
+
+.arch-right { display: flex; flex-direction: column; gap: 14px; }
+.arch-right-item {
+  background: var(--bg-c); border: 1px solid var(--border);
+  border-radius: 6px; padding: 14px 16px;
+}
+.arch-right-title {
+  font-size: 12px; font-weight: 600; color: var(--t1);
+  margin-bottom: 4px;
+}
+.arch-right-body { font-size: 11.5px; color: var(--t2); line-height: 1.55; }
+
+/* ── Layer table ──────────────────────────────── */
+.layer-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+.layer-table thead tr { border-bottom: 1px solid var(--bhi); }
+.layer-table th {
+  font-family: var(--mono); font-size: 9px; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--t3);
+  text-align: left; padding: 0 12px 10px 0;
+}
+.layer-table tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background .15s;
+}
+.layer-table tbody tr:last-child { border-bottom: none; }
+.layer-table td { padding: 14px 12px 14px 0; vertical-align: top; }
+.layer-name {
+  font-family: var(--disp); font-size: 13px; font-weight: 600;
+  color: var(--t1); margin-bottom: 3px;
+}
+.layer-desc { font-size: 12px; color: var(--t2); line-height: 1.55; }
+.layer-status {
+  font-family: var(--mono); font-size: 9px; letter-spacing: .1em;
+  padding: 3px 8px; border-radius: 3px; white-space: nowrap;
+}
+.layer-status.live    { color: var(--green); background: rgba(50,210,130,0.1); border: 1px solid rgba(50,210,130,0.2); }
+.layer-status.partial { color: var(--amber); background: rgba(236,160,48,0.10); border: 1px solid rgba(236,160,48,0.22); }
+.layer-status.map     { color: var(--t3);    background: rgba(255,255,255,0.04); border: 1px solid var(--border); }
+
+/* ── Surface table ────────────────────────────── */
+.surface-table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+.surface-table thead tr { border-bottom: 1px solid var(--bhi); }
+.surface-table th {
+  font-family: var(--mono); font-size: 9px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--t3);
+  text-align: left; padding: 0 12px 10px 0;
+}
+.surface-table tbody tr { border-bottom: 1px solid var(--border); }
+.surface-table tbody tr:last-child { border-bottom: none; }
+.surface-table td { padding: 12px 12px 12px 0; vertical-align: top; font-size: 12px; }
+.surface-num { font-family: var(--mono); font-size: 10px; color: var(--amber); white-space: nowrap; }
+.surface-title { font-weight: 600; color: var(--t1); margin-bottom: 3px; }
+.surface-desc { color: var(--t2); line-height: 1.5; }
+.surface-tags { font-family: var(--mono); font-size: 10px; color: var(--t3); line-height: 1.6; }
+
+/* ── Prescriptive cards ───────────────────────── */
+.p-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0; }
+.p-card  { background: var(--bg-c); border: 1px solid var(--border); border-radius: 6px; padding: 16px; }
+.p-card-num { font-family: var(--mono); font-size: 9px; letter-spacing: .14em; color: var(--amber); margin-bottom: 8px; }
+.p-card-title { font-size: 12px; font-weight: 600; color: var(--t1); margin-bottom: 6px; line-height: 1.3; }
+.p-card-body  { font-size: 11.5px; color: var(--t2); line-height: 1.6; }
+
+.fabric-callout {
+  background: var(--adim); border-left: 3px solid var(--amber);
+  border-radius: 0 6px 6px 0; padding: 14px 18px; margin-top: 14px;
+}
+.fabric-callout .eyebrow { margin-bottom: 6px; }
+.fabric-callout p { font-size: 12px; margin-bottom: 0; }
+
+/* ── Integration / Deploy ─────────────────────── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin: 20px 0; }
+.block-card {
+  background: var(--bg-c); border: 1px solid var(--border);
+  border-radius: 8px; padding: 20px 18px;
+}
+.block-card-title {
+  font-family: var(--disp); font-size: 14px; font-weight: 700;
+  color: var(--t1); margin-bottom: 10px;
+}
+.check-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.check-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 12px; color: var(--t2); line-height: 1.5; }
+.check-list li::before { content: '→'; font-family: var(--mono); color: var(--amber); flex: none; }
+.check-list li strong { color: var(--t1); font-weight: 500; }
+
+/* ── Pilot timeline ───────────────────────────── */
+.pilot-phases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0; }
+.pilot-phase {
+  background: var(--bg-c); border: 1px solid var(--border);
+  border-radius: 6px; padding: 18px 16px;
+}
+.pilot-tag { font-family: var(--mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--amber); margin-bottom: 6px; }
+.pilot-weeks { font-family: var(--mono); font-size: 11px; color: var(--t3); margin-bottom: 8px; }
+.pilot-title { font-size: 13px; font-weight: 600; color: var(--t1); margin-bottom: 6px; }
+.pilot-body  { font-size: 12px; color: var(--t2); line-height: 1.55; }
+
+/* ── V2 callout ───────────────────────────────── */
+.v2-callout {
+  background: var(--bg-c); border: 1px solid var(--bhi);
+  border-radius: 8px; padding: 20px 22px; margin: 24px 0;
+}
+.v2-callout-title { font-size: 13px; font-weight: 600; color: var(--t1); margin-bottom: 6px; }
+.v2-callout p { font-size: 12px; margin-bottom: 0; }
+
+/* ── Contact ──────────────────────────────────── */
+.contact-block {
+  background: var(--adim); border: 1px solid rgba(236,160,48,0.2);
+  border-radius: 8px; padding: 24px 28px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.contact-left h3 { font-family: var(--disp); font-size: 18px; font-weight: 700; color: var(--t1); margin-bottom: 6px; }
+.contact-left p { font-size: 13px; color: var(--t2); margin-bottom: 0; }
+.contact-right { text-align: right; }
+.contact-email { font-family: var(--mono); font-size: 12px; color: var(--amber); letter-spacing: .06em; }
+.contact-url { font-size: 12px; color: var(--t3); margin-top: 4px; }
+
+/* ── Print ────────────────────────────────────── */
+@media print {
+  body { background: var(--bg); }
+  .page {
+    width: 210mm; min-height: 297mm; margin: 0;
+    padding: 16mm 18mm; box-shadow: none;
+    page-break-after: always;
+  }
+  .page:last-child { page-break-after: avoid; }
+}
+@page { margin: 0; size: A4; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     PAGE 1 — COVER
+════════════════════════════════════════════ -->
+<div class="page">
+  <div class="cover-logo">Ecocomity<span>Chain</span>.AI</div>
+
+  <div class="cover-center">
+    <p class="cover-eyebrow">Platform Technical Brief · v1.0</p>
+    <h1 class="cover-title">PMG Platform</h1>
+    <p class="cover-subtitle">Proactive Value Chain Resilience</p>
+    <p class="cover-desc">
+      An analytical platform that traces your supply chain to the raw material source
+      — eight levels deep — scores what it finds at both the supplier and material level,
+      and delivers prescriptive guidance grounded in engineering-grade intelligence.
+    </p>
+    <div class="cover-rule"></div>
+    <div class="cover-meta">
+      <div class="cover-meta-item">
+        <span class="cover-meta-label">Version</span>
+        <span class="cover-meta-value">v1.0 — Proactive Resilience</span>
+      </div>
+      <div class="cover-meta-item">
+        <span class="cover-meta-label">Scope</span>
+        <span class="cover-meta-value">Technical evaluation</span>
+      </div>
+      <div class="cover-meta-item">
+        <span class="cover-meta-label">Classification</span>
+        <span class="cover-meta-value">Confidential</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span class="page-footer-conf">Confidential · For evaluation purposes · EcocomityChain.AI</span>
+    <span class="page-footer-num">1</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     PAGE 2 — THE PROBLEM + PLATFORM OVERVIEW
+════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <span class="page-header-logo">Ecocomity<span>Chain</span>.AI · PMG Platform</span>
+    <span class="page-header-section">The Problem</span>
+  </div>
+
+  <p class="eyebrow">Why existing tools are structurally insufficient</p>
+  <h2 class="section-title">Risk lives where your tools stop looking</h2>
+
+  <p>
+    Every supply chain risk methodology in production today operates on supplier-visible data.
+    The foundational academic work in supply chain risk quantification — the Ford-MIT
+    Time-to-Recover model, Interfaces 45(5), 2015 — explicitly acknowledged that sub-tier
+    data collection was deferred by design due to data availability constraints.
+    That constraint was reasonable in 2015. The risks it leaves invisible are not acceptable today.
+  </p>
+  <p>
+    The material constraints that drive the longest disruptions — rare earth processing
+    concentration, specialty alloy tooling lock-in, chemical synthesis bottlenecks — live at
+    Level 4 through Level 7 of the bill of materials. A supplier's declared Time-to-Recover
+    reflects their own operational capacity. It does not include the physics of the material
+    chain beneath them.
+  </p>
+
+  <div class="stat-pair">
+    <div class="stat-cell">
+      <span class="stat-label">T1 Declared TTR</span>
+      <span class="stat-number">8–12 wk</span>
+      <span class="stat-desc">Supplier's own estimate<br>of recovery time</span>
+    </div>
+    <div class="stat-arrow">→</div>
+    <div class="stat-cell">
+      <span class="stat-label">PMG Computed TTR</span>
+      <span class="stat-number">52+ wk</span>
+      <span class="stat-desc">Computed from material chain<br>beneath the supplier</span>
+    </div>
+  </div>
+
+  <p>
+    The gap originates at Level 5: a sintered rare earth magnet production process
+    with maximum manufacturing complexity, concentrated in a handful of facilities globally.
+    The Tier 1 supplier's estimate is honest. It does not include what they cannot see beneath themselves.
+    <strong>PMG was designed to close that gap.</strong>
+  </p>
+
+  <hr class="rule">
+
+  <p class="eyebrow">Platform at a glance</p>
+  <div class="facts-bar">
+    <div class="fact-cell">
+      <span class="fact-number">170K+</span>
+      <span class="fact-label">Nodes across 8 BOM levels — live modelled European BEV dataset</span>
+    </div>
+    <div class="fact-cell">
+      <span class="fact-number">540+</span>
+      <span class="fact-label">Suppliers mapped T1–T8 in the same modelled dataset</span>
+    </div>
+    <div class="fact-cell">
+      <span class="fact-number">Dual</span>
+      <span class="fact-label">Supplier AND material nodes scored simultaneously</span>
+    </div>
+    <div class="fact-cell">
+      <span class="fact-number">100%</span>
+      <span class="fact-label">XAI audit trail coverage across all scores</span>
+    </div>
+  </div>
+  <p style="font-size:11px;color:var(--t3);font-family:var(--mono);letter-spacing:.06em;margin-top:8px;">
+    Scale figures are from a representative European BEV archetype running live on the PMG platform.
+    Customer deployments are scoped to the agreed plant and vehicle line — depth scales with engagement scope.
+  </p>
+
+  <div class="page-footer">
+    <span class="page-footer-conf">Confidential · EcocomityChain.AI</span>
+    <span class="page-footer-num">2</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     PAGE 3 — GRAPH ARCHITECTURE
+════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <span class="page-header-logo">Ecocomity<span>Chain</span>.AI · PMG Platform</span>
+    <span class="page-header-section">Graph Architecture</span>
+  </div>
+
+  <p class="eyebrow">How the platform is built</p>
+  <h2 class="section-title">A material graph, not a supplier map</h2>
+  <p class="section-sub">
+    PMG models every bill of materials as an eight-level directed graph. Each node is either a supplier entity or a material specification. Both are scored independently.
+  </p>
+
+  <div class="arch-visual">
+    <div>
+      <p style="font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);margin-bottom:8px;">Representative EPS supply chain — NdFeB path</p>
+      <div class="arch-stack">
+        <div class="arch-node"><span class="arch-node-level">L1</span><span class="arch-node-label">Assembly — EPS Column-Mount BLDC</span></div>
+        <div class="arch-connector">↓</div>
+        <div class="arch-node"><span class="arch-node-level">L2</span><span class="arch-node-label">BLDC Assist Motor (48V, 1.5 kW)</span></div>
+        <div class="arch-connector">↓</div>
+        <div class="arch-node"><span class="arch-node-level">L3</span><span class="arch-node-label">Rotor Magnets (NdFeB)</span></div>
+        <div class="arch-connector">↓</div>
+        <div class="arch-node highlight"><span class="arch-node-level">L4</span><span class="arch-node-label">NdFeB ComponentMaterial</span><span class="arch-node-ttr">TTR 240d</span></div>
+        <div class="arch-connector">↓</div>
+        <div class="arch-node highlight"><span class="arch-node-level">L5</span><span class="arch-node-label">Sintered NdFeB Block (N52)</span><span class="arch-node-ttr">TTR 365d ↑</span></div>
+        <div class="arch-connector">↓</div>
+        <div class="arch-node highlight"><span class="arch-node-level">L6</span><span class="arch-node-label">Nd Metal — Baotou, China</span><span class="arch-node-ttr">TTR 365d</span></div>
+        <div class="arch-connector">↓</div>
+        <div class="arch-node"><span class="arch-node-level">L7</span><span class="arch-node-label">NdPrOx Mixed Rare Earth Oxide</span></div>
+        <div class="arch-connector">↓</div>
+        <div class="arch-node"><span class="arch-node-level">L8</span><span class="arch-node-label">Bastnäsite Ore (REO-bearing mineral)</span></div>
+      </div>
+      <p style="font-family:var(--mono);font-size:9px;color:var(--t3);margin-top:8px;">PMG Analysis · European BEV Archetype · Illustrative</p>
+    </div>
+
+    <div class="arch-right">
+      <div class="arch-right-item">
+        <p class="arch-right-title">Dual-Node Scoring</p>
+        <p class="arch-right-body" style="margin:0">Both supplier and material nodes are scored independently in the same graph pass. A low-risk supplier can carry catastrophic material-level exposure three levels below them. Both scores are required.</p>
+      </div>
+      <div class="arch-right-item">
+        <p class="arch-right-title">4-Vector Risk Model</p>
+        <p class="arch-right-body" style="margin:0"><strong style="color:var(--t1)">Manufacturing · Financial · Operational · Geopolitical.</strong> Each vector is scored per node. The weighted sum produces the node's overall risk score. Every weight is traceable through the XAI chain.</p>
+      </div>
+      <div class="arch-right-item">
+        <p class="arch-right-title">TTR Computed from Material Physics</p>
+        <p class="arch-right-body" style="margin:0">Time-to-Recover is not self-reported. It is computed from the graph — tracing the actual constraint: tooling recut timelines, chemical re-qualification periods, geographic concentration at the ore source.</p>
+      </div>
+      <div class="arch-right-item">
+        <p class="arch-right-title">XAI Audit Trail — 100% Coverage</p>
+        <p class="arch-right-body" style="margin:0">Every score carries a structured reasoning chain traceable to the computation that produced it, at the moment it was produced. Auditable by compliance teams. Ingestible by AI copilot systems.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span class="page-footer-conf">Confidential · EcocomityChain.AI</span>
+    <span class="page-footer-num">3</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     PAGE 4 — INTELLIGENCE LAYERS
+════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <span class="page-header-logo">Ecocomity<span>Chain</span>.AI · PMG Platform</span>
+    <span class="page-header-section">Intelligence Layers</span>
+  </div>
+
+  <p class="eyebrow">Platform architecture</p>
+  <h2 class="section-title">Four intelligence layers on one material graph</h2>
+  <p class="section-sub">
+    Each layer is independently deployable. All four draw from the same PMG material graph.
+    A Prescriptive Intelligence spine runs as a cross-cutting orchestration layer across all domains.
+  </p>
+
+  <!-- Flat architecture diagram -->
+  <style>
+    .af-wrap{border:1px solid var(--bhi);border-radius:8px;overflow:hidden;margin:0 0 20px;}
+    .af-hdr{display:flex;justify-content:space-between;padding:7px 14px;background:var(--bg-c);border-bottom:1px solid var(--border);font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);}
+    .af-hdr-spine{color:rgba(50,210,130,.7);}
+    .af-row{display:grid;grid-template-columns:4px 1fr auto 180px 14px;align-items:center;gap:10px;padding:11px 14px 11px 0;border-bottom:1px solid var(--border);}
+    .af-row:last-child{border-bottom:none;}
+    .af-row.ghost{opacity:.45;}
+    .af-accent{height:36px;border-radius:2px;}
+    .af-name{font-size:12px;font-weight:600;color:var(--t1);padding-left:6px;}
+    .af-badge{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:3px;white-space:nowrap;}
+    .af-badge.live{color:var(--green);background:rgba(50,210,130,.1);border:1px solid rgba(50,210,130,.2);}
+    .af-badge.partial{color:var(--amber);background:rgba(236,160,48,.1);border:1px solid rgba(236,160,48,.2);}
+    .af-badge.map{color:var(--t3);background:rgba(255,255,255,.04);border:1px solid var(--border);}
+    .af-caps{font-family:var(--mono);font-size:10px;color:var(--t3);line-height:1.55;text-align:right;}
+    .af-dot{width:8px;height:8px;border-radius:50%;background:rgba(50,210,130,.5);box-shadow:0 0 5px rgba(50,210,130,.4);margin:0 auto;}
+    .af-ceil{display:flex;align-items:center;gap:10px;padding:5px 14px;background:rgba(25,5,5,.5);border-bottom:1px solid rgba(210,60,60,.22);}
+    .af-ceil-line{flex:1;height:1px;border-top:1px dashed rgba(210,60,60,.32);}
+    .af-ceil-label{font-family:var(--mono);font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:rgba(220,75,75,.5);white-space:nowrap;}
+  </style>
+  <div class="af-wrap">
+    <div class="af-hdr">
+      <span>ECC Intelligence Architecture · Four layers, one material graph</span>
+      <span class="af-hdr-spine">↕ Prescriptive Intelligence (cross-cutting)</span>
+    </div>
+    <div class="af-row ghost">
+      <div class="af-accent" style="background:#6658aa"></div>
+      <span class="af-name">Digital Product Passport &amp; Sustainability</span>
+      <span class="af-badge map">ROADMAP</span>
+      <span class="af-caps">DPP Export · CBAM<br>Scope 3 · 3TG</span>
+      <div class="af-dot"></div>
+    </div>
+    <div class="af-row">
+      <div class="af-accent" style="background:#b06bff"></div>
+      <span class="af-name">Regulatory Compliance Resilience</span>
+      <span class="af-badge partial">PARTIAL</span>
+      <span class="af-caps">REACH · RoHS · ELV<br>CRM · SVHC</span>
+      <div class="af-dot"></div>
+    </div>
+    <div class="af-row">
+      <div class="af-accent" style="background:#eca030"></div>
+      <span class="af-name">Trade &amp; Tariff Resilience</span>
+      <span class="af-badge live">LIVE</span>
+      <span class="af-caps">Sec.301 · Sec.232<br>CBAM · 49 measures</span>
+      <div class="af-dot"></div>
+    </div>
+    <div class="af-ceil">
+      <div class="af-ceil-line"></div>
+      <span class="af-ceil-label">Competitor ceiling · supplier alerts only · no material graph</span>
+      <div class="af-ceil-line"></div>
+    </div>
+    <div class="af-row">
+      <div class="af-accent" style="background:#3aa0d8"></div>
+      <span class="af-name">Proactive Supply Chain Resilience <span style="font-weight:400;color:var(--t3);font-size:11px;">— Foundation</span></span>
+      <span class="af-badge live">LIVE</span>
+      <span class="af-caps">T1–T8 · Dual-Node<br>XAI · TTR/PI</span>
+      <div class="af-dot"></div>
+    </div>
+  </div>
+
+  <hr class="rule">
+  <p style="font-size:12px;color:var(--t3);">
+    <strong style="color:var(--t2)">Prescriptive Intelligence</strong> — an agentic orchestration layer extended by partner intelligence networks —
+    runs as a vertical cross-cut across all four domains. Available in each layer context, not as a separate module. See Section 6.
+  </p>
+
+  <div class="page-footer">
+    <span class="page-footer-conf">Confidential · EcocomityChain.AI</span>
+    <span class="page-footer-num">4</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     PAGE 5 — ANALYTICAL SURFACES
+════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <span class="page-header-logo">Ecocomity<span>Chain</span>.AI · PMG Platform</span>
+    <span class="page-header-section">Analytical Surfaces</span>
+  </div>
+
+  <p class="eyebrow">What your teams can do with it</p>
+  <h2 class="section-title">Six analytical surfaces. Six questions already on your leadership's desk.</h2>
+  <p class="section-sub">Each surface is a standalone capability with its own data model, scoring logic, and explainability chain — all grounded in the same material graph.</p>
+
+  <table class="surface-table">
+    <thead>
+      <tr>
+        <th style="width:4%">#</th>
+        <th style="width:28%">Surface</th>
+        <th style="width:38%">What it answers</th>
+        <th>Key capabilities</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="surface-num">01</td>
+        <td>
+          <p class="surface-title">Risk patterns in your material structure</p>
+        </td>
+        <td><p class="surface-desc">Where are your structural single-points-of-failure — the deep-tier nodes holding multiple product lines hostage?</p></td>
+        <td><p class="surface-tags">Diamond detection · Concentration clusters · Single-source fan-outs · Tooling lock-in distributions · Portfolio-level pattern signatures</p></td>
+      </tr>
+      <tr>
+        <td class="surface-num">02</td>
+        <td>
+          <p class="surface-title">Geographic concentration</p>
+        </td>
+        <td><p class="surface-desc">How many strategic suppliers share the same country — and where does material-level concentration compound that exposure?</p></td>
+        <td><p class="surface-tags">Supplier-level concentration view · Country-material heat map · Assembly exposure by geo cluster · Jurisdiction-level aggregate risk</p></td>
+      </tr>
+      <tr>
+        <td class="surface-num">03</td>
+        <td>
+          <p class="surface-title">Tariff and trade exposure</p>
+        </td>
+        <td><p class="surface-desc">What does a tariff schedule change actually cost — by material, by assembly, with alternate sourcing options?</p></td>
+        <td><p class="surface-tags">HS code attribution at material nodes · Cost exposure by assembly · Automatic impact propagation · Alternate sourcing simulation</p></td>
+      </tr>
+      <tr>
+        <td class="surface-num">04</td>
+        <td>
+          <p class="surface-title">Deep-tier supplier financial health</p>
+        </td>
+        <td><p class="surface-desc">Which T1 suppliers are financially distressed — and which sub-tier suppliers, invisible to your current monitoring, are deteriorating right now?</p></td>
+        <td><p class="surface-tags">T1–T8 supplier mapping · PMG-prioritised sub-tier monitoring · 6-dimension health scoring · Distress phase trajectory · Assembly exposure linkage</p></td>
+      </tr>
+      <tr>
+        <td class="surface-num">05</td>
+        <td>
+          <p class="surface-title">Regulatory and compliance exposure</p>
+        </td>
+        <td><p class="surface-desc">Which materials in your assemblies are approaching restriction — before the restriction takes effect?</p></td>
+        <td><p class="surface-tags">CAS-level mapping · ELV / REACH SVHC / RoHS · CRM scarcity · Restriction timeline tracking · Auto-propagation on regulation updates</p></td>
+      </tr>
+      <tr>
+        <td class="surface-num">06</td>
+        <td>
+          <p class="surface-title">Risk quadrant positioning</p>
+        </td>
+        <td><p class="surface-desc">Where in the risk landscape does each supplier and material actually sit — and what action does each quadrant require?</p></td>
+        <td><p class="surface-tags">4-quadrant scatter · Strategic vs hidden risk · Portfolio prioritisation view · Graph-computed position (not self-reported)</p></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="page-footer">
+    <span class="page-footer-conf">Confidential · EcocomityChain.AI</span>
+    <span class="page-footer-num">5</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     PAGE 6 — PRESCRIPTIVE INTELLIGENCE
+════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <span class="page-header-logo">Ecocomity<span>Chain</span>.AI · PMG Platform</span>
+    <span class="page-header-section">Prescriptive Intelligence</span>
+  </div>
+
+  <p class="eyebrow">Beyond risk identification</p>
+  <h2 class="section-title">From finding alternatives to understanding trade-offs</h2>
+  <p class="section-sub">
+    Standard prescriptive tools recommend an alternative supplier. ECC evaluates whether the alternative is viable — materially, structurally, and regulatorily — before the recommendation surfaces. The output brings procurement and engineering to the same table.
+  </p>
+
+  <div class="p-cards">
+    <div class="p-card">
+      <p class="p-card-num">PATHWAY 01</p>
+      <h4 class="p-card-title">Material substitution evaluation</h4>
+      <p class="p-card-body">
+        When a material is at risk, the prescriptive layer queries a database of
+        <strong>570,000+ materials across 80+ international standards</strong>
+        for global equivalents. Mechanical and physical properties of each candidate
+        are compared against the performance specification. Compliance status against
+        ELV, REACH, and RoHS is validated. Multi-criteria scoring ranks candidates
+        by functional fit, supply concentration, and sustainability profile.
+        Output: an <strong>engineering-grade substitution brief</strong>
+        for procurement and engineering jointly.
+      </p>
+    </div>
+    <div class="p-card">
+      <p class="p-card-num">PATHWAY 02</p>
+      <h4 class="p-card-title">Sourcing viability simulation</h4>
+      <p class="p-card-body">
+        Once a candidate material is identified, the prescriptive layer maps
+        qualified manufacturers across a <strong>live supply graph of dependencies
+        up to ten tiers deep</strong> — country-of-origin, capacity indicators,
+        dependency strengths. "Does an alternative exist?" is answered alongside
+        "Is this executable, by whom, and what does their dependency profile look like?"
+        Simulation runs before the recommendation lands with the team.
+      </p>
+    </div>
+    <div class="p-card">
+      <p class="p-card-num">PATHWAY 03</p>
+      <h4 class="p-card-title">Cross-domain consequence analysis</h4>
+      <p class="p-card-body">
+        A prescriptive action that reduces tariff exposure might change the DPP
+        compliance baseline or introduce a new geographic concentration.
+        Because the orchestration layer draws from the same material graph across
+        all three domains — proactive, tariff, regulatory — <strong>every recommendation
+        is evaluated for cross-domain consequences before it surfaces.</strong>
+        The procurement lead and compliance lead see the same picture.
+      </p>
+    </div>
+  </div>
+
+  <div class="fabric-callout">
+    <p class="eyebrow">Resilience Fabric</p>
+    <p>
+      <strong style="color:var(--t1)">Beyond the computable.</strong>
+      The prescriptive layer also draws from a curated knowledge base built from hundreds of
+      supply chain research papers and documented historical incidents — containing
+      the mitigation strategies that were deployed, what worked, and what did not.
+      When the platform identifies a critically important sub-tier supplier under financial stress,
+      it surfaces options beyond replacement: supply chain finance instruments, inventory
+      pre-build programmes, collaborative recovery frameworks.
+      The right action is not always the obvious one.
+    </p>
+  </div>
+
+  <p style="font-size:12px;color:var(--t3);margin-top:16px;">
+    Prescriptive intelligence is a cross-cutting layer available across all four intelligence domains.
+    Partner-extended capabilities — material substitution intelligence and live supply graph simulation
+    — are available through the ECC partner network. Partners available on request.
+  </p>
+
+  <div class="page-footer">
+    <span class="page-footer-conf">Confidential · EcocomityChain.AI</span>
+    <span class="page-footer-num">6</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     PAGE 7 — INTEGRATION AND DEPLOYMENT
+════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <span class="page-header-logo">Ecocomity<span>Chain</span>.AI · PMG Platform</span>
+    <span class="page-header-section">Integration &amp; Deployment</span>
+  </div>
+
+  <p class="eyebrow">How PMG connects to your environment</p>
+  <h2 class="section-title">Your stack stays intact. Your data stays in your infrastructure.</h2>
+
+  <div class="two-col">
+    <div class="block-card">
+      <p class="block-card-title">Integration model</p>
+      <p style="font-size:12px;margin-bottom:12px;">
+        PMG integrates with SAP and other SCM systems through
+        <strong>published APIs or SAP's own agentic connectors.</strong>
+        Existing procurement workflows, ERP configuration, and supplier relationships
+        are untouched.
+      </p>
+      <ul class="check-list">
+        <li><strong>Read-only access.</strong> PMG does not write to your systems.</li>
+        <li><strong>API-native.</strong> No direct database access. SAP ecosystem compatible.</li>
+        <li><strong>Need-to-know scope.</strong> Integration covers only the data relevant to the scoped engagement.</li>
+        <li><strong>Auditable.</strong> Every data access through the integration layer is logged.</li>
+        <li><strong>Open signal ingestion.</strong> Architecture supports customer-owned assessment data as an additional input signal — scored alongside platform data without requiring code changes.</li>
+      </ul>
+    </div>
+    <div class="block-card">
+      <p class="block-card-title">Deployment model</p>
+      <p style="font-size:12px;margin-bottom:12px;">
+        ECC deploys into <strong>your own Azure subscription</strong> and
+        <strong>your own Neo4j instance.</strong> We provision and configure. You own the infrastructure.
+      </p>
+      <ul class="check-list">
+        <li><strong>Azure deployment in your tenancy.</strong> No shared cloud infrastructure operated by ECC.</li>
+        <li><strong>Neo4j in your account.</strong> The material graph runs in an instance you own and control.</li>
+        <li><strong>Data sovereignty.</strong> Your supply chain data never moves to ECC's environment.</li>
+        <li><strong>Isolated per customer.</strong> No multi-tenant deployment model.</li>
+      </ul>
+    </div>
+  </div>
+
+  <hr class="rule">
+
+  <p class="eyebrow">Security</p>
+  <p>
+    <strong>Primary security mechanism is architectural:</strong> customer-owned infrastructure means
+    supply chain data never moves to a shared environment. ECC does not hold, process, or store
+    customer data outside the customer's own cloud accounts.
+  </p>
+  <p>
+    Security architecture documentation, threat model, network isolation design, data access controls,
+    and testing results are available on request and prepared to enterprise standard.
+    The ECC founding team includes a Microsoft-certified Cybersecurity and Solutions Architect.
+  </p>
+
+  <hr class="rule">
+
+  <p class="eyebrow">DPP dual return</p>
+  <p>
+    PMG builds its material graph using science-quality life cycle inventory data — CAS-level compound data,
+    international LCI datasets, critical minerals sourcing intelligence. This is the same data foundation
+    required for EU Digital Product Passport compliance. <strong>The data work ECC does for risk intelligence
+    simultaneously builds the customer's DPP compliance baseline.</strong> One data investment. Two strategic returns.
+  </p>
+
+  <div class="page-footer">
+    <span class="page-footer-conf">Confidential · EcocomityChain.AI</span>
+    <span class="page-footer-num">7</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     PAGE 8 — PILOT + REACTIVE NOTE + CONTACT
+════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <span class="page-header-logo">Ecocomity<span>Chain</span>.AI · PMG Platform</span>
+    <span class="page-header-section">Pilot Model</span>
+  </div>
+
+  <p class="eyebrow">Getting started</p>
+  <h2 class="section-title">A validated output in 4–6 weeks. No permanent commitment.</h2>
+  <p class="section-sub">Scoped to one plant and one vehicle line. Every finding is traceable. Every number has a computation behind it.</p>
+
+  <div class="pilot-phases">
+    <div class="pilot-phase">
+      <p class="pilot-tag">Phase 1</p>
+      <p class="pilot-weeks">Weeks 1–2</p>
+      <h4 class="pilot-title">Data Connection</h4>
+      <p class="pilot-body">API integration with your BOM and supplier data. Read-only access, defined scope. No raw data extraction, no persistent access beyond the integration layer. Scope agreed and documented before connection.</p>
+    </div>
+    <div class="pilot-phase">
+      <p class="pilot-tag">Phase 2</p>
+      <p class="pilot-weeks">Weeks 2–4</p>
+      <h4 class="pilot-title">Graph Build &amp; Scoring</h4>
+      <p class="pilot-body">PMG builds the material genealogy graph for the scoped vehicle line. Every node scored. Every TTR computed from the material chain. Every reasoning chain generated and stored. Deep-tier supplier mapping completed and prioritised.</p>
+    </div>
+    <div class="pilot-phase">
+      <p class="pilot-tag">Phase 3</p>
+      <p class="pilot-weeks">Weeks 5–6</p>
+      <h4 class="pilot-title">Validated Output Review</h4>
+      <p class="pilot-body">Findings walkthrough with your procurement and risk team. Every finding traceable. Every number has a computation behind it. You decide whether and how to extend coverage. No automatic commitments.</p>
+    </div>
+  </div>
+
+  <hr class="rule">
+
+  <div class="v2-callout">
+    <p class="v2-callout-title">About this document — v1.0</p>
+    <p>
+      This brief covers PMG's <strong style="color:var(--t1)">Proactive Value Chain Resilience</strong> segment.
+      ECC's platform also includes a <strong style="color:var(--t1)">Reactive Resilience</strong> segment —
+      an agentic copilot system for supply chain response workflows, event-triggered analysis,
+      and guided recovery decision-making. Reactive Resilience documentation is available on request
+      and will be incorporated into v2 of this brief.
+    </p>
+  </div>
+
+  <hr class="rule">
+
+  <div class="contact-block">
+    <div class="contact-left">
+      <h3>Ready to see what PMG finds in your supply chain?</h3>
+      <p>One plant. One vehicle line. 4–6 weeks. No stack changes required.</p>
+    </div>
+    <div class="contact-right">
+      <p class="contact-email">hello@ecocomitychain.ai</p>
+      <p class="contact-url">ecocomitychain.ai</p>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span class="page-footer-conf">Confidential · EcocomityChain.AI · v1.0</span>
+    <span class="page-footer-num">8</span>
+  </div>
+</div>
+
+</body>
+</html>

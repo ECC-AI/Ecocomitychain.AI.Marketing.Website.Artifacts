@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECC — The T1 Blindspot</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:     #1F4E79;
+    --accent:   #2E75B6;
+    --lightbg:  #DEEAF1;
+    --red:      #C00000;
+    --redbg:    #FBEAEA;
+    --amber:    #7F6000;
+    --amberbg:  #FFF2CC;
+    --green:    #375623;
+    --greenbg:  #E2EFDA;
+    --cobalt:   #003366;
+    --gray:     #F5F5F5;
+    --mid:      #CCCCCC;
+    --white:    #FFFFFF;
+    --dark:     #1A1A1A;
+    --muted:    #666666;
+    --l4color:  #7F3F00;
+    --l4bg:     #FFF0E0;
+    --l5color:  #C00000;
+    --l5bg:     #FBEAEA;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: #DEDEDE;
+    display: flex;
+    justify-content: center;
+    padding: 24px;
+    min-height: 100vh;
+  }
+
+  .page {
+    width: 794px;
+    background: var(--white);
+    box-shadow: 0 6px 40px rgba(0,0,0,0.18);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--cobalt);
+    padding: 20px 26px 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 240px; height: 100%;
+    background: linear-gradient(135deg, transparent 60%, rgba(46,117,182,0.2) 100%);
+    pointer-events: none;
+  }
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8.5px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #9DC3E6;
+    margin-bottom: 9px;
+  }
+  .headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 34px;
+    font-weight: 900;
+    line-height: 1.1;
+    color: var(--white);
+    margin-bottom: 8px;
+    max-width: 620px;
+  }
+  .headline .highlight { color: #FFD966; }
+  .subhead {
+    font-size: 11px;
+    font-weight: 300;
+    color: #BDD7EE;
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  /* ── DEPTH DIAGRAM ── */
+  .diagram-section {
+    padding: 14px 22px 10px;
+    background: var(--gray);
+    border-bottom: 2px solid var(--mid);
+  }
+  .diagram-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .diagram-grid {
+    display: grid;
+    grid-template-columns: 110px 1fr 130px;
+    gap: 0;
+    border: 1px solid var(--mid);
+  }
+
+  /* left labels */
+  .tier-labels {
+    display: flex;
+    flex-direction: column;
+    background: var(--navy);
+  }
+  .tier-label {
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    flex: 1;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .tier-label:last-child { border-bottom: none; }
+  .tier-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    min-width: 22px;
+  }
+  .tier-name {
+    font-size: 8.5px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.2;
+    font-weight: 300;
+  }
+
+  /* centre content */
+  .tier-rows {
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid var(--mid);
+    border-right: 1px solid var(--mid);
+  }
+  .tier-row {
+    display: flex;
+    align-items: center;
+    padding: 7px 12px;
+    border-bottom: 1px solid var(--mid);
+    flex: 1;
+    min-height: 38px;
+    position: relative;
+  }
+  .tier-row:last-child { border-bottom: none; }
+  .tier-row.normal   { background: var(--white); }
+  .tier-row.light    { background: #F0F6FC; }
+  .tier-row.warning  { background: var(--l4bg); }
+  .tier-row.danger   { background: var(--l5bg); }
+  .tier-row.deep     { background: #FEF2F2; }
+
+  .node-name {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--dark);
+    line-height: 1.2;
+  }
+  .tier-row.warning .node-name { color: var(--l4color); }
+  .tier-row.danger  .node-name { color: var(--red); }
+  .tier-row.deep    .node-name { color: var(--red); }
+
+  .node-detail {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+  .tier-row.warning .node-detail { color: #A05010; }
+  .tier-row.danger  .node-detail { color: #A00000; }
+
+  .hs-tag {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7.5px;
+    font-weight: 600;
+    padding: 1px 5px;
+    border-radius: 2px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .hs-normal  { background: var(--lightbg); color: var(--navy); }
+  .hs-warning { background: #FFD9B0; color: var(--l4color); }
+  .hs-danger  { background: #FFB3B3; color: var(--red); }
+
+  /* right column: tool visibility */
+  .tool-col {
+    display: flex;
+    flex-direction: column;
+    background: var(--white);
+  }
+  .tool-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    border-bottom: 1px solid var(--mid);
+    padding: 4px 6px;
+    min-height: 38px;
+  }
+  .tool-cell:last-child { border-bottom: none; }
+
+  .vis-pill {
+    font-size: 7.5px;
+    font-weight: 600;
+    padding: 3px 7px;
+    border-radius: 2px;
+    text-align: center;
+    line-height: 1.3;
+    width: 100%;
+  }
+  .vis-yes   { background: var(--greenbg); color: var(--green); }
+  .vis-no    { background: var(--redbg);   color: var(--red); }
+  .vis-ecc   { background: var(--navy);    color: var(--white); }
+  .vis-amber { background: var(--amberbg); color: var(--amber); }
+
+  /* col headers */
+  .diagram-header {
+    display: grid;
+    grid-template-columns: 110px 1fr 130px;
+    border: 1px solid var(--mid);
+    border-bottom: none;
+    background: var(--navy);
+  }
+  .dh-cell {
+    padding: 5px 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+    border-right: 1px solid rgba(255,255,255,0.1);
+  }
+  .dh-cell:last-child { border-right: none; text-align: center; }
+  .dh-cell.highlight { color: #FFD966; }
+
+  .diagram-legend {
+    display: flex;
+    gap: 14px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 8px;
+    color: var(--muted);
+  }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 1px;
+    flex-shrink: 0;
+  }
+
+  /* ── CONTRAST ── */
+  .contrast-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 2px solid var(--navy);
+  }
+  .contrast-col {
+    padding: 13px 18px;
+  }
+  .contrast-col.left  { border-right: 1px solid var(--mid); background: var(--redbg); }
+  .contrast-col.right { background: var(--greenbg); }
+
+  .contrast-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .contrast-col.left  .contrast-title { color: var(--red); }
+  .contrast-col.right .contrast-title { color: var(--green); }
+
+  .contrast-item {
+    display: flex;
+    gap: 7px;
+    margin-bottom: 6px;
+    align-items: flex-start;
+  }
+  .contrast-arrow {
+    font-size: 9px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .contrast-col.left  .contrast-arrow { color: var(--red); }
+  .contrast-col.right .contrast-arrow { color: var(--green); }
+  .contrast-text {
+    font-size: 9.5px;
+    line-height: 1.5;
+    color: var(--dark);
+  }
+  .contrast-text .mono {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8.5px;
+    background: rgba(0,0,0,0.06);
+    padding: 0 3px;
+    border-radius: 2px;
+  }
+
+  /* ── STAT TILES ── */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background: var(--navy);
+    border-bottom: 2px solid var(--cobalt);
+  }
+  .stat-tile {
+    padding: 12px 14px;
+    border-right: 1px solid rgba(255,255,255,0.08);
+    text-align: center;
+  }
+  .stat-tile:last-child { border-right: none; }
+  .stat-tile.red-t   { background: var(--red); }
+  .stat-tile.amber-t { background: #7B5800; }
+  .stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 34px;
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.0;
+    display: block;
+  }
+  .stat-label {
+    font-size: 8.5px;
+    color: rgba(255,255,255,0.72);
+    line-height: 1.45;
+    margin-top: 3px;
+    font-weight: 300;
+  }
+  .stat-label em { color: #FFD966; font-style: normal; font-weight: 600; }
+
+  /* ── BARRIERS + ANSWER ── */
+  .bottom-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    flex: 1;
+  }
+  .barriers {
+    padding: 13px 18px;
+    border-right: 1px solid var(--mid);
+    background: var(--white);
+  }
+  .answer {
+    padding: 13px 18px;
+    background: var(--cobalt);
+  }
+
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    margin-bottom: 9px;
+  }
+  .barriers .section-label { color: var(--accent); }
+  .answer   .section-label { color: #9DC3E6; }
+
+  .barrier-item {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    align-items: flex-start;
+  }
+  .barrier-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--white);
+    background: var(--navy);
+    width: 16px; height: 16px;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .barrier-text {
+    font-size: 9.5px;
+    line-height: 1.5;
+    color: var(--dark);
+  }
+  .barrier-text strong { color: var(--navy); font-weight: 700; }
+
+  .answer-text {
+    font-size: 9.5px;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.88);
+    margin-bottom: 10px;
+  }
+  .answer-text strong { color: #FFD966; font-weight: 700; }
+
+  .closing {
+    font-family: 'Playfair Display', serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.4;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    padding-top: 8px;
+    margin-top: 8px;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--navy);
+    padding: 7px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 2px solid var(--accent);
+  }
+  .footer-l {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7.5px;
+    color: #9DC3E6;
+    letter-spacing: 0.5px;
+  }
+  .footer-c {
+    font-family: 'Playfair Display', serif;
+    font-size: 10px;
+    font-weight: 700;
+    color: #FFD966;
+  }
+  .footer-r {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7.5px;
+    color: #9DC3E6;
+    text-align: right;
+    letter-spacing: 0.5px;
+  }
+
+  @media print {
+    body { background: none; padding: 0; }
+    .page { box-shadow: none; width: 100%; }
+    @page { size: A4 portrait; margin: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="eyebrow">Tariff Risk Intelligence &nbsp;·&nbsp; ECC / PMG Supply Chain Intelligence &nbsp;·&nbsp; 2025 / 2026</div>
+    <div class="headline">Your T1 supplier is in <span class="highlight">Germany.</span><br>Your tariff risk is in <span class="highlight">China.</span></div>
+    <div class="subhead">Standard tools see the country on the invoice. ECC sees the material inside the product — at every level, down to the ore. The gap between those two views is where eight-figure CBP liability lives undetected.</div>
+  </div>
+
+  <!-- DEPTH DIAGRAM -->
+  <div class="diagram-section">
+    <div class="diagram-title">Supply Chain Depth Scan — EV Traction Motor NdFeB Magnet Chain</div>
+
+    <div class="diagram-header">
+      <div class="dh-cell">BOM Level</div>
+      <div class="dh-cell">Material / Component Node</div>
+      <div class="dh-cell highlight">Visibility Status</div>
+    </div>
+
+    <div class="diagram-grid">
+      <!-- LEFT: tier labels -->
+      <div class="tier-labels">
+        <div class="tier-label" style="min-height:38px"><span class="tier-badge">L1</span><span class="tier-name">Assembly</span></div>
+        <div class="tier-label" style="min-height:38px"><span class="tier-badge">L2</span><span class="tier-name">Sub-Assembly</span></div>
+        <div class="tier-label" style="min-height:38px"><span class="tier-badge">L3</span><span class="tier-name">Component</span></div>
+        <div class="tier-label" style="min-height:38px"><span class="tier-badge">L4</span><span class="tier-name">Component<br>Material</span></div>
+        <div class="tier-label" style="min-height:42px"><span class="tier-badge">L5</span><span class="tier-name">Precursor<br>Material</span></div>
+        <div class="tier-label" style="min-height:34px"><span class="tier-badge">L6</span><span class="tier-name">Refined<br>Metal</span></div>
+        <div class="tier-label" style="min-height:34px"><span class="tier-badge">L7</span><span class="tier-name">Oxide /<br>Compound</span></div>
+        <div class="tier-label" style="min-height:34px"><span class="tier-badge">L8</span><span class="tier-name">Raw Ore /<br>Mineral</span></div>
+      </div>
+
+      <!-- CENTRE: nodes -->
+      <div class="tier-rows">
+        <div class="tier-row normal" style="min-height:38px">
+          <div>
+            <div class="node-name">EV Powertrain Assembly<span class="hs-tag hs-normal">HS 8501</span></div>
+            <div class="node-detail">OEM product — US customs entry filed at this level</div>
+          </div>
+        </div>
+        <div class="tier-row light" style="min-height:38px">
+          <div>
+            <div class="node-name">Traction Motor Assembly — German T1 Supplier<span class="hs-tag hs-normal">HS 8501.53</span></div>
+            <div class="node-detail">Declared origin: Germany / Japan &nbsp;·&nbsp; Customs rate: MFN 2.5%</div>
+          </div>
+        </div>
+        <div class="tier-row light" style="min-height:38px">
+          <div>
+            <div class="node-name">NdFeB Permanent Magnet — Tier-2 Component<span class="hs-tag hs-normal">HS 8505.11</span></div>
+            <div class="node-detail">Sourced from Tier-2 — supplier declared</div>
+          </div>
+        </div>
+        <div class="tier-row warning" style="min-height:38px">
+          <div>
+            <div class="node-name">⚑ Sintered NdFeB Block (N42SH Grade)<span class="hs-tag hs-warning">HS 8505.11</span></div>
+            <div class="node-detail">ECC tariff flag: Chapter 85 output — transformation test applies here</div>
+          </div>
+        </div>
+        <div class="tier-row danger" style="min-height:42px">
+          <div>
+            <div class="node-name">⚑ NdFeB Alloy Powder (Nd₂Fe₁₄B)<span class="hs-tag hs-danger">HS 2846.90</span></div>
+            <div class="node-detail">CPD: China &gt;85% &nbsp;·&nbsp; Chapter 28 INPUT &nbsp;·&nbsp; Section 301 + IEEPA = 71% stacked rate</div>
+          </div>
+        </div>
+        <div class="tier-row deep" style="min-height:34px">
+          <div>
+            <div class="node-name">Neodymium Metal (Nd, 99.5%)<span class="hs-tag hs-danger">HS 2805.19</span></div>
+            <div class="node-detail">Chinese molten salt electrolysis &nbsp;·&nbsp; Section 301 applies</div>
+          </div>
+        </div>
+        <div class="tier-row deep" style="min-height:34px">
+          <div>
+            <div class="node-name">Neodymium Oxide (Nd₂O₃)<span class="hs-tag hs-danger">HS 2846.10</span></div>
+            <div class="node-detail">Solvent extraction — Inner Mongolia / Jiangxi province</div>
+          </div>
+        </div>
+        <div class="tier-row deep" style="min-height:34px">
+          <div>
+            <div class="node-name">Bastnäsite / Monazite Ore<span class="hs-tag hs-danger">HS 2612.10</span></div>
+            <div class="node-detail">Bayan Obo mine, Inner Mongolia — China 60%+ of global production</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: visibility -->
+      <div class="tool-col">
+        <div class="tool-cell" style="min-height:38px"><div class="vis-pill vis-yes">✓ Visible<br>Standard Tools</div></div>
+        <div class="tool-cell" style="min-height:38px"><div class="vis-pill vis-yes">✓ Visible<br>Standard Tools</div></div>
+        <div class="tool-cell" style="min-height:38px"><div class="vis-pill vis-amber">~ Partial<br>T2 mapping only</div></div>
+        <div class="tool-cell" style="min-height:38px"><div class="vis-pill vis-ecc">★ ECC Only<br>Tariff flag here</div></div>
+        <div class="tool-cell" style="min-height:42px"><div class="vis-pill vis-ecc" style="background:var(--red);">★ ECC Only<br>Origin confirmed here</div></div>
+        <div class="tool-cell" style="min-height:34px"><div class="vis-pill vis-no">✗ Invisible<br>No standard tool</div></div>
+        <div class="tool-cell" style="min-height:34px"><div class="vis-pill vis-no">✗ Invisible<br>No standard tool</div></div>
+        <div class="tool-cell" style="min-height:34px"><div class="vis-pill vis-no">✗ Invisible<br>No standard tool</div></div>
+      </div>
+    </div>
+
+    <div class="diagram-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--l4bg);border:1px solid #D08040;"></div>Tariff assessment zone (L4)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--l5bg);border:1px solid var(--red);"></div>Chinese-origin confirmed (L5)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#FEF2F2;border:1px solid #E06060;"></div>Deep chain — invisible to all standard tools</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--navy);"></div>ECC maps and scores</div>
+    </div>
+  </div>
+
+  <!-- CONTRAST -->
+  <div class="contrast-section">
+    <div class="contrast-col left">
+      <div class="contrast-title">What standard tools report</div>
+      <div class="contrast-item">
+        <span class="contrast-arrow">→</span>
+        <span class="contrast-text">T1 supplier is in Germany — <strong>status: green</strong>. MFN rate 2.5% applied. Customs entry filed. No alert raised.</span>
+      </div>
+      <div class="contrast-item">
+        <span class="contrast-arrow">→</span>
+        <span class="contrast-text">Unit price increased 8–12%. Attributed to "market conditions." No tariff flag. No root cause attribution.</span>
+      </div>
+      <div class="contrast-item">
+        <span class="contrast-arrow">→</span>
+        <span class="contrast-text">If CBP audits and reclassifies as Chinese-origin: OEM has no documentation, no evidence chain, no prior disclosure prepared. Penalty exposure: up to <strong>4× unpaid duties.</strong></span>
+      </div>
+    </div>
+    <div class="contrast-col right">
+      <div class="contrast-title">What ECC reports — same product</div>
+      <div class="contrast-item">
+        <span class="contrast-arrow">→</span>
+        <span class="contrast-text">L5 node: <span class="mono">HS 2846.90</span> NdFeB alloy powder, CPD China &gt;85%. Section 301 + IEEPA rate: <strong>71% stacked.</strong> Conservative annual exposure: <strong>$31.95M.</strong></span>
+      </div>
+      <div class="contrast-item">
+        <span class="contrast-arrow">→</span>
+        <span class="contrast-text">Panjiva confirms: <span class="mono">HS 2846.90</span> (Ch.28) enters Vietnam → <span class="mono">HS 8505.11</span> (Ch.85) exits. Chapter change = substantial transformation. State: <strong>INTELLIGENCE_CONFIRMED.</strong></span>
+      </div>
+      <div class="contrast-item">
+        <span class="contrast-arrow">→</span>
+        <span class="contrast-text">Resolution: one Certificate of Origin from TDK Vietnam. Exposure drops to $0.9M (MFN 2%). Pre-drafted attestation request generated. <strong>ROI on action: 620:1.</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAT TILES -->
+  <div class="stat-row">
+    <div class="stat-tile red-t">
+      <span class="stat-number">71%</span>
+      <div class="stat-label">Stacked rate on CN-origin HS 8505<br><em>IEEPA 34% + Section 301 25% + MFN 2% + floor</em></div>
+    </div>
+    <div class="stat-tile">
+      <span class="stat-number">$31.95M</span>
+      <div class="stat-label">Conservative annual exposure<br>on one BOM position — NdFeB magnet<br><em>before attestation</em></div>
+    </div>
+    <div class="stat-tile amber-t">
+      <span class="stat-number">620:1</span>
+      <div class="stat-label">ROI on attestation action<br><em>$31.05M resolved / $50K attestation cost</em><br>One supplier letter. Eight assemblies covered.</div>
+    </div>
+  </div>
+
+  <!-- BARRIERS + ANSWER -->
+  <div class="bottom-section">
+    <div class="barriers">
+      <div class="section-label">Why Standard Tools Cannot Do This</div>
+      <div class="barrier-item">
+        <div class="barrier-num">1</div>
+        <div class="barrier-text"><strong>No BOM graph below Tier 2.</strong> Supplier risk platforms map company-to-company relationships. They have no material nodes, no HS codes at depth, no composition data. The NdFeB powder at L5 is invisible by architecture.</div>
+      </div>
+      <div class="barrier-item">
+        <div class="barrier-num">2</div>
+        <div class="barrier-text"><strong>No substantial transformation test.</strong> Proving Vietnamese origin requires: input HS code (L5), output HS code (L4), chapter change confirmed at a specific facility by trade records. Without the material graph, this computation is impossible.</div>
+      </div>
+      <div class="barrier-item">
+        <div class="barrier-num">3</div>
+        <div class="barrier-text"><strong>No cross-assembly multiplier.</strong> NdFeB magnets appear across multiple assemblies in the same vehicle. One attestation resolves all of them simultaneously. Without the inverted tree, this resolution path is invisible.</div>
+      </div>
+      <div class="barrier-item">
+        <div class="barrier-num">4</div>
+        <div class="barrier-text"><strong>No proactive discovery.</strong> Competing tariff tools calculate rates for products you submit. ECC finds the products that need submitting — across all BOM positions, all assemblies, all vehicle lines — before you know to ask.</div>
+      </div>
+    </div>
+    <div class="answer">
+      <div class="section-label">The ECC Approach</div>
+      <div class="answer-text">
+        ECC's material genealogy traces every component to its <strong>chemical precursor at L5</strong> — where the HS code, geographic origin, and tariff regime are determined. Not the supplier location. The material inside the supplier's product.<br><br>
+        When Panjiva trade records confirm a processing step that changes the HS chapter — from Chapter 28 (alloy powder) to Chapter 85 (permanent magnet) — ECC records the transformation evidence, calculates the revised tariff state, and generates the pre-drafted attestation request. The compliance team reviews and signs. The supplier confirms.<br><br>
+        <strong>ECC does not replace your customs counsel. It arrives at their door with the evidence already assembled.</strong>
+      </div>
+      <div class="closing">
+        See your exposure.<br>
+        Prove your origin.<br>
+        Defend your position.
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-l">ECC / PMG Supply Chain Intelligence &nbsp;·&nbsp; Trade & Tariff Risk Intelligence Platform</div>
+    <div class="footer-c">ecc-pmg.com</div>
+    <div class="footer-r">May 2026 &nbsp;·&nbsp; For sales use &nbsp;·&nbsp; Tariff rates as at publication date</div>
+  </div>
+
+</div>
+</body>
+</html>

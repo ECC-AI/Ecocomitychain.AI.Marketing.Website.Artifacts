@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case Brief — The Signals Were Structural | ECC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #07090f; --bg2: #0c1018; --bg3: #101622;
+  --border: rgba(255,255,255,0.07); --bhi: rgba(255,255,255,0.12);
+  --amber: #eca030; --adim: rgba(236,160,48,0.08); --abright: rgba(236,160,48,0.15);
+  --blue: #3aa0d8; --green: #32d282;
+  --t1: #dde2f0; --t2: #8898b8; --t3: #4a5570;
+  --mono: "Space Mono", monospace;
+  --body: "Space Grotesk", sans-serif;
+  --display: "Syne", sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--t1);font-family:var(--body);-webkit-font-smoothing:antialiased;min-height:100vh;}
+.page{max-width:800px;margin:0 auto;padding:52px 40px;}
+
+/* HEADER */
+.brief-header{border-bottom:1px solid var(--border);padding-bottom:32px;margin-bottom:36px;}
+.brief-type{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.brief-type::before{content:'';width:20px;height:1px;background:var(--amber);opacity:.6;}
+.brief-h1{font-family:var(--display);font-size:clamp(28px,4vw,42px);font-weight:800;letter-spacing:-.03em;line-height:1.08;color:var(--t1);margin-bottom:16px;}
+.brief-h1 em{font-style:normal;color:var(--amber);}
+.brief-lead{font-size:16px;color:var(--t2);line-height:1.72;max-width:640px;}
+.brief-meta{display:flex;gap:28px;flex-wrap:wrap;margin-top:24px;}
+.meta-item{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--t3);}
+.meta-item strong{color:var(--t2);display:block;margin-bottom:3px;}
+
+/* CONTENT GRID */
+.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px;}
+.content-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:24px 26px;}
+.content-card.accent-amber{border-top:2px solid var(--amber);}
+.content-card.accent-blue{border-top:2px solid var(--blue);}
+.card-label{font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px;}
+.accent-amber .card-label{color:var(--amber);}
+.accent-blue .card-label{color:var(--blue);}
+.card-h{font-family:var(--display);font-size:16px;font-weight:700;color:var(--t1);margin-bottom:10px;line-height:1.2;letter-spacing:-.01em;}
+.card-body{font-size:13px;color:var(--t2);line-height:1.68;}
+
+/* SECTION */
+.section{margin-bottom:28px;}
+.section-label{font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--t3);margin-bottom:12px;}
+.section-h{font-family:var(--display);font-size:18px;font-weight:700;color:var(--t1);margin-bottom:10px;letter-spacing:-.012em;}
+.section-body{font-size:14px;color:var(--t2);line-height:1.72;}
+.section-body + .section-body{margin-top:10px;}
+
+/* TIMELINE */
+.timeline{display:flex;flex-direction:column;gap:0;margin:16px 0;}
+.tl-item{display:flex;gap:16px;position:relative;}
+.tl-item:not(:last-child)::after{content:'';position:absolute;left:15px;top:30px;bottom:-1px;width:1px;background:var(--border);}
+.tl-dot{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;font-weight:700;z-index:1;}
+.tl-dot.amber{background:var(--adim);border:1px solid rgba(236,160,48,0.3);color:var(--amber);}
+.tl-dot.red{background:rgba(220,60,60,0.1);border:1px solid rgba(220,60,60,0.3);color:#e05555;}
+.tl-dot.dim{background:rgba(255,255,255,0.03);border:1px solid var(--border);color:var(--t3);}
+.tl-content{padding:4px 0 20px;}
+.tl-date{font-family:var(--mono);font-size:10px;color:var(--t3);margin-bottom:3px;letter-spacing:.06em;}
+.tl-text{font-size:13px;color:var(--t2);line-height:1.55;}
+.tl-text strong{color:var(--t1);font-weight:500;}
+
+/* SIGNAL CARDS */
+.signals{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0;}
+.signal-card{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:16px 18px;}
+.signal-icon{font-family:var(--mono);font-size:18px;color:var(--amber);margin-bottom:8px;}
+.signal-label{font-size:12px;font-weight:600;color:var(--t1);margin-bottom:4px;line-height:1.3;}
+.signal-body{font-size:11px;color:var(--t3);line-height:1.5;}
+
+/* STAT ROW */
+.stat-row{display:flex;gap:3px;margin:16px 0;}
+.stat-block{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px 18px;text-align:center;}
+.stat-block:first-child{border-radius:6px 0 0 6px;}
+.stat-block:last-child{border-radius:0 6px 6px 0;}
+.stat-num{font-family:var(--display);font-size:24px;font-weight:800;color:var(--amber);letter-spacing:-.025em;}
+.stat-lbl{font-size:11px;color:var(--t3);margin-top:4px;line-height:1.4;}
+
+/* ECC LENS */
+.ecc-lens{background:var(--adim);border:1px solid rgba(236,160,48,0.15);border-radius:8px;padding:24px 28px;margin:24px 0;}
+.lens-label{font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:10px;}
+.lens-h{font-family:var(--display);font-size:17px;font-weight:700;color:var(--t1);margin-bottom:10px;letter-spacing:-.01em;}
+.lens-body{font-size:13px;color:var(--t2);line-height:1.7;}
+.lens-points{list-style:none;margin-top:14px;display:flex;flex-direction:column;gap:9px;}
+.lens-points li{font-size:13px;color:var(--t2);display:flex;gap:10px;line-height:1.55;}
+.lens-points li::before{content:'→';color:var(--amber);flex:none;font-family:var(--mono);font-size:11px;margin-top:1px;}
+.lens-points li strong{color:var(--t1);font-weight:500;}
+
+/* FOOTER */
+.brief-footer{border-top:1px solid var(--border);padding-top:24px;margin-top:36px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:gap;}
+.footer-cta-block{}
+.footer-cta-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--t3);margin-bottom:8px;}
+.footer-cta-h{font-size:15px;font-weight:600;color:var(--t1);margin-bottom:14px;line-height:1.3;}
+.btn-cta{display:inline-block;background:var(--amber);color:#07090f;font-size:13px;font-weight:700;padding:10px 22px;border-radius:4px;text-decoration:none;font-family:var(--body);}
+.footer-brand{text-align:right;}
+.footer-logo{font-family:var(--display);font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--t2);}
+.footer-logo span{color:var(--amber);}
+.footer-tag{font-size:11px;color:var(--t3);margin-top:3px;}
+.source-note{font-family:var(--mono);font-size:9px;color:var(--t3);margin-top:16px;line-height:1.6;padding-top:16px;border-top:1px solid var(--border);}
+
+@media(max-width:640px){
+  .page{padding:36px 24px;}
+  .content-grid,.signals{grid-template-columns:1fr;}
+  .stat-row{flex-direction:column;gap:8px;}
+}
+@media print{
+  body{background:#07090f;}
+  .page{padding:40px;}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="brief-header">
+    <div class="brief-type">Proactive Resilience — Industry Case Brief</div>
+    <h1 class="brief-h1">The signals were<br><em>structural.</em><br>Nobody was looking.</h1>
+    <p class="brief-lead">In the months before the Renesas Naka fire, the automotive chip supply base had three documented structural vulnerabilities — visible in public data. No manufacturer had built the visibility to see them together. The fire turned structural fragility into a six-month global production crisis.</p>
+    <div class="brief-meta">
+      <div class="meta-item"><strong>Event</strong>Renesas Naka Factory Fire</div>
+      <div class="meta-item"><strong>Date</strong>March 19, 2021</div>
+      <div class="meta-item"><strong>Sector</strong>Automotive semiconductors</div>
+      <div class="meta-item"><strong>Case type</strong>Proactive — missed structural signals</div>
+    </div>
+  </div>
+
+  <!-- WHAT HAPPENED -->
+  <div class="section">
+    <div class="section-label">What happened</div>
+    <h2 class="section-h">A fire. A 30% market share. A six-month crisis.</h2>
+    <p class="section-body">At 2:47am on March 19, 2021, an electrical fault caused a fire in the N3 Building of Renesas Electronics' Naka factory in Ibaraki, Japan. Twenty-three fabrication machines were destroyed or damaged. Two-thirds of the facility's output served automotive customers. Renesas held approximately 30% of the global automotive microcontroller market.</p>
+    <p class="section-body">The restart timeline extended beyond three months. The financial impact declared by Renesas was approximately ¥17 billion per month during the halt. The broader industry effect contributed to an estimated $210 billion in lost automotive revenue across 2021.</p>
+  </div>
+
+  <!-- STAT ROW -->
+  <div class="stat-row">
+    <div class="stat-block">
+      <div class="stat-num">30%</div>
+      <div class="stat-lbl">Renesas share of global automotive MCU market</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-num">3+ mo</div>
+      <div class="stat-lbl">Restart timeline for the Naka N3 facility</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-num">¥17B</div>
+      <div class="stat-lbl">Monthly financial impact during the halt</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-num">$210B</div>
+      <div class="stat-lbl">Estimated automotive revenue lost in 2021</div>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="section">
+    <div class="section-label">The sequence</div>
+    <h2 class="section-h">How the weeks unfolded</h2>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot amber">S1</div>
+        <div class="tl-content">
+          <div class="tl-date">February 2021 — One month prior</div>
+          <div class="tl-text"><strong>Earthquake disrupts Naka production for three days.</strong> The same facility. A documented precursor event that depleted chip stocks further and demonstrated the seismic exposure of this specific geography. Widely reported. Not structurally acted on by OEMs.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot amber">S2</div>
+        <div class="tl-content">
+          <div class="tl-date">Pre-existing — Documented structural condition</div>
+          <div class="tl-text"><strong>Over 75% of chip production concentrated in East Asia.</strong> Automotive MCU fabrication for Japanese and European OEMs was concentrated in a single seismically active region. No qualified alternate fabrication path existed at Tier 3–4 for most affected vehicles.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot amber">S3</div>
+        <div class="tl-content">
+          <div class="tl-date">Pre-existing — Documented structural condition</div>
+          <div class="tl-text"><strong>Automotive MCU components have a single source.</strong> KPMG's semiconductor supply chain analysis (2021) confirmed: "Many components have a single source and contracts have strict quality requirements. All these factors limit supply-chain flexibility in a shortage." Zero dual-source qualification existed for most critical MCU nodes.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot red">!</div>
+        <div class="tl-content">
+          <div class="tl-date">March 19, 2021 — T₀</div>
+          <div class="tl-text"><strong>Fire at Naka N3 Building.</strong> 23 machines destroyed. Production halted. Distributor inventory estimated at one month. Recovery timeline: three months minimum.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot dim">→</div>
+        <div class="tl-content">
+          <div class="tl-date">March 22, 2021 — Three days later</div>
+          <div class="tl-text"><strong>OEM response begins.</strong> Toyota, Honda, Nissan, and Volkswagen publicly stated they were "gathering information to assess the impact." Volkswagen confirmed it had no direct supply agreements with semiconductor makers — its Tier 1 layer had completely obscured the dependency. The war room opened three days after the event.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THREE SIGNALS -->
+  <div class="section">
+    <div class="section-label">The structural signals — available before the event</div>
+    <h2 class="section-h">Three flags. All in public data. None connected.</h2>
+    <div class="signals">
+      <div class="signal-card">
+        <div class="signal-icon">◈</div>
+        <div class="signal-label">Geographic single-point concentration</div>
+        <div class="signal-body">Automotive MCU fabrication for European and Japanese OEMs concentrated in one seismically active region. A geographic concentration analysis at material node level would have flagged this corridor as a structural single-point-of-failure.</div>
+      </div>
+      <div class="signal-card">
+        <div class="signal-icon">◈</div>
+        <div class="signal-label">30% market share — one facility</div>
+        <div class="signal-body">A single fabrication facility producing 30% of global automotive MCU supply is a structural diamond node by definition. Eight-level supply graph analysis surfaces this immediately. Tier 1 supplier scorecards do not.</div>
+      </div>
+      <div class="signal-card">
+        <div class="signal-icon">◈</div>
+        <div class="signal-label">Prior seismic event — same facility</div>
+        <div class="signal-body">February 2021: an earthquake disrupted Naka production for three days, depleting buffer stocks. This was a documented precursor. A TTR-aware supply intelligence platform would have elevated the risk score on this node in response to that event — one month before the fire.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ECC LENS -->
+  <div class="ecc-lens">
+    <div class="lens-label">The ECC lens — what proactive intelligence surfaces</div>
+    <h2 class="lens-h">What a manufacturer with eight-level visibility would have seen</h2>
+    <p class="lens-body">ECC's proactive layer maps the supply chain to Tier 8 — the raw material and processing node level — and applies dual-node scoring across both supplier and material nodes simultaneously. Applied to an automotive MCU dependency graph, it would have produced the following outputs months before March 19:</p>
+    <ul class="lens-points">
+      <li><strong>Geographic concentration flag:</strong> Automotive MCU processing nodes concentrated in Ibaraki / Central Japan — seismically active, zero qualified alternate processing geography at Tier 3–4.</li>
+      <li><strong>Diamond pattern identification:</strong> Renesas Naka identified as a Type B convergence node — single facility on the supply path for multiple powertrain, ADAS, and infotainment assemblies simultaneously.</li>
+      <li><strong>TTR elevation after February earthquake:</strong> Computed TTR for this node would have increased following the February disruption, reflecting depleted buffer stock and demonstrated seismic vulnerability at the same site.</li>
+      <li><strong>Prescriptive output:</strong> Dual-source qualification pathway, alternate fabrication geography assessment, and buffer pre-build recommendation — generated before the crisis, not during it.</li>
+    </ul>
+  </div>
+
+  <!-- TWO-COLUMN CONTRAST -->
+  <div class="content-grid">
+    <div class="content-card accent-amber">
+      <div class="card-label">Without proactive intelligence</div>
+      <h3 class="card-h">What actually happened</h3>
+      <p class="card-body">OEMs had no sub-tier visibility. The fire was an unknown unknown — not a risk that had been assessed and accepted, but one that was structurally invisible. Three days after the event, manufacturers were still gathering information. The response was reactive, slow, and expensive. The three-month halt compounded into a six-month industry-wide shortage.</p>
+    </div>
+    <div class="content-card accent-blue">
+      <div class="card-label">With proactive intelligence</div>
+      <h3 class="card-h">What was possible</h3>
+      <p class="card-body">The structural signals were present in the month before the fire. A manufacturer with eight-level supply visibility and geographic concentration analysis would have had this node flagged as a structural single-point-of-failure. Dual-source qualification or buffer pre-build could have been initiated before the event. The response window was not zero — it was compressed to near-zero by the absence of sub-tier visibility.</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="brief-footer">
+    <div class="footer-cta-block">
+      <div class="footer-cta-label">See your supply chain's structural exposure</div>
+      <div class="footer-cta-h">ECC maps your supply chain to Tier 8.<br>In a 4–6 week pilot. One plant. One vehicle line.</div>
+      <a class="btn-cta" href="https://www.ecocomitychain.ai/#pilot">Request Pilot Access →</a>
+    </div>
+    <div class="footer-brand">
+      <div class="footer-logo">Ecocomity<span>Chain</span>.AI</div>
+      <div class="footer-tag">Value Chain Intelligence</div>
+    </div>
+  </div>
+
+  <div class="source-note">
+    Sources: Renesas Electronics press releases (March 2021) · The Register (March 2021) · Insurance Journal / Reuters (March 2021) · Embedded Computing Design (March 2021) · KPMG "Surviving the Silicon Storm" (October 2021) · AlixPartners automotive industry impact forecast (February 2021) · S&amp;P Global Mobility semiconductor shortage analysis. All financial and operational figures are from published public sources. The ECC analysis lens is applied to publicly documented facts and represents ECC's interpretation of what structured sub-tier visibility would have surfaced — not a customer case study.
+  </div>
+
+</div>
+</body>
+</html>

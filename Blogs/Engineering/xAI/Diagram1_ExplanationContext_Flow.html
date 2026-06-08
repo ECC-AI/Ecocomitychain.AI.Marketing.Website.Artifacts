@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECC PMG · ExplanationContext Flow</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #07090f; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 48px 24px; }
+.canvas { width: 1100px; background: #07090f; }
+svg { width: 100%; height: auto; color: #ffffff; }
+:root { --font-mono: "Space Mono", monospace; }
+
+text.t  { font-family: "Space Grotesk", sans-serif; font-size: 14px; fill: #dde2f0; }
+text.ts { font-family: "Space Grotesk", sans-serif; font-size: 12px; fill: #8898b8; }
+text.th { font-family: "Space Grotesk", sans-serif; font-size: 14px; font-weight: 600; fill: #dde2f0; }
+
+rect.box { fill: #0d1117; stroke: rgba(255,255,255,0.1); }
+line.arr, path.arr { stroke: #4a5570; stroke-width: 1.5; fill: none; }
+
+.c-amber > rect  { fill: rgba(236,160,48,0.1); stroke: #eca030; }
+.c-amber > text.th { fill: #f0c060; }
+.c-amber > text.ts { fill: #eca030; }
+
+.c-gray > rect   { fill: rgba(255,255,255,0.04); stroke: rgba(255,255,255,0.2); }
+.c-gray > text.th { fill: #c0c8d8; }
+.c-gray > text.ts { fill: #8898b8; }
+
+.c-purple > rect { fill: rgba(107,88,255,0.1); stroke: #6b58ff; }
+.c-purple > text.th { fill: #a899ff; }
+.c-purple > text.ts { fill: #8878ff; }
+
+.c-teal > rect   { fill: rgba(15,156,122,0.1); stroke: #0f9c7a; }
+.c-teal > text.th { fill: #5dcaa5; }
+.c-teal > text.ts { fill: #3aaa8a; }
+
+.c-coral > rect  { fill: rgba(224,80,80,0.1); stroke: #e06050; }
+.c-coral > text.th { fill: #f09080; }
+.c-coral > text.ts { fill: #e07060; }
+
+.c-blue > rect   { fill: rgba(58,160,216,0.1); stroke: #3aa0d8; }
+.c-blue > text.th { fill: #8acce8; }
+.c-blue > text.ts { fill: #3aa0d8; }
+</style>
+</head>
+<body>
+<div class="canvas">
+<svg viewBox="0 0 680 632" role="img">
+<title>ExplanationContext accumulation flow</title>
+<desc>Pipeline showing ExplanationContext accumulating reasoning steps across three engines before the ExplainabilityEngine renders two output formats.</desc>
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+</defs>
+
+<text class="th" x="340" y="20" text-anchor="middle" dominant-baseline="central">ExplanationContext flow</text>
+<text class="ts" x="340" y="38" text-anchor="middle" dominant-baseline="central">One accumulator object, threaded through every engine · append-only</text>
+
+<g class="c-amber">
+<rect x="32" y="52" width="185" height="60" rx="6" stroke-width="0.5"/>
+<text class="th" x="124" y="75" text-anchor="middle" dominant-baseline="central">DerivedProperties</text>
+<text class="ts" x="124" y="95" text-anchor="middle" dominant-baseline="central">Engine</text>
+</g>
+
+<line x1="217" y1="82" x2="241" y2="82" class="arr" marker-end="url(#a)"/>
+
+<g class="c-gray">
+<rect x="241" y="52" width="198" height="60" rx="6" stroke-width="0.5"/>
+<text class="th" x="340" y="75" text-anchor="middle" dominant-baseline="central">TTRPICalculator</text>
+<text class="ts" x="340" y="95" text-anchor="middle" dominant-baseline="central">TTR &amp; PI computation</text>
+</g>
+
+<line x1="439" y1="82" x2="463" y2="82" class="arr" marker-end="url(#a)"/>
+
+<g class="c-purple">
+<rect x="463" y="52" width="185" height="60" rx="6" stroke-width="0.5"/>
+<text class="th" x="555" y="75" text-anchor="middle" dominant-baseline="central">RiskSeverity</text>
+<text class="ts" x="555" y="95" text-anchor="middle" dominant-baseline="central">Engine</text>
+</g>
+
+<line x1="124" y1="112" x2="124" y2="152" class="arr" marker-end="url(#a)"/>
+<text class="ts" x="133" y="132" dominant-baseline="central">+2 steps</text>
+<line x1="340" y1="112" x2="340" y2="152" class="arr" marker-end="url(#a)"/>
+<text class="ts" x="349" y="132" dominant-baseline="central">+2 steps</text>
+<line x1="555" y1="112" x2="555" y2="152" class="arr" marker-end="url(#a)"/>
+<text class="ts" x="564" y="132" dominant-baseline="central">+6 steps</text>
+
+<rect class="box" x="15" y="152" width="650" height="195" rx="8" stroke-width="0.5"/>
+<text class="th" x="340" y="168" text-anchor="middle" dominant-baseline="central">ExplanationContext</text>
+
+<line x1="235" y1="162" x2="235" y2="342" stroke="currentColor" stroke-width="0.5" stroke-dasharray="4 3" opacity="0.2"/>
+<line x1="450" y1="162" x2="450" y2="342" stroke="currentColor" stroke-width="0.5" stroke-dasharray="4 3" opacity="0.2"/>
+
+<text class="ts" x="124" y="184" text-anchor="middle" dominant-baseline="central">DerivedPropertiesEngine</text>
+<g class="c-amber">
+<rect x="28" y="194" width="200" height="20" rx="4" stroke-width="0.5"/>
+<text class="ts" x="128" y="204" text-anchor="middle" dominant-baseline="central">geo_concentration &gt; 0.80 ↑</text>
+</g>
+<g class="c-amber">
+<rect x="28" y="218" width="200" height="20" rx="4" stroke-width="0.5"/>
+<text class="ts" x="128" y="228" text-anchor="middle" dominant-baseline="central">diamond_pattern ↑ SPOF</text>
+</g>
+
+<text class="ts" x="340" y="184" text-anchor="middle" dominant-baseline="central">TTRPICalculator</text>
+<g class="c-blue">
+<rect x="244" y="194" width="200" height="20" rx="4" stroke-width="0.5"/>
+<text class="ts" x="344" y="204" text-anchor="middle" dominant-baseline="central">inherited TTR = 14 wk →</text>
+</g>
+<g class="c-blue">
+<rect x="244" y="218" width="200" height="20" rx="4" stroke-width="0.5"/>
+<text class="ts" x="344" y="228" text-anchor="middle" dominant-baseline="central">exposure: +8 wk past JIT →</text>
+</g>
+
+<text class="ts" x="555" y="184" text-anchor="middle" dominant-baseline="central">RiskSeverityEngine</text>
+<g class="c-amber">
+<rect x="458" y="194" width="198" height="20" rx="4" stroke-width="0.5"/>
+<text class="ts" x="557" y="204" text-anchor="middle" dominant-baseline="central">Financial Health: 0.53 ↑</text>
+</g>
+<g class="c-amber">
+<rect x="458" y="218" width="198" height="20" rx="4" stroke-width="0.5"/>
+<text class="ts" x="557" y="228" text-anchor="middle" dominant-baseline="central">Geo Concentration: 0.65 ↑</text>
+</g>
+<g class="c-gray">
+<rect x="458" y="242" width="198" height="20" rx="4" stroke-width="0.5"/>
+<text class="ts" x="557" y="252" text-anchor="middle" dominant-baseline="central">Mfg Quality: 0.12 —</text>
+</g>
+<g class="c-amber">
+<rect x="458" y="266" width="198" height="20" rx="4" stroke-width="0.5"/>
+<text class="ts" x="557" y="276" text-anchor="middle" dominant-baseline="central">Dependency Impact: 0.45 ↑</text>
+</g>
+<g class="c-blue">
+<rect x="458" y="290" width="198" height="20" rx="4" stroke-width="0.5"/>
+<text class="ts" x="557" y="300" text-anchor="middle" dominant-baseline="central">Final verdict: CRITICAL →</text>
+</g>
+
+<text class="ts" x="340" y="336" text-anchor="middle" dominant-baseline="central" opacity="0.5">10–12 steps (deterministic) · 40+ steps with agentic tariff layer</text>
+
+<line x1="340" y1="347" x2="340" y2="390" class="arr" marker-end="url(#a)"/>
+<text class="ts" x="350" y="368" dominant-baseline="central">ctx passed →</text>
+
+<g class="c-teal">
+<rect x="190" y="390" width="300" height="62" rx="6" stroke-width="0.5"/>
+<text class="th" x="340" y="412" text-anchor="middle" dominant-baseline="central">ExplainabilityEngine</text>
+<text class="ts" x="340" y="432" text-anchor="middle" dominant-baseline="central">LLM: renderer, not reasoner</text>
+</g>
+
+<line x1="340" y1="452" x2="340" y2="474" stroke="currentColor" stroke-width="1" opacity="0.4"/>
+<line x1="173" y1="474" x2="508" y2="474" stroke="currentColor" stroke-width="1" opacity="0.4"/>
+<line x1="173" y1="474" x2="173" y2="498" class="arr" marker-end="url(#a)"/>
+<line x1="508" y1="474" x2="508" y2="498" class="arr" marker-end="url(#a)"/>
+
+<g class="c-coral">
+<rect x="15" y="498" width="315" height="104" rx="8" stroke-width="0.5"/>
+<text class="th" x="172" y="520" text-anchor="middle" dominant-baseline="central">to_llm_prompt()</text>
+<text class="ts" x="172" y="540" text-anchor="middle" dominant-baseline="central">→ GPT-4.1 (temp = 0.2)</text>
+<text class="ts" x="172" y="558" text-anchor="middle" dominant-baseline="central">→ NL summary for UI panel</text>
+<text class="ts" x="172" y="578" text-anchor="middle" dominant-baseline="central">Human-readable prose</text>
+</g>
+
+<g class="c-blue">
+<rect x="350" y="498" width="315" height="104" rx="8" stroke-width="0.5"/>
+<text class="th" x="507" y="520" text-anchor="middle" dominant-baseline="central">to_rag_chunk()</text>
+<text class="ts" x="507" y="540" text-anchor="middle" dominant-baseline="central">→ Structured tagged text</text>
+<text class="ts" x="507" y="558" text-anchor="middle" dominant-baseline="central">→ Vector store indexing</text>
+<text class="ts" x="507" y="578" text-anchor="middle" dominant-baseline="central">Copilot RAG grounding</text>
+</g>
+
+<text class="ts" x="340" y="618" text-anchor="middle" dominant-baseline="central" opacity="0.45">↑ INCREASES_RISK (amber) · → SETS_CONTEXT (blue) · — NEUTRAL (gray)</text>
+</svg>
+</div>
+</body>
+</html>

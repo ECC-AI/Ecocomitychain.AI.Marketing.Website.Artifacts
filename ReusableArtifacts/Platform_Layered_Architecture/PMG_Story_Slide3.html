@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PMG Platform — The Depth Advantage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:      #07060a;
+    --ink:     #f4f2f8;
+    --ink-dim: #b9b4c7;
+    --c-blue:   #3aa0d8;
+    --c-purple: #b06bff;
+    --c-amber:  #eca030;
+    --c-green:  #32d282;
+    --c-red:    #e05050;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: #000; overflow: hidden;
+    font-family: "Space Grotesk", system-ui, sans-serif;
+  }
+  #viewport {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: #000;
+  }
+  #stage {
+    width: 1920px; height: 1080px;
+    transform-origin: center center;
+    position: relative; flex: none;
+  }
+
+  /* ── Slide base ─────────────────────────────────────────────────────── */
+  .slide {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(120% 80% at 50% -10%, rgba(124,92,255,.08), transparent 55%),
+      radial-gradient(90%  70% at 50% 120%, rgba(31,200,192,.06), transparent 60%),
+      var(--bg);
+    overflow: hidden; color: var(--ink);
+  }
+  .slide::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(130% 100% at 50% 45%, transparent 58%, rgba(0,0,0,.52));
+  }
+
+  /* ── Header ─────────────────────────────────────────────────────────── */
+  .header {
+    position: absolute; top: 46px; left: 0; right: 0;
+    display: flex; flex-direction: column; align-items: center;
+    z-index: 10; text-align: center;
+  }
+  .title-glow {
+    position: absolute; top: -120px; left: 50%; transform: translateX(-50%);
+    width: 1300px; height: 420px; border-radius: 50%;
+    filter: blur(95px); opacity: .34; pointer-events: none; z-index: -1;
+    background: conic-gradient(from 200deg,
+      #7c5cff, #f0428c, #ff6a3d, #ffb23d, #1fc8c0, #4da6ff, #7c5cff);
+  }
+  .tag {
+    font-family: "Space Mono", monospace;
+    font-size: 17px; letter-spacing: .26em; text-transform: uppercase;
+    color: var(--ink-dim); padding: 8px 18px;
+    border: 1px solid rgba(190,180,220,.28); border-radius: 999px;
+    margin-bottom: 18px; background: rgba(255,255,255,.02);
+  }
+  .title { font-size: 72px; font-weight: 700; line-height: .96; letter-spacing: -.025em; margin: 0; }
+  .title .l-a { color: var(--ink); }
+  .title .l-b { color: var(--ink-dim); font-weight: 500; font-size: 42px; }
+
+  /* ── Story grid ─────────────────────────────────────────────────────── */
+  .stories {
+    position: absolute;
+    left: 44px; right: 44px; top: 256px;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    height: 770px; z-index: 5;
+  }
+
+  /* ── Story card base ────────────────────────────────────────────────── */
+  .story-card {
+    background: rgba(12,11,18,.84);
+    border-radius: 14px; padding: 26px 28px;
+    border-top: 2px solid var(--story-col);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .s1 { --story-col: var(--c-amber); }
+  .s2 { --story-col: var(--c-purple); }
+  .s3 { --story-col: var(--c-blue); }
+
+  .card-source {
+    font-family: "Space Mono", monospace;
+    font-size: 10px; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--story-col); opacity: .65; margin-bottom: 10px;
+  }
+  .card-title {
+    font-size: 30px; font-weight: 700; color: var(--ink);
+    line-height: 1.1; margin: 0 0 10px;
+  }
+  .card-setup {
+    font-size: 16px; color: var(--ink-dim); line-height: 1.55; margin-bottom: 14px;
+  }
+  .card-rule {
+    height: 1px; background: rgba(190,180,220,.1); margin-bottom: 16px; flex: none;
+  }
+  .card-spacer { flex: 1; min-height: 12px; }
+  .killer-line {
+    font-family: "Space Mono", monospace;
+    font-size: 16px; font-style: italic; color: var(--ink);
+    line-height: 1.5; border-left: 2px solid var(--story-col);
+    padding-left: 14px; margin-bottom: 10px;
+  }
+  .card-cite {
+    font-family: "Space Mono", monospace;
+    font-size: 10px; color: rgba(185,180,199,.3); letter-spacing: .06em;
+  }
+
+  /* ── Story 01 — Cascade ─────────────────────────────────────────────── */
+  .cascade-wrap { margin-bottom: 13px; }
+  .cascade-trigger {
+    font-family: "Space Mono", monospace; font-size: 11px;
+    letter-spacing: .12em; text-transform: uppercase;
+    color: rgba(236,160,48,.6); margin-bottom: 10px;
+  }
+  .cascade-flow {
+    display: flex; align-items: stretch; gap: 6px; margin-bottom: 12px;
+  }
+  .cascade-node {
+    flex: 1; background: rgba(236,160,48,.07);
+    border: 1px solid rgba(236,160,48,.18); border-radius: 8px;
+    padding: 9px 6px; text-align: center;
+  }
+  .cn-level {
+    font-family: "Space Mono", monospace; font-size: 9px;
+    letter-spacing: .15em; text-transform: uppercase;
+    color: rgba(236,160,48,.5); margin-bottom: 4px;
+  }
+  .cn-label {
+    font-size: 12px; font-weight: 600; color: var(--ink-dim); line-height: 1.25;
+  }
+  .c-arrow {
+    color: rgba(236,160,48,.28); font-size: 18px;
+    display: flex; align-items: center; flex: none; padding: 0 1px;
+  }
+  .assy-row {
+    display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 11px;
+  }
+  .assy-row-label {
+    font-family: "Space Mono", monospace; font-size: 10px;
+    letter-spacing: .12em; text-transform: uppercase;
+    color: rgba(185,180,199,.38); margin-bottom: 6px; width: 100%;
+  }
+  .assy-chip {
+    font-family: "Space Mono", monospace; font-size: 10px;
+    letter-spacing: .08em; text-transform: uppercase;
+    color: rgba(236,160,48,.72); background: rgba(236,160,48,.07);
+    border: 1px solid rgba(236,160,48,.17); border-radius: 4px; padding: 3px 8px;
+  }
+  .alt-path-box {
+    background: rgba(50,210,130,.05); border: 1px solid rgba(50,210,130,.18);
+    border-radius: 8px; padding: 9px 13px;
+  }
+  .alt-tag {
+    font-family: "Space Mono", monospace; font-size: 10px;
+    letter-spacing: .16em; text-transform: uppercase;
+    color: rgba(50,210,130,.58); margin-bottom: 3px;
+  }
+  .alt-val { font-size: 14px; color: rgba(50,210,130,.85); }
+
+  /* ── Story 02 — Two paths ───────────────────────────────────────────── */
+  .trigger-banner {
+    background: rgba(176,107,255,.06); border: 1px solid rgba(176,107,255,.15);
+    border-radius: 6px; padding: 8px 12px; margin-bottom: 12px;
+    font-family: "Space Mono", monospace; font-size: 11px; letter-spacing: .08em;
+    color: rgba(176,107,255,.7); line-height: 1.4;
+  }
+  .paths { display: flex; flex-direction: column; gap: 9px; }
+  .path-row {
+    border-radius: 8px; padding: 11px 13px;
+    display: flex; flex-direction: column; gap: 5px;
+  }
+  .path-row.manageable {
+    background: rgba(50,210,130,.05); border-left: 3px solid rgba(50,210,130,.38);
+  }
+  .path-row.critical {
+    background: rgba(220,60,60,.07); border-left: 3px solid rgba(220,60,60,.42);
+  }
+  .path-head { display: flex; align-items: center; gap: 10px; }
+  .path-label-tag {
+    font-family: "Space Mono", monospace; font-size: 10px;
+    letter-spacing: .16em; text-transform: uppercase; color: var(--ink-dim);
+  }
+  .path-status {
+    font-family: "Space Mono", monospace; font-size: 10px; letter-spacing: .14em;
+    text-transform: uppercase; padding: 2px 8px; border-radius: 4px;
+  }
+  .path-status.ok {
+    color: rgba(50,210,130,.85); background: rgba(50,210,130,.1);
+    border: 1px solid rgba(50,210,130,.2);
+  }
+  .path-status.crit {
+    color: rgba(220,80,80,.9); background: rgba(220,60,60,.1);
+    border: 1px solid rgba(220,60,60,.22);
+  }
+  .path-chain { font-size: 14px; color: var(--ink-dim); line-height: 1.45; }
+  .path-note {
+    font-family: "Space Mono", monospace; font-size: 11px;
+    letter-spacing: .05em; color: rgba(185,180,199,.38); font-style: italic;
+  }
+  .path-insight {
+    margin-top: 10px; padding: 8px 12px;
+    background: rgba(190,180,220,.04); border-radius: 6px;
+    font-size: 14px; font-style: italic; color: rgba(185,180,199,.48);
+  }
+
+  /* ── Story 03 — Comparison table ────────────────────────────────────── */
+  .l4-note {
+    background: rgba(255,255,255,.035); border-radius: 6px;
+    padding: 8px 12px; margin-bottom: 14px;
+    font-size: 14px; font-style: italic; color: rgba(185,180,199,.48);
+    border-left: 3px solid rgba(190,180,220,.18);
+  }
+  .comp-table {
+    width: 100%; border-collapse: collapse; font-size: 14px;
+  }
+  .comp-table th {
+    font-family: "Space Mono", monospace; font-size: 10px;
+    letter-spacing: .14em; text-transform: uppercase;
+    color: rgba(185,180,199,.45); padding: 7px 10px; text-align: left;
+    border-bottom: 1px solid rgba(190,180,220,.1);
+  }
+  .comp-table td {
+    padding: 7px 10px; border-bottom: 1px solid rgba(190,180,220,.05);
+    color: rgba(185,180,199,.62); line-height: 1.35;
+  }
+  .comp-table td.worse {
+    color: var(--c-amber); font-weight: 600;
+  }
+  .comp-table td.neutral { color: rgba(185,180,199,.42); }
+  .comp-table tbody tr:last-child td { border-bottom: none; }
+
+  /* ── Citations footer ───────────────────────────────────────────────── */
+  .citations {
+    position: absolute; bottom: 13px; left: 48px; right: 48px;
+    display: flex; gap: 36px; justify-content: center;
+    font-family: "Space Mono", monospace; font-size: 11px;
+    letter-spacing: .06em; color: rgba(185,180,199,.22);
+  }
+</style>
+</head>
+<body>
+<div id="viewport">
+  <div id="stage">
+    <div class="slide">
+
+      <!-- ── Header ──────────────────────────────────────────────────── -->
+      <div class="header">
+        <div class="title-glow"></div>
+        <span class="tag">ECC · Risk Analytics</span>
+        <h1 class="title">
+          <span class="l-a">The Depth Advantage</span><br>
+          <span class="l-b">Three scenarios only material genealogy can answer</span>
+        </h1>
+      </div>
+
+      <!-- ── Story cards ─────────────────────────────────────────────── -->
+      <div class="stories">
+
+        <!-- ══ STORY 01: The Bastnäsite Disruption ══ -->
+        <div class="story-card s1">
+          <div class="card-source">PMG Analysis · European BEV Archetype &nbsp;¹</div>
+          <div class="card-title">The Bastnäsite Disruption</div>
+          <div class="card-setup">China announces rare earth export controls. Every supplier tool in the market flags Supplier X. None of them can answer what comes next.</div>
+          <div class="card-rule"></div>
+
+          <!-- Cascade flow -->
+          <div class="cascade-wrap">
+            <div class="cascade-trigger">Graph query — impact cascade in modelled BOM</div>
+            <div class="cascade-flow">
+              <div class="cascade-node">
+                <div class="cn-level">L8</div>
+                <div class="cn-label">Bastnäsite</div>
+              </div>
+              <div class="c-arrow">→</div>
+              <div class="cascade-node">
+                <div class="cn-level">L7</div>
+                <div class="cn-label">RE Oxides</div>
+              </div>
+              <div class="c-arrow">→</div>
+              <div class="cascade-node">
+                <div class="cn-level">L6</div>
+                <div class="cn-label">RE Metals</div>
+              </div>
+              <div class="c-arrow">→</div>
+              <div class="cascade-node">
+                <div class="cn-level">L5+</div>
+                <div class="cn-label">NdFeB Materials</div>
+              </div>
+            </div>
+
+            <!-- Assemblies affected -->
+            <div class="assy-row">
+              <div class="assy-row-label">Assemblies affected in modelled BOM</div>
+              <span class="assy-chip">Motor</span>
+              <span class="assy-chip">HVAC</span>
+              <span class="assy-chip">Steering</span>
+              <span class="assy-chip">Seats</span>
+              <span class="assy-chip">Lighting</span>
+              <span class="assy-chip">Infotainment</span>
+              <span class="assy-chip">HV Wiring</span>
+            </div>
+
+            <!-- Alternate path -->
+            <div class="alt-path-box">
+              <div class="alt-tag">Alternate path — already modelled in graph</div>
+              <div class="alt-val">Monazite ore &nbsp;·&nbsp; Australia &amp; India &nbsp;·&nbsp; qualification path computed</div>
+            </div>
+          </div>
+
+          <div class="card-spacer"></div>
+          <div class="killer-line">"The alternative was already in our graph. We just needed to see it."</div>
+          <div class="card-cite">¹ USGS Mineral Commodity Summaries 2024 — Rare Earth Elements; China accounts for &gt;85% of global RE mine production</div>
+        </div>
+
+        <!-- ══ STORY 02: The Manganese Squeeze ══ -->
+        <div class="story-card s2">
+          <div class="card-source">PMG Analysis · European BEV Archetype &nbsp;² ³</div>
+          <div class="card-title">The Manganese Squeeze</div>
+          <div class="card-setup">A South Africa port disruption threatens a significant share of global manganese ore supply. The supplier tool flags the steel exposure. One path is visible. One is not.</div>
+          <div class="card-rule"></div>
+
+          <!-- Trigger -->
+          <div class="trigger-banner">South Africa port disruption &nbsp;·&nbsp; Global Mn ore supply materially affected &nbsp;·&nbsp; Same ore, two completely independent supply paths ²</div>
+
+          <!-- Two paths -->
+          <div class="paths">
+            <div class="path-row manageable">
+              <div class="path-head">
+                <span class="path-label-tag">Path A</span>
+                <span class="path-status ok">Manageable</span>
+              </div>
+              <div class="path-chain">Mn Ore → Ferromanganese → Steel → Multiple structural assemblies</div>
+              <div class="path-note">Grade substitution available — alternate steels pre-qualified in graph</div>
+            </div>
+            <div class="path-row critical">
+              <div class="path-head">
+                <span class="path-label-tag">Path B</span>
+                <span class="path-status crit">Critical</span>
+              </div>
+              <div class="path-chain">Mn Ore → Manganese Sulphate → NMC Cathode → Battery System</div>
+              <div class="path-note">No alternative source qualified &nbsp;·&nbsp; full BEV range exposure &nbsp;·&nbsp; invisible to supplier-level tools</div>
+            </div>
+          </div>
+          <div class="path-insight">Path A is visible to every tool in the market. Path B requires a connected material graph to see.</div>
+
+          <div class="card-spacer"></div>
+          <div class="killer-line">"The risk was the same ore. The exposure was in a place nobody thought to look."</div>
+          <div class="card-cite">² USGS 2024 — South Africa: &gt;30% of global Mn ore production · ³ Argonne GREET 2023 — NMC cathode precursor: MnSO₄ sourcing pathways</div>
+        </div>
+
+        <!-- ══ STORY 03: The Substitution Trap ══ -->
+        <div class="story-card s3">
+          <div class="card-source">PMG Analysis · European BEV Archetype &nbsp;⁴</div>
+          <div class="card-title">The Substitution Trap</div>
+          <div class="card-setup">Engineering proposes replacing NdFeB with SmCo magnets in the EPS motor — citing comparable magnetic properties and reduced China exposure. PMG runs the L8 comparison.</div>
+          <div class="card-rule"></div>
+
+          <!-- L4 note -->
+          <div class="l4-note">At component level (L4): "Comparable magnetic properties — substitution appears viable."</div>
+
+          <!-- Comparison table -->
+          <table class="comp-table">
+            <thead>
+              <tr>
+                <th>At L8</th>
+                <th>NdFeB (current)</th>
+                <th>SmCo (proposed)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>China supply concentration</td>
+                <td class="neutral">~60%</td>
+                <td class="worse">~90% &nbsp;↑</td>
+              </tr>
+              <tr>
+                <td>Mass required, same torque</td>
+                <td class="neutral">1×</td>
+                <td class="worse">~2.3× &nbsp;↑</td>
+              </tr>
+              <tr>
+                <td>Source ore overlap</td>
+                <td class="neutral">—</td>
+                <td class="worse">Same families</td>
+              </tr>
+              <tr>
+                <td>Alternative ore sources</td>
+                <td class="neutral">More</td>
+                <td class="worse">Fewer &nbsp;↑</td>
+              </tr>
+              <tr>
+                <td>Carbon intensity</td>
+                <td class="neutral">Baseline</td>
+                <td class="worse">Higher &nbsp;↑</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="card-spacer"></div>
+          <div class="killer-line">"The substitution looked safe at the component level. The supply chain told a different story at the mine."</div>
+          <div class="card-cite">⁴ DOE Critical Materials Assessment 2023 — Sm-Co supply chain; USGS 2024 — Samarium mine production by country</div>
+        </div>
+
+      </div><!-- end .stories -->
+
+      <!-- ── Citations footer ─────────────────────────────────────────── -->
+      <div class="citations">
+        <span>¹ USGS Mineral Commodity Summaries 2024 — Rare Earth Elements</span>
+        <span>² USGS 2024 — Manganese</span>
+        <span>³ Argonne GREET 2023 — NMC Cathode Precursors</span>
+        <span>⁴ DOE Critical Materials Assessment 2023 — Samarium-Cobalt</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var stage = document.getElementById('stage');
+    function fit() {
+      var s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+      stage.style.transform = 'scale(' + s + ')';
+    }
+    window.addEventListener('resize', fit);
+    fit();
+  })();
+</script>
+</body>
+</html>

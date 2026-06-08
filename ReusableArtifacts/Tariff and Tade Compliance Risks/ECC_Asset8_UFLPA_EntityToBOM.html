@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECC Asset 8 — UFLPA Entity to BOM Position</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:     #1F4E79;
+    --accent:   #2E75B6;
+    --lightbg:  #DEEAF1;
+    --red:      #C00000;
+    --redbg:    #FBEAEA;
+    --amber:    #7F6000;
+    --amberbg:  #FFF2CC;
+    --teal:     #196060;
+    --tealbg:   #D4EFEF;
+    --green:    #375623;
+    --greenbg:  #E2EFDA;
+    --cobalt:   #003366;
+    --cobaltbg: #D0E4FF;
+    --gray:     #F5F5F5;
+    --mid:      #CCCCCC;
+    --white:    #FFFFFF;
+    --dark:     #1A1A1A;
+    --muted:    #666666;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: #DEDEDE;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px;
+    gap: 24px;
+  }
+
+  .page {
+    width: 794px;
+    background: var(--white);
+    box-shadow: 0 6px 40px rgba(0,0,0,0.18);
+    display: flex;
+    flex-direction: column;
+    min-height: 1020px;
+  }
+
+  /* HEADER */
+  .hdr {
+    background: var(--cobalt);
+    padding: 20px 26px 17px;
+  }
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #9DC3E6;
+    margin-bottom: 8px;
+  }
+  .headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.18;
+    margin-bottom: 8px;
+  }
+  .subhead {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 10.5px;
+    font-weight: 300;
+    font-style: italic;
+    color: #BDD7EE;
+    line-height: 1.5;
+    max-width: 680px;
+  }
+
+  /* STAT TILES */
+  .stat-row {
+    display: flex;
+    width: 100%;
+  }
+  .stat-tile {
+    flex: 1;
+    padding: 14px 18px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .stat-tile.red   { background: var(--red); }
+  .stat-tile.navy  { background: var(--navy); }
+  .stat-tile.amber-dark { background: #7F5000; }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 34px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.72);
+    line-height: 1.4;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* BODY */
+  .body-wrap {
+    padding: 16px 26px 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  /* TWO COLUMN */
+  .two-col {
+    display: flex;
+    gap: 12px;
+  }
+  .col {
+    flex: 1;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .col-header {
+    padding: 7px 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8.5px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+  .col-header.red-hdr  { background: var(--red); color: var(--white); }
+  .col-header.grn-hdr  { background: #4E7A2A; color: var(--white); }
+  .col-body {
+    padding: 10px 12px;
+    font-size: 9.5px;
+    font-weight: 400;
+    line-height: 1.55;
+    color: var(--dark);
+  }
+  .col-body.red-body { background: var(--redbg); border: 1px solid #F4C2C2; border-top: none; }
+  .col-body.grn-body { background: var(--greenbg); border: 1px solid #B8D9A0; border-top: none; }
+  .col-body ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .col-body ul li {
+    padding-left: 14px;
+    position: relative;
+  }
+  .col-body.red-body ul li::before {
+    content: '✗';
+    position: absolute;
+    left: 0;
+    color: var(--red);
+    font-size: 9px;
+    font-weight: 700;
+  }
+  .col-body.grn-body ul li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: #4E7A2A;
+    font-size: 9px;
+    font-weight: 700;
+  }
+  .col-body li strong {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 1px;
+  }
+  .col-body li span {
+    font-size: 8.5px;
+    color: var(--muted);
+  }
+
+  /* CONTRAST TABLE */
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 5px;
+  }
+  table.contrast {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9px;
+  }
+  table.contrast thead tr {
+    background: var(--navy);
+  }
+  table.contrast thead th {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--white);
+    padding: 7px 10px;
+    text-align: left;
+  }
+  table.contrast thead th:nth-child(2),
+  table.contrast thead th:nth-child(3) {
+    text-align: center;
+    width: 200px;
+  }
+  table.contrast tbody tr:nth-child(odd)  { background: var(--gray); }
+  table.contrast tbody tr:nth-child(even) { background: var(--white); }
+  table.contrast tbody td {
+    padding: 6px 10px;
+    font-size: 9px;
+    color: var(--dark);
+    line-height: 1.4;
+    vertical-align: top;
+    border-bottom: 1px solid var(--mid);
+  }
+  table.contrast tbody td:nth-child(2) {
+    text-align: center;
+    color: var(--red);
+    font-weight: 600;
+    font-size: 9px;
+  }
+  table.contrast tbody td:nth-child(3) {
+    text-align: center;
+    color: #375623;
+    font-weight: 600;
+    font-size: 9px;
+  }
+  table.contrast tbody td:nth-child(3) .detail {
+    display: block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7.5px;
+    color: var(--muted);
+    font-weight: 400;
+    margin-top: 2px;
+  }
+  table.contrast tbody td:nth-child(1) {
+    font-weight: 400;
+    color: #333;
+  }
+
+  /* ECC ADVANTAGE CALLOUT */
+  .callout-green {
+    border-left: 4px solid #70AD47;
+    background: var(--greenbg);
+    padding: 10px 14px;
+    border-radius: 0 2px 2px 0;
+  }
+  .callout-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7.5px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #375623;
+    margin-bottom: 4px;
+  }
+  .callout-text {
+    font-size: 9.5px;
+    font-weight: 400;
+    color: var(--dark);
+    line-height: 1.55;
+  }
+  .callout-text strong {
+    font-weight: 700;
+    color: #375623;
+  }
+
+  /* FOOTER */
+  .footer {
+    background: var(--navy);
+    padding: 7px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 2px solid var(--accent);
+    margin-top: auto;
+  }
+  .footer span { line-height: 1; }
+
+  @media print {
+    body { background: none; padding: 0; gap: 0; }
+    .page { box-shadow: none; }
+    @page { size: A4 portrait; margin: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="eyebrow">UFLPA COMPLIANCE INTELLIGENCE · ECC / PMG</div>
+    <div class="headline">"Flagged supplier. 47 BOM positions.<br>8 assemblies. One action."</div>
+    <div class="subhead">Standard platforms tell you a supplier is banned. ECC tells you which component, in which assembly, across every vehicle line — and what you need to do about it before the impoundment notice arrives.</div>
+  </div>
+
+  <!-- STAT TILES -->
+  <div class="stat-row">
+    <div class="stat-tile red">
+      <div class="stat-num">86%</div>
+      <div class="stat-label">Share of all UFLPA detentions<br>that are automotive — H1 2025<br>(up from 4% in all of FY2024)</div>
+    </div>
+    <div class="stat-tile navy">
+      <div class="stat-num">61%</div>
+      <div class="stat-label">Of detained shipments denied<br>entry under UFLPA<br>Jun 2022 – Jul 2025</div>
+    </div>
+    <div class="stat-tile amber-dark">
+      <div class="stat-num">3 mo.</div>
+      <div class="stat-label">How long BMW continued<br>importing JWD components<br>after supplier notification — Jan 2024</div>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="body-wrap">
+
+    <!-- TWO COLUMNS -->
+    <div class="two-col">
+      <div class="col">
+        <div class="col-header red-hdr">What standard tools do</div>
+        <div class="col-body red-body">
+          <ul>
+            <li>
+              <strong>Entity screening at T1–T2</strong>
+              <span>Match your supplier list against the UFLPA Entity List and flag the entity as non-compliant.</span>
+            </li>
+            <li>
+              <strong>No component-level visibility</strong>
+              <span>No information on which product, which component, or which BOM position contains the entity's material.</span>
+            </li>
+            <li>
+              <strong>Manual search burden</strong>
+              <span>Your compliance team searches thousands of components manually to find the affected part — if they can find it at all.</span>
+            </li>
+            <li>
+              <strong>T3+ exposure is invisible</strong>
+              <span>If the entity is at T3 or deeper — as JWD was in the VW and BMW incidents — no standard tool finds it.</span>
+            </li>
+            <li>
+              <strong>The result</strong>
+              <span>VW had thousands of vehicles impounded. BMW continued importing for three months after notification — not because they ignored the problem, but because they had no system to find which components to pull.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col">
+        <div class="col-header grn-hdr">What ECC does</div>
+        <div class="col-body grn-body">
+          <ul>
+            <li>
+              <strong>Material genealogy match — not supplier list</strong>
+              <span>ECC maps the UFLPA Entity List against the material genealogy graph at L3–L5. Not who your suppliers are — what your components contain.</span>
+            </li>
+            <li>
+              <strong>Graph traversal on entity addition</strong>
+              <span>When JWD is added to the Entity List, ECC queries: which L3–L5 material nodes in the graph have this entity in their supplier relationship?</span>
+            </li>
+            <li>
+              <strong>Complete affected assembly list</strong>
+              <span>Result: 47 component material nodes identified across 8 assemblies in the vehicle programme (illustrative — actual count depends on your BOM).</span>
+            </li>
+            <li>
+              <strong>Per-node compliance action</strong>
+              <span>For each node: the specific assembly, the HS code, the annual import volume, and the resolution action — alternative supplier qualification or attestation — ranked by lead time.</span>
+            </li>
+            <li>
+              <strong>Hours, not weeks</strong>
+              <span>The same analysis that would have taken BMW's compliance team weeks happens in a single graph traversal. Your team acts. Your vehicles ship.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTRAST TABLE -->
+    <div>
+      <div class="section-label">Platform Capability Comparison</div>
+      <table class="contrast">
+        <thead>
+          <tr>
+            <th>Compliance Question</th>
+            <th>Standard Tools</th>
+            <th>ECC</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Is this supplier on the UFLPA Entity List?</td>
+            <td>✓ Yes</td>
+            <td>✓ Yes</td>
+          </tr>
+          <tr>
+            <td>Which specific component contains that supplier's product?</td>
+            <td>✗ Cannot determine</td>
+            <td>✓ Specific L3–L5 node identified<span class="detail">HS code, assembly, qty_per_parent</span></td>
+          </tr>
+          <tr>
+            <td>Which assemblies in your vehicle programme are affected?</td>
+            <td>✗ Cannot determine</td>
+            <td>✓ All affected assemblies listed<span class="detail">Across every vehicle line simultaneously</span></td>
+          </tr>
+          <tr>
+            <td>How many units are at risk per year?</td>
+            <td>✗ Unknown</td>
+            <td>✓ Calculated<span class="detail">qty_per_parent × annual import volume</span></td>
+          </tr>
+          <tr>
+            <td>What is the fastest path to compliance?</td>
+            <td>✗ No guidance</td>
+            <td>✓ Alternative sourcing or attestation<span class="detail">Ranked by lead time per node</span></td>
+          </tr>
+          <tr>
+            <td>Can it find T3–T4 entity exposure?</td>
+            <td>✗ Typically T1–T2 only</td>
+            <td>✓ L1 through L8<span class="detail">Full material genealogy depth</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ECC ADVANTAGE CALLOUT -->
+    <div class="callout-green">
+      <div class="callout-label">ECC Advantage</div>
+      <div class="callout-text">When a new entity appears on the UFLPA Entity List, ECC re-runs the entity match against the full material graph <strong>within hours</strong>. Every affected BOM position is identified, every affected assembly is listed, and the compliance action — alternative sourcing or attestation — is pre-generated. <strong>Your team acts. Your vehicles ship.</strong></div>
+    </div>
+
+  </div><!-- /body-wrap -->
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span style="font-family:'IBM Plex Mono',monospace; font-size:7.5px; color:#9DC3E6;">ECC / PMG Supply Chain Intelligence · Trade &amp; Tariff Risk Intelligence Platform</span>
+    <span style="font-family:'Playfair Display',serif; font-size:10px; font-weight:700; color:#FFD966;">ecc-pmg.com</span>
+    <span style="font-family:'IBM Plex Mono',monospace; font-size:7.5px; color:#9DC3E6; text-align:right;">May 2026 · For sales use</span>
+  </div>
+
+</div><!-- /page -->
+</body>
+</html>

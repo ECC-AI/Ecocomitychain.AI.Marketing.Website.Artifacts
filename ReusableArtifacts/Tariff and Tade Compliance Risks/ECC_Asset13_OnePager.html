@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECC — The Cost of Not Knowing</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:    #1F4E79;
+    --accent:  #2E75B6;
+    --lightbg: #DEEAF1;
+    --red:     #C00000;
+    --redbg:   #FBEAEA;
+    --amber:   #7F6000;
+    --amberbg: #FFF2CC;
+    --green:   #375623;
+    --greenbg: #E2EFDA;
+    --cobalt:  #003366;
+    --cobaltbg:#D0E8FF;
+    --orange:  #833C00;
+    --gray:    #F4F4F4;
+    --mid:     #CCCCCC;
+    --white:   #FFFFFF;
+    --dark:    #1A1A1A;
+    --muted:   #555555;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 10.5px;
+    color: var(--dark);
+    background: #EDEDED;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 24px;
+  }
+
+  .page {
+    width: 794px;
+    min-height: 1123px;
+    background: var(--white);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.18);
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--navy);
+    padding: 22px 28px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    right: -40px; top: -40px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(46,117,182,0.15);
+    pointer-events: none;
+  }
+  .eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: #9DC3E6;
+    margin-bottom: 8px;
+  }
+  .headline {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 46px;
+    font-weight: 900;
+    line-height: 1.0;
+    color: var(--white);
+    letter-spacing: -0.5px;
+    margin-bottom: 9px;
+  }
+  .headline span {
+    color: #FFD966;
+  }
+  .subhead {
+    font-size: 12px;
+    font-weight: 300;
+    color: #BDD7EE;
+    font-style: italic;
+    line-height: 1.4;
+    max-width: 640px;
+  }
+
+  /* ── TWO COLUMN BODY ── */
+  .body-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    flex: 1;
+    border-bottom: 3px solid var(--navy);
+  }
+
+  .col {
+    padding: 18px 20px;
+    border-right: 1px solid var(--mid);
+  }
+  .col:last-child { border-right: none; }
+
+  .sector-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: 14px;
+  }
+  .badge-red   { background: var(--red); }
+  .badge-amber { background: var(--amber); }
+
+  .company-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--navy);
+    line-height: 1.1;
+    margin-bottom: 2px;
+  }
+  .company-date {
+    font-size: 9.5px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .incident-text {
+    font-size: 10.5px;
+    line-height: 1.55;
+    color: var(--dark);
+    margin-bottom: 12px;
+  }
+
+  .callout {
+    border-left: 3px solid var(--red);
+    background: var(--redbg);
+    padding: 8px 12px;
+    margin-bottom: 12px;
+  }
+  .callout-amber {
+    border-left: 3px solid var(--amber);
+    background: var(--amberbg);
+  }
+  .callout-item {
+    font-size: 10px;
+    line-height: 1.6;
+    color: var(--dark);
+  }
+  .callout-item strong {
+    color: var(--red);
+    font-weight: 700;
+  }
+  .callout-amber .callout-item strong {
+    color: var(--amber);
+  }
+
+  .root-cause-tag {
+    display: inline-block;
+    background: var(--red);
+    color: var(--white);
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    margin-right: 5px;
+  }
+  .root-cause-text {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--red);
+    display: inline;
+  }
+
+  .divider-line {
+    border: none;
+    border-top: 1px solid var(--mid);
+    margin: 12px 0;
+  }
+
+  /* ── STAT TILES ── */
+  .stat-tiles {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background: var(--navy);
+  }
+  .stat-tile {
+    padding: 14px 12px;
+    border-right: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
+  }
+  .stat-tile:last-child { border-right: none; }
+  .stat-tile.red-tile { background: var(--red); }
+  .stat-tile.amber-tile { background: #8B6914; }
+  .stat-number {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.0;
+    display: block;
+    margin-bottom: 3px;
+  }
+  .stat-label {
+    font-size: 8.5px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.4;
+    font-weight: 300;
+  }
+  .stat-label em {
+    font-style: normal;
+    color: #FFD966;
+    font-weight: 600;
+  }
+
+  /* ── BOTTOM TWO COLS ── */
+  .bottom-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  .bottom-left {
+    background: var(--cobalt);
+    padding: 16px 20px;
+  }
+  .bottom-right {
+    background: var(--greenbg);
+    padding: 16px 20px;
+    border-left: 4px solid var(--green);
+  }
+
+  .bottom-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .bottom-left .bottom-title { color: #9DC3E6; }
+  .bottom-right .bottom-title { color: var(--green); }
+
+  .bottom-text {
+    font-size: 10px;
+    line-height: 1.58;
+  }
+  .bottom-left .bottom-text { color: rgba(255,255,255,0.88); }
+  .bottom-right .bottom-text { color: #1A3A10; }
+
+  .bottom-right .bottom-text strong {
+    color: var(--green);
+    font-weight: 700;
+  }
+
+  .closing-line {
+    margin-top: 10px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--green);
+    letter-spacing: 0.3px;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--navy);
+    padding: 8px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-left {
+    font-size: 8.5px;
+    color: #9DC3E6;
+    font-weight: 300;
+  }
+  .footer-centre {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: #FFD966;
+    letter-spacing: 0.3px;
+    text-align: center;
+  }
+  .footer-right {
+    font-size: 8.5px;
+    color: #9DC3E6;
+    font-weight: 300;
+    text-align: right;
+  }
+
+  /* ── PRINT ── */
+  @media print {
+    body { background: none; padding: 0; }
+    .page { box-shadow: none; width: 100%; min-height: auto; }
+    @page { size: A4 portrait; margin: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="eyebrow">Trade Compliance Intelligence — 2025 / 2026 &nbsp;|&nbsp; ECC / PMG Supply Chain Intelligence</div>
+    <div class="headline">"We didn't know<br><span>what was inside."</span></div>
+    <div class="subhead">Three words that cost Volkswagen hundreds of millions, handed BMW a congressional investigation,<br>and added $1,000,000,000 to Nike's annual cost base. The supply chain visibility gap has a price tag.</div>
+  </div>
+
+  <!-- BODY COLUMNS -->
+  <div class="body-cols">
+
+    <!-- LEFT: AUTOMOTIVE -->
+    <div class="col">
+      <div class="sector-badge badge-red">Automotive &nbsp;·&nbsp; UFLPA Enforcement</div>
+
+      <!-- VW -->
+      <div class="company-name">Volkswagen Group</div>
+      <div class="company-date">February 2024 &nbsp;·&nbsp; Porsche · Audi · Bentley</div>
+      <div class="incident-text">
+        Thousands of Porsche, Audi, and Bentley vehicles were impounded at US ports. The cause: a LAN transformer component sourced from a Chinese manufacturer on the UFLPA Entity List — buried four supplier tiers deep, invisible to every compliance tool Volkswagen used. The violation was identified not by Volkswagen's internal systems, but by a supplier notification. CBP found what Volkswagen's tools could not see.
+      </div>
+      <div class="callout">
+        <div class="callout-item"><strong>Vehicles impounded:</strong> Thousands of luxury vehicles across three marques</div>
+        <div class="callout-item"><strong>Revenue at risk:</strong> $80,000–$200,000+ MSRP per vehicle</div>
+        <div class="callout-item"><strong>Resolution timeline:</strong> 6+ weeks of delivery suspension</div>
+      </div>
+      <div><span class="root-cause-tag">Root Cause</span><span class="root-cause-text">Zero visibility below Tier 2</span></div>
+
+      <hr class="divider-line">
+
+      <!-- BMW -->
+      <div class="company-name">BMW</div>
+      <div class="company-date">May 2024 &nbsp;·&nbsp; Mini Cooper &nbsp;·&nbsp; Senate Report</div>
+      <div class="incident-text">
+        8,000 Mini Cooper vehicles imported with the same UFLPA-banned component — <em>after</em> BMW's Tier-2 supplier notified them directly in January 2024. BMW continued importing for three more months. The US Senate Finance Committee named BMW in a formal report. Senator Wyden called for CBP to "supercharge enforcement."
+      </div>
+      <div class="callout callout-amber">
+        <div class="callout-item"><strong>Vehicles affected:</strong> 8,000 — US-wide service action initiated</div>
+        <div class="callout-item"><strong>Regulatory outcome:</strong> Named in Senate Finance Committee report</div>
+        <div class="callout-item"><strong>Timeline:</strong> 3 months of continued imports post-notification</div>
+      </div>
+      <div><span class="root-cause-tag">Root Cause</span><span class="root-cause-text">No system to act on the notification received</span></div>
+    </div>
+
+    <!-- RIGHT: CONSUMER GOODS -->
+    <div class="col">
+      <div class="sector-badge badge-red">Consumer Goods &nbsp;·&nbsp; Section 301 + IEEPA</div>
+
+      <!-- NIKE -->
+      <div class="company-name">Nike</div>
+      <div class="company-date">FY2025 &nbsp;·&nbsp; CFO Disclosure &nbsp;·&nbsp; Earnings Call</div>
+      <div class="incident-text">
+        Nike's CFO confirmed on a June 2025 earnings call that US tariffs would add an estimated <strong style="font-size:12px;color:var(--red);">$1,000,000,000</strong> in annual incremental cost. China accounted for approximately 16% of Nike's US footwear imports. The effective tariff stack on Chinese-origin goods reached 58.3%. Gross margins fell 140 basis points.
+      </div>
+      <div class="incident-text">
+        Nike had no BOM-level data to identify which specific product lines drove the highest tariff exposure, which materials within those lines caused it, or which sourcing switches would deliver the greatest saving per dollar of transition cost. The response was broad and reactive.
+        <strong style="color:var(--red);">The cost was not.</strong>
+      </div>
+      <div class="callout">
+        <div class="callout-item"><strong>Annual tariff cost increase:</strong> $1,000,000,000 — confirmed by CFO</div>
+        <div class="callout-item"><strong>Gross margin impact:</strong> −140 basis points (Q3 2025)</div>
+        <div class="callout-item"><strong>Response:</strong> Price hikes + supplier exits + structural cost cuts</div>
+      </div>
+      <div><span class="root-cause-tag">Root Cause</span><span class="root-cause-text">No material-level tariff attribution by SKU or BOM position</span></div>
+
+      <hr class="divider-line">
+
+      <!-- GREEN INSIGHT -->
+      <div style="background:var(--greenbg);border-left:3px solid var(--green);padding:10px 12px;margin-top:4px;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;color:var(--green);margin-bottom:4px;">The pattern is the same in every sector.</div>
+        <div style="font-size:10px;color:#1A3A10;line-height:1.55;">
+          Not enough visibility. Too late to act.<br>
+          The cost arrives before the insight does.<br><br>
+          Volkswagen and BMW didn't know what was inside their Tier-3 components.
+          Nike didn't know which of its SKUs were driving $1 billion in exposure.
+          In both cases, the information existed — in the supply chain, in trade records,
+          in material chemistry databases. It simply wasn't connected.
+        </div>
+      </div>
+
+    </div>
+  </div><!-- end body-cols -->
+
+  <!-- STAT TILES -->
+  <div class="stat-tiles">
+    <div class="stat-tile red-tile">
+      <span class="stat-number">86%</span>
+      <div class="stat-label">of all UFLPA detentions are now <em>automotive</em><br>H1 2025 — up from just 4% in all of 2024</div>
+    </div>
+    <div class="stat-tile">
+      <span class="stat-number">$3.94B</span>
+      <div class="stat-label">total shipment value detained<br>under UFLPA since June 2022<br><em>CBP Dashboard 2026</em></div>
+    </div>
+    <div class="stat-tile amber-tile">
+      <span class="stat-number">$195B</span>
+      <div class="stat-label">US customs duties collected FY2025<br><em>250% jump from FY2024</em><br>CBP / CRFB confirmed</div>
+    </div>
+    <div class="stat-tile">
+      <span class="stat-number">4×</span>
+      <div class="stat-label">maximum penalty multiplier<br>on underpaid duties<br><em>19 U.S.C. § 1592(c)</em></div>
+    </div>
+  </div>
+
+  <!-- BOTTOM COLUMNS -->
+  <div class="bottom-cols">
+    <div class="bottom-left">
+      <div class="bottom-title">The Root Cause</div>
+      <div class="bottom-text">
+        Every incident on this page shares one cause. Standard supply chain risk platforms map
+        supplier relationships. They show you who your suppliers are. They cannot show you what
+        your suppliers' products contain — at the material level, the HS code level, the origin level.<br><br>
+        The LAN transformer inside a German-assembled motor. The alloy powder inside a traction
+        motor magnet. The tariff exposure buried four tiers deep in a product your customs entry
+        classifies as German-origin. Standard platforms don't look inside. CBP does.
+      </div>
+    </div>
+    <div class="bottom-right">
+      <div class="bottom-title">The ECC Answer</div>
+      <div class="bottom-text">
+        <strong>ECC maps what's inside</strong> — not just who supplies. Material genealogy
+        from finished assembly to raw ore. HS codes at every level. Geographic origin confirmed.
+        Tariff exposure calculated per BOM position. UFLPA entity flags traced to the specific
+        component across every vehicle line simultaneously.<br><br>
+        When the impoundment letter arrives, ECC users already know which nodes are exposed,
+        what the financial impact is, and which single action resolves it.
+      </div>
+      <div class="closing-line">See your exposure. Prove your origin. Defend your position.</div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-left">ECC / PMG Supply Chain Intelligence &nbsp;|&nbsp; Trade &amp; Tariff Risk Intelligence Platform &nbsp;|&nbsp; May 2026</div>
+    <div class="footer-centre">ecc-pmg.com &nbsp;·&nbsp; Request a Demo</div>
+    <div class="footer-right">All figures sourced from company disclosures,<br>congressional reports &amp; CBP data</div>
+  </div>
+
+</div><!-- end page -->
+</body>
+</html>

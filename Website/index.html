@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EcocomityChain.AI — Value Chain Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ─────────────────────────────────────────── */
+:root {
+  --bg:        #07090f;
+  --bg-r:      #0c1018;
+  --bg-c:      #101622;
+  --border:    rgba(255,255,255,0.07);
+  --bhi:       rgba(255,255,255,0.14);
+  --amber:     #eca030;
+  --adim:      rgba(236,160,48,0.10);
+  --abright:   rgba(236,160,48,0.18);
+  --blue:      #3aa0d8;
+  --bdim:      rgba(58,160,216,0.10);
+  --green:     #32d282;
+  --gdim:      rgba(50,210,130,0.08);
+  --purple:    #6b58ff;
+  --pdim:      rgba(107,88,255,0.10);
+  --t1: #dde2f0; --t2: #8898b8; --t3: #4a5570;
+  --mono:    "Space Mono", monospace;
+  --body:    "Space Grotesk", sans-serif;
+  --display: "Syne", sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--t1);font-family:var(--body);-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+.container{max-width:1140px;margin:0 auto;padding:0 32px;}
+
+/* ── NAV ────────────────────────────────────────────── */
+nav{border-bottom:1px solid var(--border);padding:20px 0;position:sticky;top:0;z-index:200;background:rgba(7,9,15,0.94);backdrop-filter:blur(14px);}
+.nav-inner{max-width:1140px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between;gap:24px;}
+.nav-logo{font-family:var(--display);font-size:15px;font-weight:700;letter-spacing:.06em;color:var(--t1);text-decoration:none;flex-shrink:0;}
+.nav-logo span{color:var(--amber);}
+.nav-links{display:flex;gap:28px;align-items:center;}
+.nav-links a{font-size:13px;color:var(--t2);text-decoration:none;letter-spacing:.03em;transition:color .18s;}
+.nav-links a:hover{color:var(--t1);}
+.nav-dropdown{position:relative;}
+.nav-dropdown > a{display:flex;align-items:center;gap:5px;}
+.nav-dropdown > a::after{content:'';width:5px;height:5px;border-right:1px solid var(--t3);border-bottom:1px solid var(--t3);transform:rotate(45deg) translateY(-2px);transition:transform .18s;}
+.nav-dropdown:hover > a::after{transform:rotate(225deg) translateY(-2px);}
+.dropdown-menu{position:absolute;top:calc(100% + 16px);left:0;background:var(--bg-c);border:1px solid var(--border);border-radius:8px;min-width:230px;padding:8px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .18s,transform .18s;}
+.nav-dropdown:hover .dropdown-menu{opacity:1;pointer-events:all;transform:translateY(0);}
+.dropdown-item{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:5px;text-decoration:none;transition:background .15s;}
+.dropdown-item:hover{background:rgba(255,255,255,0.04);}
+.dropdown-item-label{font-size:13px;color:var(--t1);font-weight:500;}
+.dropdown-item-sub{font-size:11px;color:var(--t3);margin-top:2px;}
+.dropdown-badge{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:3px;}
+.badge-live{color:var(--green);background:var(--gdim);border:1px solid rgba(50,210,130,0.2);}
+.badge-soon{color:var(--t3);background:rgba(255,255,255,0.04);border:1px solid var(--border);}
+.nav-cta{font-size:13px;font-weight:600;background:var(--amber);color:#07090f;padding:9px 20px;border-radius:4px;text-decoration:none;transition:opacity .18s;flex-shrink:0;}
+.nav-cta:hover{opacity:.85;}
+
+/* ── HERO ────────────────────────────────────────────── */
+.hero{padding:112px 0 96px;position:relative;overflow:hidden;border-bottom:1px solid var(--border);}
+.hero-glow{position:absolute;top:-300px;left:50%;transform:translateX(-50%);width:900px;height:700px;background:radial-gradient(ellipse,rgba(236,160,48,0.05) 0%,transparent 65%);pointer-events:none;}
+.hero-glow-2{position:absolute;bottom:-200px;right:-100px;width:600px;height:500px;background:radial-gradient(ellipse,rgba(58,160,216,0.04) 0%,transparent 60%);pointer-events:none;}
+.hero-inner{position:relative;z-index:1;}
+.hero-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin-bottom:24px;display:flex;align-items:center;gap:10px;}
+.hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--amber);opacity:.6;}
+.hero h1{font-family:var(--display);font-size:clamp(40px,5.5vw,68px);font-weight:800;letter-spacing:-.03em;line-height:1.05;color:var(--t1);margin-bottom:28px;max-width:900px;}
+.hero h1 em{font-style:normal;color:var(--amber);}
+.hero-lead{font-size:18px;color:var(--t2);line-height:1.72;max-width:620px;margin-bottom:18px;}
+.hero-lead strong{color:var(--t1);font-weight:500;}
+.hero-sub{font-size:14px;color:var(--t3);line-height:1.6;max-width:560px;margin-bottom:52px;}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;}
+.btn-primary{font-size:14px;font-weight:600;background:var(--amber);color:#07090f;padding:14px 30px;border-radius:4px;text-decoration:none;transition:opacity .18s;letter-spacing:.01em;}
+.btn-primary:hover{opacity:.87;}
+.btn-secondary{font-size:14px;font-weight:500;border:1px solid var(--bhi);color:var(--t2);padding:14px 30px;border-radius:4px;text-decoration:none;transition:border-color .18s,color .18s;}
+.btn-secondary:hover{border-color:rgba(255,255,255,0.28);color:var(--t1);}
+.hero-proof{display:flex;gap:40px;flex-wrap:wrap;margin-top:60px;padding-top:40px;border-top:1px solid var(--border);}
+.hero-stat{}
+.hero-stat .num{font-family:var(--display);font-size:28px;font-weight:800;color:var(--t1);letter-spacing:-.02em;}
+.hero-stat .num em{color:var(--amber);font-style:normal;}
+.hero-stat .lbl{font-size:12px;color:var(--t3);margin-top:3px;line-height:1.45;max-width:160px;}
+
+/* ── SECTION SHARED ──────────────────────────────────── */
+.section-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin-bottom:14px;}
+.section-h2{font-family:var(--display);font-size:clamp(26px,3.2vw,38px);font-weight:700;letter-spacing:-.022em;color:var(--t1);line-height:1.12;}
+.section-lead{font-size:16px;color:var(--t2);line-height:1.72;margin-top:14px;}
+
+/* ── PROBLEM FRAME ───────────────────────────────────── */
+.problem{padding:88px 0;border-bottom:1px solid var(--border);}
+.problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start;margin-top:52px;}
+.problem-left{}
+.problem-statement{font-family:var(--display);font-size:clamp(18px,2vw,24px);font-weight:700;color:var(--t1);line-height:1.3;letter-spacing:-.015em;margin-bottom:20px;}
+.problem-body{font-size:15px;color:var(--t2);line-height:1.75;}
+.problem-body + .problem-body{margin-top:14px;}
+.problem-right{display:flex;flex-direction:column;gap:16px;}
+.problem-stat-card{background:var(--bg-c);border:1px solid var(--border);border-radius:8px;padding:24px 28px;position:relative;overflow:hidden;}
+.problem-stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.problem-stat-card.c-amber::before{background:linear-gradient(90deg,var(--amber),transparent);}
+.problem-stat-card.c-blue::before{background:linear-gradient(90deg,var(--blue),transparent);}
+.problem-stat-card.c-green::before{background:linear-gradient(90deg,var(--green),transparent);}
+.stat-num{font-family:var(--display);font-size:36px;font-weight:800;letter-spacing:-.025em;line-height:1;}
+.c-amber .stat-num{color:var(--amber);}
+.c-blue .stat-num{color:var(--blue);}
+.c-green .stat-num{color:var(--green);}
+.stat-label{font-size:13px;color:var(--t2);margin-top:6px;line-height:1.5;}
+.stat-source{font-family:var(--mono);font-size:10px;color:var(--t3);margin-top:8px;letter-spacing:.06em;}
+
+/* ── PLATFORM SEGMENTS ───────────────────────────────── */
+.platform{padding:88px 0;border-bottom:1px solid var(--border);background:var(--bg-r);}
+.platform-intro{text-align:center;max-width:640px;margin:0 auto 60px;}
+.platform-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;border-radius:10px;overflow:hidden;border:1px solid var(--border);}
+.seg{background:var(--bg-c);padding:48px 44px;position:relative;overflow:hidden;}
+.seg::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.seg.proactive::before{background:linear-gradient(90deg,var(--amber),rgba(236,160,48,0.2));}
+.seg.reactive::before{background:linear-gradient(90deg,var(--blue),rgba(58,160,216,0.2));}
+.seg-glow{position:absolute;top:-120px;right:-120px;width:300px;height:300px;border-radius:50%;pointer-events:none;}
+.seg.proactive .seg-glow{background:radial-gradient(circle,rgba(236,160,48,0.06),transparent 70%);}
+.seg.reactive .seg-glow{background:radial-gradient(circle,rgba(58,160,216,0.06),transparent 70%);}
+.seg-badge{position:absolute;top:22px;right:22px;font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:3px 9px;border-radius:3px;color:var(--green);background:var(--gdim);border:1px solid rgba(50,210,130,0.2);}
+.seg-tag{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px;}
+.seg.proactive .seg-tag{color:var(--amber);}
+.seg.reactive .seg-tag{color:var(--blue);}
+.seg-situation{font-size:13px;color:var(--t3);font-style:italic;margin-bottom:18px;line-height:1.55;}
+.seg-title{font-family:var(--display);font-size:24px;font-weight:700;color:var(--t1);margin-bottom:16px;line-height:1.18;letter-spacing:-.012em;}
+.seg-body{font-size:14px;color:var(--t2);line-height:1.72;margin-bottom:22px;}
+.seg-body strong{color:var(--t1);font-weight:500;}
+.seg-points{list-style:none;display:flex;flex-direction:column;gap:11px;margin-bottom:32px;}
+.seg-points li{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--t2);line-height:1.55;}
+.seg-points li::before{font-family:var(--mono);flex:none;margin-top:1px;font-size:11px;}
+.seg.proactive .seg-points li::before{content:'→';color:var(--amber);}
+.seg.reactive .seg-points li::before{content:'→';color:var(--blue);}
+.seg-points li strong{color:var(--t1);font-weight:500;}
+.seg-link{font-size:14px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:gap .18s;}
+.seg-link:hover{gap:12px;}
+.seg.proactive .seg-link{color:var(--amber);}
+.seg.reactive .seg-link{color:var(--blue);}
+.seg-divider{background:var(--bg-c);border-left:1px solid var(--border);border-right:1px solid var(--border);display:flex;align-items:center;justify-content:center;padding:32px 20px;}
+.seg-divider-inner{writing-mode:vertical-lr;text-orientation:mixed;font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--t3);transform:rotate(180deg);}
+
+/* ── RIF SECTION ─────────────────────────────────────── */
+.rif{padding:88px 0;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.rif-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%,rgba(107,88,255,0.04) 0%,transparent 60%);pointer-events:none;}
+.rif-inner{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center;}
+.rif-left{}
+.rif-title{font-family:var(--display);font-size:clamp(26px,3vw,36px);font-weight:700;letter-spacing:-.022em;color:var(--t1);line-height:1.14;margin-bottom:20px;}
+.rif-title em{font-style:normal;color:var(--purple);}
+.rif-body{font-size:15px;color:var(--t2);line-height:1.75;margin-bottom:16px;}
+.rif-body strong{color:var(--t1);font-weight:500;}
+.rif-cta-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:32px;}
+.btn-ghost{font-size:13px;font-weight:600;border:1px solid rgba(107,88,255,0.4);color:var(--purple);padding:10px 22px;border-radius:4px;text-decoration:none;transition:background .18s,border-color .18s;}
+.btn-ghost:hover{background:var(--pdim);border-color:rgba(107,88,255,0.6);}
+.rif-right{}
+.rif-metrics{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.rif-metric{background:var(--bg-c);border:1px solid var(--border);border-radius:8px;padding:22px 24px;}
+.rif-metric-num{font-family:var(--display);font-size:32px;font-weight:800;color:var(--purple);letter-spacing:-.025em;line-height:1;}
+.rif-metric-lbl{font-size:12px;color:var(--t3);margin-top:6px;line-height:1.4;}
+.rif-domains{margin-top:16px;background:var(--bg-c);border:1px solid var(--border);border-radius:8px;padding:20px 24px;}
+.rif-domains-label{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--t3);margin-bottom:12px;}
+.rif-domain-pills{display:flex;flex-wrap:wrap;gap:7px;}
+.rif-pill{font-size:11px;color:var(--t2);background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:20px;padding:4px 12px;}
+
+/* ── STATS RIBBON ────────────────────────────────────── */
+.stats-ribbon{padding:64px 0;border-bottom:1px solid var(--border);background:var(--bg-r);}
+.stats-ribbon-inner{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;}
+.ribbon-stat{padding:36px 32px;background:var(--bg-c);text-align:center;}
+.ribbon-stat:first-child{border-radius:8px 0 0 8px;}
+.ribbon-stat:last-child{border-radius:0 8px 8px 0;}
+.ribbon-num{font-family:var(--display);font-size:42px;font-weight:800;letter-spacing:-.03em;color:var(--t1);line-height:1;}
+.ribbon-num em{color:var(--amber);font-style:normal;}
+.ribbon-lbl{font-size:12px;color:var(--t3);margin-top:8px;line-height:1.5;max-width:160px;margin-left:auto;margin-right:auto;}
+.ribbon-src{font-family:var(--mono);font-size:9px;color:var(--t3);opacity:.6;margin-top:6px;letter-spacing:.06em;}
+
+/* ── PARTNER INTELLIGENCE ────────────────────────────── */
+.partner{padding:56px 0;border-bottom:1px solid var(--border);}
+.partner-inner{display:flex;gap:56px;align-items:center;}
+.partner-left{flex:1;}
+.partner-right{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;flex:1;}
+.partner-stat{background:var(--bg-c);border:1px solid var(--border);border-radius:6px;padding:18px 20px;text-align:center;}
+.partner-num{font-family:var(--display);font-size:24px;font-weight:700;color:var(--blue);letter-spacing:-.02em;}
+.partner-lbl{font-size:11px;color:var(--t3);margin-top:4px;}
+
+/* ── CASE STUDIES ────────────────────────────────────── */
+.cases{padding:88px 0;border-bottom:1px solid var(--border);}
+.cases-intro{max-width:640px;margin-bottom:52px;}
+.cases-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.case-card{background:var(--bg-c);border:1px solid var(--border);border-radius:10px;padding:40px 38px;position:relative;overflow:hidden;display:flex;flex-direction:column;}
+.case-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.case-card.proactive-case::before{background:linear-gradient(90deg,var(--amber),transparent);}
+.case-card.reactive-case::before{background:linear-gradient(90deg,var(--blue),transparent);}
+.case-type{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:10px;}
+.case-card.proactive-case .case-type{color:var(--amber);}
+.case-card.reactive-case .case-type{color:var(--blue);}
+.case-title{font-family:var(--display);font-size:20px;font-weight:700;color:var(--t1);margin-bottom:12px;line-height:1.25;letter-spacing:-.01em;}
+.case-body{font-size:14px;color:var(--t2);line-height:1.7;flex:1;margin-bottom:28px;}
+.case-insight{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:6px;padding:14px 18px;margin-bottom:28px;font-size:13px;color:var(--t2);font-style:italic;line-height:1.55;}
+.case-card.proactive-case .case-insight{border-left:3px solid var(--amber);}
+.case-card.reactive-case .case-insight{border-left:3px solid var(--blue);}
+.case-tag{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:3px;display:inline-block;margin-bottom:16px;}
+.case-card.proactive-case .case-tag{color:var(--amber);background:var(--adim);border:1px solid rgba(236,160,48,0.2);}
+.case-card.reactive-case .case-tag{color:var(--blue);background:var(--bdim);border:1px solid rgba(58,160,216,0.2);}
+.case-link{font-size:13px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:gap .18s;}
+.case-link:hover{gap:12px;}
+.case-card.proactive-case .case-link{color:var(--amber);}
+.case-card.reactive-case .case-link{color:var(--blue);}
+.case-coming{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);padding:3px 9px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:3px;}
+
+/* ── ROADMAP ─────────────────────────────────────────── */
+.roadmap{padding:88px 0;border-bottom:1px solid var(--border);background:var(--bg-r);}
+.roadmap-intro{text-align:center;max-width:580px;margin:0 auto 60px;}
+.roadmap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;border-radius:10px;overflow:hidden;border:1px solid var(--border);}
+.roadmap-card{background:var(--bg-c);padding:40px 36px;position:relative;}
+.roadmap-card.now{border-bottom:2px solid var(--amber);}
+.roadmap-card.next{border-bottom:2px solid var(--blue);opacity:.85;}
+.roadmap-card.horizon{border-bottom:2px solid rgba(255,255,255,0.15);opacity:.65;}
+.roadmap-phase{font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px;}
+.now .roadmap-phase{color:var(--amber);}
+.next .roadmap-phase{color:var(--blue);}
+.horizon .roadmap-phase{color:var(--t3);}
+.roadmap-title{font-family:var(--display);font-size:22px;font-weight:700;color:var(--t1);margin-bottom:14px;letter-spacing:-.01em;}
+.roadmap-body{font-size:13px;color:var(--t2);line-height:1.65;margin-bottom:20px;}
+.roadmap-items{list-style:none;display:flex;flex-direction:column;gap:9px;}
+.roadmap-items li{font-size:12px;color:var(--t3);display:flex;align-items:flex-start;gap:8px;line-height:1.5;}
+.roadmap-items li::before{content:'·';flex:none;margin-top:0;}
+.now .roadmap-items li::before{color:var(--amber);}
+.next .roadmap-items li::before{color:var(--blue);}
+.horizon .roadmap-items li::before{color:var(--t3);}
+.now .roadmap-items li{color:var(--t2);}
+
+/* ── PILOT CTA ───────────────────────────────────────── */
+.pilot{padding:96px 0;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.pilot-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(236,160,48,0.06) 0%,transparent 60%);pointer-events:none;}
+.pilot-inner{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start;}
+.pilot-left{}
+.pilot-title{font-family:var(--display);font-size:clamp(28px,3.2vw,40px);font-weight:800;letter-spacing:-.025em;color:var(--t1);line-height:1.1;margin-bottom:20px;}
+.pilot-title em{color:var(--amber);font-style:normal;}
+.pilot-body{font-size:15px;color:var(--t2);line-height:1.72;margin-bottom:14px;}
+.pilot-phases{margin-top:32px;display:flex;flex-direction:column;gap:14px;}
+.pilot-phase{display:flex;gap:16px;align-items:flex-start;}
+.phase-num{font-family:var(--mono);font-size:11px;color:var(--amber);background:var(--adim);border:1px solid rgba(236,160,48,0.2);border-radius:3px;padding:3px 9px;flex-shrink:0;margin-top:2px;}
+.phase-content{}
+.phase-title{font-size:13px;font-weight:600;color:var(--t1);margin-bottom:3px;}
+.phase-desc{font-size:12px;color:var(--t3);line-height:1.5;}
+.pilot-right{}
+.pilot-form-card{background:var(--bg-c);border:1px solid var(--bhi);border-radius:10px;padding:36px;}
+.form-title{font-family:var(--display);font-size:18px;font-weight:700;color:var(--t1);margin-bottom:6px;}
+.form-sub{font-size:13px;color:var(--t3);margin-bottom:28px;line-height:1.5;}
+.form-group{margin-bottom:16px;}
+.form-group label{display:block;font-size:12px;color:var(--t2);margin-bottom:6px;font-weight:500;letter-spacing:.03em;}
+.form-group input,
+.form-group select{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:5px;padding:10px 14px;font-size:14px;color:var(--t1);font-family:var(--body);outline:none;transition:border-color .18s;}
+.form-group input::placeholder{color:var(--t3);}
+.form-group input:focus,
+.form-group select:focus{border-color:rgba(236,160,48,0.4);}
+.form-group select{appearance:none;cursor:pointer;color:var(--t2);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.form-submit{width:100%;background:var(--amber);color:#07090f;border:none;padding:13px;border-radius:4px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--body);transition:opacity .18s;margin-top:8px;}
+.form-submit:hover{opacity:.87;}
+.form-note{font-size:11px;color:var(--t3);margin-top:12px;text-align:center;line-height:1.5;}
+
+/* ── RESEARCH DOWNLOAD ───────────────────────────────── */
+.research{padding:64px 0;border-bottom:1px solid var(--border);}
+.research-inner{display:flex;gap:48px;align-items:center;background:var(--bg-c);border:1px solid var(--border);border-radius:10px;padding:44px 48px;}
+.research-left{flex:1;}
+.research-tag{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--green);margin-bottom:10px;}
+.research-title{font-family:var(--display);font-size:22px;font-weight:700;color:var(--t1);margin-bottom:10px;letter-spacing:-.01em;line-height:1.2;}
+.research-body{font-size:14px;color:var(--t2);line-height:1.68;}
+.research-right{flex-shrink:0;}
+
+/* ── FOOTER ──────────────────────────────────────────── */
+footer{padding:52px 0 40px;border-top:1px solid var(--border);}
+.footer-inner{display:flex;gap:48px;justify-content:space-between;align-items:flex-start;}
+.footer-brand{}
+.footer-logo{font-family:var(--display);font-size:14px;font-weight:700;letter-spacing:.06em;color:var(--t1);margin-bottom:8px;}
+.footer-logo span{color:var(--amber);}
+.footer-tagline{font-size:12px;color:var(--t3);line-height:1.5;max-width:220px;}
+.footer-links{display:flex;gap:48px;}
+.footer-col{}
+.footer-col-head{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--t3);margin-bottom:14px;}
+.footer-col a{display:block;font-size:13px;color:var(--t3);text-decoration:none;margin-bottom:8px;transition:color .18s;}
+.footer-col a:hover{color:var(--t1);}
+.footer-bottom{margin-top:44px;padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.footer-copy{font-size:12px;color:var(--t3);}
+.footer-legal{display:flex;gap:24px;}
+.footer-legal a{font-size:12px;color:var(--t3);text-decoration:none;transition:color .18s;}
+.footer-legal a:hover{color:var(--t2);}
+
+/* ── RESPONSIVE ──────────────────────────────────────── */
+@media(max-width:900px){
+  .problem-grid,.platform-grid,.rif-inner,.pilot-inner,.cases-grid,.roadmap-grid{grid-template-columns:1fr;}
+  .stats-ribbon-inner{grid-template-columns:repeat(2,1fr);}
+  .partner-inner{flex-direction:column;}
+  .partner-right{grid-template-columns:repeat(3,1fr);}
+  .research-inner{flex-direction:column;}
+  .hero-proof{gap:24px;}
+  .rif-metrics{grid-template-columns:repeat(2,1fr);}
+  .footer-inner{flex-direction:column;gap:36px;}
+  .footer-links{gap:28px;}
+}
+@media(max-width:600px){
+  .container{padding:0 20px;}
+  .nav-links{display:none;}
+  .stats-ribbon-inner{grid-template-columns:1fr 1fr;}
+  .partner-right{grid-template-columns:1fr 1fr;}
+  .form-row{grid-template-columns:1fr;}
+  .hero-actions{flex-direction:column;}
+  .hero-proof{flex-direction:column;gap:20px;}
+}
+
+/* ── SPECTRUM DIAGRAM ────────────────────────────────── */
+.spectrum{margin-bottom:52px;}
+.spectrum-svg-wrap{width:100%;overflow:visible;}
+
+/* ── CAROUSEL MODAL ──────────────────────────────────── */
+.modal-overlay{position:fixed;inset:0;background:rgba(4,5,10,0.92);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal-box{background:var(--bg-c);border:1px solid var(--bhi);border-radius:12px;width:min(900px,94vw);max-height:90vh;overflow:hidden;display:flex;flex-direction:column;transform:translateY(12px);transition:transform .25s;}
+.modal-overlay.open .modal-box{transform:translateY(0);}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid var(--border);}
+.modal-title{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--amber);}
+.modal-close{background:none;border:none;color:var(--t3);font-size:20px;cursor:pointer;padding:4px 8px;transition:color .18s;line-height:1;}
+.modal-close:hover{color:var(--t1);}
+.modal-stage{position:relative;overflow:hidden;background:#000;}
+.modal-stage img{width:100%;display:block;max-height:60vh;object-fit:contain;background:#07090f;}
+.modal-caption{padding:18px 24px;border-top:1px solid var(--border);}
+.modal-caption-tag{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);margin-bottom:6px;}
+.modal-caption-text{font-size:13px;color:var(--t2);line-height:1.6;}
+.modal-nav{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-top:1px solid var(--border);}
+.modal-btn{background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--t2);padding:7px 18px;border-radius:4px;cursor:pointer;font-size:13px;font-family:var(--body);transition:background .18s,color .18s;}
+.modal-btn:hover{background:rgba(255,255,255,0.1);color:var(--t1);}
+.modal-btn:disabled{opacity:.3;cursor:default;}
+.modal-dots{display:flex;gap:7px;}
+.modal-dot{width:6px;height:6px;border-radius:50%;background:var(--t3);border:none;cursor:pointer;padding:0;transition:background .18s;}
+.modal-dot.active{background:var(--amber);}
+.see-platform-btn{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--amber);background:var(--adim);border:1px solid rgba(236,160,48,0.25);border-radius:4px;padding:7px 14px;cursor:pointer;transition:background .18s;margin-top:14px;font-family:var(--body);}
+.see-platform-btn:hover{background:var(--abright);}
+
+/* ── SCROLL ANIMATIONS ───────────────────────────────── */
+.fade-up{opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease;}
+.fade-up.visible{opacity:1;transform:translateY(0);}
+.fade-up.d1{transition-delay:.08s;}
+.fade-up.d2{transition-delay:.16s;}
+.fade-up.d3{transition-delay:.24s;}
+.fade-up.d4{transition-delay:.32s;}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="/">Ecocomity<span>Chain</span>.AI</a>
+    <div class="nav-links">
+      <div class="nav-dropdown">
+        <a href="#">Solutions</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="/platform/proactive-resilience">
+            <div>
+              <div class="dropdown-item-label">Value Chain Resilience</div>
+              <div class="dropdown-item-sub">Proactive + Reactive intelligence</div>
+            </div>
+            <span class="dropdown-badge badge-live">Live</span>
+          </a>
+          <a class="dropdown-item" href="#">
+            <div>
+              <div class="dropdown-item-label">Sustainability Intelligence</div>
+              <div class="dropdown-item-sub">Scope 3, DPP, material compliance</div>
+            </div>
+            <span class="dropdown-badge badge-soon">Coming</span>
+          </a>
+          <a class="dropdown-item" href="#">
+            <div>
+              <div class="dropdown-item-label">Value Chain Optimization</div>
+              <div class="dropdown-item-sub">Cost, route, and efficiency intelligence</div>
+            </div>
+            <span class="dropdown-badge badge-soon">Coming</span>
+          </a>
+        </div>
+      </div>
+      <a href="/platform">Platform</a>
+      <a href="/blog">Resources</a>
+      <a href="#">About</a>
+    </div>
+    <a class="nav-cta" href="#pilot">Request Pilot Access</a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
+  <div class="container hero-inner">
+    <div class="hero-eyebrow">Value Chain Intelligence — Automotive</div>
+    <h1>The supply chains that don't break<br>aren't lucky.<br><em>They're built differently.</em></h1>
+    <p class="hero-lead">ECC is a supply chain intelligence platform that gives automotive manufacturers the two capabilities that matter most: <strong>see what's coming before it arrives</strong>, and <strong>respond with mathematical precision when it does</strong>.</p>
+    <p class="hero-sub">Both live. One platform. Built on a research-backed intelligence foundation that compounds over time.</p>
+    <div class="hero-actions">
+      <a class="btn-primary" href="#pilot">Request Pilot Access</a>
+      <a class="btn-secondary" href="/platform">Explore the Platform</a>
+    </div>
+    <div class="hero-proof">
+      <div class="hero-stat fade-up">
+        <div class="num"><em>30–50%</em></div>
+        <div class="lbl">of annual EBITDA lost in disruptions lasting over 30 days</div>
+      </div>
+      <div class="hero-stat fade-up d1">
+        <div class="num"><em>7%</em></div>
+        <div class="lbl">of companies introduce genuinely new countermeasures during disruptions</div>
+      </div>
+      <div class="hero-stat fade-up d2">
+        <div class="num"><em>5 days</em></div>
+        <div class="lbl">average time to begin a disruption response. 83% cannot act within 24 hours.</div>
+      </div>
+      <div class="hero-stat fade-up d3">
+        <div class="num"><em>4–8 wks</em></div>
+        <div class="lbl">ahead — ECC's early warning signal lead time on supplier financial distress</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROBLEM FRAME ── -->
+<section class="problem">
+  <div class="container">
+    <div class="section-eyebrow">The Problem</div>
+    <div class="problem-grid">
+      <div class="problem-left fade-up">
+        <p class="problem-statement">The supply chain industry has spent a decade perfecting the ability to see disruptions coming. Almost nobody has solved what to do about them.</p>
+        <p class="problem-body">Current risk platforms detect events and raise alerts. That is where most of them stop. The work of translating an alert into a decision — and a decision into an executable, constraint-aware plan — is still done in a war room, with spreadsheets, by exhausted teams applying the same three levers they used last time.</p>
+        <p class="problem-body" style="margin-top:16px;">On the other side of the same problem: most manufacturers have no reliable view of what is fragile in their supply network until a supplier goes down. Tier 1 scorecards don't capture what is happening at Tier 4. A single node — invisible on any dashboard — can hold multiple product lines hostage simultaneously.</p>
+        <p class="problem-body" style="margin-top:16px;">ECC addresses both sides. Before the disruption. During it. And with an explanation your team can defend at board level.</p>
+      </div>
+      <div class="problem-right">
+        <div class="problem-stat-card c-amber fade-up d1">
+          <div class="stat-num">93%</div>
+          <div class="stat-label">of companies apply the same three levers — build inventory, dual-source, regionalize — regardless of disruption type, every time.</div>
+          <div class="stat-source">McKinsey Supply Chain Risk Pulse 2025</div>
+        </div>
+        <div class="problem-stat-card c-blue fade-up d2">
+          <div class="stat-num">10×</div>
+          <div class="stat-label">more expensive. A disruption lasting over 30 days costs ten times more than one contained within a month. The difference is entirely in the quality of the response decision.</div>
+          <div class="stat-source">McKinsey Supply Chain Research</div>
+        </div>
+        <div class="problem-stat-card c-green fade-up d3">
+          <div class="stat-num">45%</div>
+          <div class="stat-label">of manufacturers have no supply chain visibility beyond Tier 1. The risk that matters is almost always deeper.</div>
+          <div class="stat-source">McKinsey Global Supply Chain Survey 2025</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PLATFORM SEGMENTS ── -->
+<section class="platform" id="platform">
+  <div class="container">
+    <div class="platform-intro fade-up">
+      <div class="section-eyebrow">The Platform</div>
+      <h2 class="section-h2">Two horizons. One platform. Complete resilience.</h2>
+      <p class="section-lead">Value chain resilience is not one problem. It is two. ECC addresses both — before a disruption reaches you, and during it.</p>
+    </div>
+
+    <!-- SPECTRUM DIAGRAM -->
+    <div class="spectrum fade-up">
+      <svg class="spectrum-svg-wrap" viewBox="0 0 900 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ECC full-spectrum resilience coverage diagram">
+        <defs>
+          <linearGradient id="proGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#eca030;stop-opacity:0.9"/>
+            <stop offset="100%" style="stop-color:#eca030;stop-opacity:0.15"/>
+          </linearGradient>
+          <linearGradient id="reactGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#3aa0d8;stop-opacity:0.15"/>
+            <stop offset="100%" style="stop-color:#3aa0d8;stop-opacity:0.9"/>
+          </linearGradient>
+          <linearGradient id="overlapGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#eca030;stop-opacity:0.4"/>
+            <stop offset="100%" style="stop-color:#3aa0d8;stop-opacity:0.4"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Timeline base line -->
+        <line x1="40" y1="82" x2="860" y2="82" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+
+        <!-- Stage labels -->
+        <text x="72" y="142" font-family="Space Mono, monospace" font-size="8" fill="#4a5570" text-anchor="middle" letter-spacing="1">CALM</text>
+        <text x="200" y="142" font-family="Space Mono, monospace" font-size="8" fill="#4a5570" text-anchor="middle" letter-spacing="1">EARLY SIGNALS</text>
+        <text x="340" y="142" font-family="Space Mono, monospace" font-size="8" fill="#4a5570" text-anchor="middle" letter-spacing="1">RISK BUILDING</text>
+        <text x="480" y="142" font-family="Space Mono, monospace" font-size="8" fill="#4a5570" text-anchor="middle" letter-spacing="1">DISRUPTION</text>
+        <text x="620" y="142" font-family="Space Mono, monospace" font-size="8" fill="#4a5570" text-anchor="middle" letter-spacing="1">RESPONSE</text>
+        <text x="760" y="142" font-family="Space Mono, monospace" font-size="8" fill="#4a5570" text-anchor="middle" letter-spacing="1">RECOVERY</text>
+
+        <!-- Stage tick marks -->
+        <line x1="72" y1="78" x2="72" y2="86" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+        <line x1="200" y1="78" x2="200" y2="86" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+        <line x1="340" y1="78" x2="340" y2="86" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+        <line x1="480" y1="78" x2="480" y2="86" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+        <line x1="620" y1="78" x2="620" y2="86" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+        <line x1="760" y1="78" x2="760" y2="86" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+
+        <!-- Proactive arc (amber) — Calm through Risk Building -->
+        <rect x="44" y="56" width="356" height="26" rx="13" fill="url(#proGrad)" opacity="0.85"/>
+        <text x="56" y="74" font-family="Space Mono, monospace" font-size="8.5" fill="#eca030" font-weight="700" letter-spacing="1.5">PROACTIVE RESILIENCE</text>
+
+        <!-- Reactive arc (blue) — Disruption through Recovery -->
+        <rect x="400" y="56" width="460" height="26" rx="13" fill="url(#reactGrad)" opacity="0.85"/>
+        <text x="770" y="74" font-family="Space Mono, monospace" font-size="8.5" fill="#3aa0d8" font-weight="700" letter-spacing="1.5" text-anchor="end">REACTIVE RESILIENCE</text>
+
+        <!-- Overlap zone — RIF bridge -->
+        <rect x="380" y="50" width="100" height="38" rx="6" fill="url(#overlapGrad)" opacity="0.5"/>
+        <line x1="430" y1="20" x2="430" y2="50" stroke="rgba(255,255,255,0.2)" stroke-width="1" stroke-dasharray="3,3"/>
+        <text x="430" y="16" font-family="Space Mono, monospace" font-size="8" fill="rgba(255,255,255,0.5)" text-anchor="middle" letter-spacing="1">RIF™ CONNECTS BOTH</text>
+
+        <!-- Disruption event marker -->
+        <line x1="480" y1="44" x2="480" y2="120" stroke="rgba(236,160,48,0.25)" stroke-width="1" stroke-dasharray="4,4"/>
+        <circle cx="480" cy="82" r="5" fill="#eca030" opacity="0.7"/>
+
+        <!-- Arrow at end -->
+        <polygon points="860,78 852,73 852,91" fill="rgba(255,255,255,0.15)"/>
+      </svg>
+    </div>
+
+    <div class="platform-grid">
+
+      <!-- PROACTIVE -->
+      <div class="seg proactive fade-up">
+        <div class="seg-glow"></div>
+        <span class="seg-badge">Live</span>
+        <div class="seg-tag">Proactive Resilience</div>
+        <p class="seg-situation">"We don't know what we don't know — until it's too late."</p>
+        <h3 class="seg-title">See hidden risk before it becomes a disruption</h3>
+        <p class="seg-body">ECC's proactive layer analyses the structural condition of your supply chain continuously — <strong>eight levels deep</strong>. It identifies the nodes that matter most, scores them across four risk vectors, computes how long recovery actually takes from material physics rather than supplier declarations, and tells your team where to act while there is still time.</p>
+        <ul class="seg-points">
+          <li><strong>Material genealogy to Tier 8</strong> — dual-node scoring across supplier and material nodes simultaneously</li>
+          <li><strong>Diamond pattern detection</strong> — identify single nodes holding multiple assemblies hostage, invisible at Tier 1</li>
+          <li><strong>TTR computed, not declared</strong> — the gap between supplier-declared recovery time and physics-based reality can exceed 40 weeks</li>
+          <li><strong>Geographic and tariff exposure</strong> — where a material is processed matters more than where a supplier is headquartered</li>
+          <li><strong>Deep-tier financial health</strong> — track distress trajectory across T1 to T8, not just your direct suppliers</li>
+          <li><strong>100% XAI audit trail</strong> — every risk score traceable to the exact computation that produced it</li>
+        </ul>
+        <a class="seg-link" href="/platform/proactive-resilience">Explore Proactive Resilience →</a>
+        <button class="see-platform-btn" onclick="openCarousel()">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1" y="1" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.3"/><polygon points="5,4 9,6.5 5,9" fill="currentColor"/></svg>
+          See the platform in action
+        </button>
+      </div>
+
+      <!-- REACTIVE -->
+      <div class="seg reactive fade-up d1">
+        <div class="seg-glow"></div>
+        <span class="seg-badge">Live</span>
+        <div class="seg-tag">Reactive Resilience</div>
+        <p class="seg-situation">"We know there's a problem. We don't know what to do about it."</p>
+        <h3 class="seg-title">Respond in minutes with mathematically optimal plans</h3>
+        <p class="seg-body">When a disruption hits, ECC does not generate another alert. It fuses real-time intelligence signals with your operational graph and the <strong>Resilience Intelligence Fabric</strong> — a research-backed knowledge base built from 1,000+ documented disruption cases — to surface ranked, constraint-aware recovery options with the evidence behind each one. Your procurement, operations, and finance leads deliberate on a shared brief. They lock the plan. <strong>The platform informs the decision. Your team owns it.</strong></p>
+        <ul class="seg-points">
+          <li><strong>Multi-source signal fusion</strong> — partner intelligence + SAP operational data → correlated, prioritised alerts</li>
+          <li><strong>Real-time impact assessment</strong> — suppliers → products → revenue exposure, in minutes not days</li>
+          <li><strong>Constraint-aware recommendations</strong> — actions filtered against your actual inventory, capacity, and regulatory constraints</li>
+          <li><strong>Temporal co-optimisation</strong> — disruption onset, vacuum window, and phase-back transition solved as one integrated problem</li>
+          <li><strong>ICA and PCA pathways</strong> — immediate recovery actions and permanent structural fixes, from the same engine</li>
+          <li><strong>Full explainability</strong> — every recommendation comes with a rationale your team can stand behind in a boardroom</li>
+        </ul>
+        <a class="seg-link" href="/platform">Explore Reactive Resilience →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── RIF SECTION ── -->
+<section class="rif">
+  <div class="rif-bg"></div>
+  <div class="container">
+    <div class="rif-inner">
+      <div class="rif-left fade-up">
+        <div class="section-eyebrow">The Intelligence Foundation</div>
+        <h2 class="rif-title">Underneath both layers sits something<br><em>most platforms don't have</em></h2>
+        <p class="rif-body">The Resilience Intelligence Fabric — <strong>RIF</strong> — is a living knowledge system built from 25 years of supply chain disruption research. It spans academic literature, institutional case studies, and documented incident evidence across 20+ disruption domains.</p>
+        <p class="rif-body">RIF does not retrieve generic playbooks. It matches your specific disruption scenario — against your actual operational constraints — to the evidence of what has worked in comparable situations before. The recommendations it surfaces are not what most teams would think to ask for. That is the point.</p>
+        <p class="rif-body">Every disruption ECC processes makes RIF more precise. The knowledge base compounds. The advantage widens over time.</p>
+        <div class="rif-cta-row">
+          <a class="btn-ghost" href="#research">Read the research brief</a>
+        </div>
+      </div>
+      <div class="rif-right fade-up d1">
+        <div class="rif-metrics">
+          <div class="rif-metric">
+            <div class="rif-metric-num">20+</div>
+            <div class="rif-metric-lbl">Disruption domains covered</div>
+          </div>
+          <div class="rif-metric">
+            <div class="rif-metric-num">150+</div>
+            <div class="rif-metric-lbl">Mitigation measures catalogued</div>
+          </div>
+          <div class="rif-metric">
+            <div class="rif-metric-num">1,000+</div>
+            <div class="rif-metric-lbl">Historical disruption cases validated</div>
+          </div>
+          <div class="rif-metric">
+            <div class="rif-metric-num">25 yrs</div>
+            <div class="rif-metric-lbl">Coverage depth — 2000 to present</div>
+          </div>
+        </div>
+        <div class="rif-domains">
+          <div class="rif-domains-label">Intelligence domains</div>
+          <div class="rif-domain-pills">
+            <span class="rif-pill">Supply-Side</span>
+            <span class="rif-pill">Logistics</span>
+            <span class="rif-pill">Geopolitical</span>
+            <span class="rif-pill">Operational</span>
+            <span class="rif-pill">Technology</span>
+            <span class="rif-pill">Health &amp; Regulatory</span>
+            <span class="rif-pill">Market &amp; Demand</span>
+            <span class="rif-pill">Energy &amp; Environment</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── STATS RIBBON ── -->
+<section class="stats-ribbon">
+  <div class="container">
+    <div class="stats-ribbon-inner">
+      <div class="ribbon-stat fade-up">
+        <div class="ribbon-num"><em>30–60%</em></div>
+        <div class="ribbon-lbl">Expected reduction in disruption response costs</div>
+        <div class="ribbon-src">Based on industry benchmarks</div>
+      </div>
+      <div class="ribbon-stat fade-up d1">
+        <div class="ribbon-num"><em>40–60%</em></div>
+        <div class="ribbon-lbl">Faster war-room coordination. Minutes, not hours.</div>
+        <div class="ribbon-src">Expected impact</div>
+      </div>
+      <div class="ribbon-stat fade-up d2">
+        <div class="ribbon-num"><em>85–95%</em></div>
+        <div class="ribbon-lbl">End-to-end detection-to-action confidence</div>
+        <div class="ribbon-src">Combined platform accuracy</div>
+      </div>
+      <div class="ribbon-stat fade-up d3">
+        <div class="ribbon-num"><em>Tier 8</em></div>
+        <div class="ribbon-lbl">Supply chain depth. Most platforms stop at Tier 1 or 2.</div>
+        <div class="ribbon-src">ECC proactive layer</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PARTNER INTELLIGENCE ── -->
+<section class="partner">
+  <div class="container">
+    <div class="partner-inner">
+      <div class="partner-left fade-up">
+        <div class="section-eyebrow">Signal Intelligence</div>
+        <h3 class="section-h2" style="font-size:22px;">Global disruption signals. Processed into decisions.</h3>
+        <p class="section-lead" style="font-size:14px;margin-top:10px;">ECC's reactive layer is fed by a partner intelligence network that monitors global risk events at scale — continuously, across 12 languages, in real time. ECC does not compete at signal volume. It processes those signals into constraint-aware, optimised response plans. The detection is the starting point. The decision is the product.</p>
+      </div>
+      <div class="partner-right fade-up d1">
+        <div class="partner-stat">
+          <div class="partner-num">10M+</div>
+          <div class="partner-lbl">Companies monitored globally</div>
+        </div>
+        <div class="partner-stat">
+          <div class="partner-num">1.9M</div>
+          <div class="partner-lbl">Daily articles processed</div>
+        </div>
+        <div class="partner-stat">
+          <div class="partner-num">600+</div>
+          <div class="partner-lbl">Risk categories classified</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CASE STUDIES ── -->
+<section class="cases" id="cases">
+  <div class="container">
+    <div class="cases-intro fade-up">
+      <div class="section-eyebrow">Industry Cases</div>
+      <h2 class="section-h2">Two cases. Same industry. Different outcomes.</h2>
+      <p class="section-lead">The disruptions that defined the last decade left behind recoverable signal — weeks before they became crises. These briefs show what that signal looked like, and what a differently equipped team would have done with it.</p>
+    </div>
+    <div class="cases-grid">
+
+      <!-- PROACTIVE CASE -->
+      <div class="case-card proactive-case fade-up">
+        <span class="case-tag">Proactive — Early Warning</span>
+        <div class="case-type">Stitch in time</div>
+        <h3 class="case-title">The signals were there. The visibility wasn't.</h3>
+        <p class="case-body">In the months before the 2021 Renesas Naka semiconductor plant fire, the structural fragility of the automotive chip supply base was present in verifiable public data — a single facility producing 30% of global automotive microcontrollers, in a seismically active region, with a documented earthquake disruption at the same plant just one month prior, and zero qualified alternate processing paths at sub-tier level. No OEM had structured visibility into that node. Toyota, Honda, Nissan and Volkswagen all stated on the day of the fire they were "gathering information to assess impact." The fire turned an already fragile situation into a 3-month production halt and contributed to an estimated $210 billion in lost automotive revenue in 2021.</p>
+        <div class="case-insight">"A manufacturer with eight-level supply network visibility and geographic concentration analysis would have had a structural flag on this node — long before March 19. The earthquake one month earlier was a documented precursor. The response could have started then."</div>
+        <a class="case-link" href="#">Download the case brief →</a>
+      </div>
+
+      <!-- REACTIVE CASE -->
+      <div class="case-card reactive-case fade-up d1">
+        <span class="case-tag">Reactive — Response Quality</span>
+        <div class="case-type">Same playbook. Again.</div>
+        <h3 class="case-title">Visibility existed. Strategy didn't.</h3>
+        <p class="case-body">China's power crisis forced 35 of its 50 magnesium smelters to close in September 2021. The EU depended on China for 95% of its magnesium supply. By October 24 — when ACEA and ten other European industry bodies issued a joint emergency statement — European stocks were projected to reach zero within five weeks. The warning was public. The dependency was known. What was missing was a system that could answer: which of my assemblies contain magnesium? Which aluminium alloys, in which components? What is my revenue exposure per week of shortage? And given that every European OEM was simultaneously competing for the same shrinking pool of alternatives, what is the ranked, feasible response — not "build inventory and dual source," but an optimised plan under real constraints?</p>
+        <div class="case-insight">"The issue was not absence of warning. ACEA's alarm was unambiguous. The issue was the absence of a system that could translate that warning into a constraint-aware, prioritised response — faster than a war room could assemble one."</div>
+        <a class="case-link" href="#">Download the case brief →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── ROADMAP ── -->
+<section class="roadmap">
+  <div class="container">
+    <div class="roadmap-intro fade-up">
+      <div class="section-eyebrow">// Your Supply Chain's Digital Brain</div>
+      <h2 class="section-h2">Value chain resilience is where we start.<br>It is not where we stop.</h2>
+      <p class="section-lead" style="margin-top:14px;">The same intelligence architecture — the same data foundation — extends naturally into sustainability and operations optimisation. One platform. Three horizons.</p>
+    </div>
+    <div class="roadmap-grid">
+      <div class="roadmap-card now fade-up">
+        <div class="roadmap-phase">Now — Live</div>
+        <h3 class="roadmap-title">Value Chain Resilience</h3>
+        <p class="roadmap-body">Proactive risk intelligence and reactive disruption response. The full resilience spectrum, built on a research-backed knowledge foundation that gets smarter over time.</p>
+        <ul class="roadmap-items">
+          <li>Proactive Supply Chain Resilience</li>
+          <li>Trade &amp; Tariff Resilience</li>
+          <li>Regulatory &amp; Compliance Resilience</li>
+          <li>Reactive Intelligence &amp; Resilience Copilot</li>
+        </ul>
+      </div>
+      <div class="roadmap-card next fade-up d1">
+        <div class="roadmap-phase">Next — In Development</div>
+        <h3 class="roadmap-title">Sustainability Intelligence</h3>
+        <p class="roadmap-body">The data foundation is already live in the proactive layer. DPP compliance baseline, Scope 3 material intelligence, and regulatory posture readiness — built on the same material graph.</p>
+        <ul class="roadmap-items">
+          <li>EU Digital Product Passport baseline</li>
+          <li>Scope 3 material carbon intelligence</li>
+          <li>CBAM and CSDDD compliance readiness</li>
+          <li>Sustainable sourcing optimisation</li>
+        </ul>
+      </div>
+      <div class="roadmap-card horizon fade-up d2">
+        <div class="roadmap-phase">Horizon — Planned</div>
+        <h3 class="roadmap-title">Value Chain Optimisation</h3>
+        <p class="roadmap-body">From resilience and sustainability intelligence to continuous value chain optimisation — cost, route, demand, and structural efficiency — driven by the same underlying knowledge system.</p>
+        <ul class="roadmap-items">
+          <li>Value chain inefficiency analysis</li>
+          <li>Cost and route optimisation</li>
+          <li>Market intelligence for demand signals</li>
+          <li>Multi-objective constraint optimisation</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PILOT CTA ── -->
+<section class="pilot" id="pilot">
+  <div class="pilot-bg"></div>
+  <div class="container">
+    <div class="pilot-inner">
+      <div class="pilot-left fade-up">
+        <h2 class="pilot-title">We're running a pilot programme with a select number of <em>automotive manufacturers</em>.</h2>
+        <p class="pilot-body">The pilot is scoped to one plant and one vehicle line. It takes four to six weeks. At the end of it, your team will have a fully validated view of your supply chain's structural vulnerabilities — every node scored, every TTR computed, every finding traceable.</p>
+        <p class="pilot-body">No permanent commitment. No sales process. You decide what to do with the output.</p>
+        <div class="pilot-phases">
+          <div class="pilot-phase">
+            <span class="phase-num">01 / Weeks 1–2</span>
+            <div class="phase-content">
+              <div class="phase-title">Data connection</div>
+              <div class="phase-desc">Read-only API integration with your SAP environment. Defined scope. Fully auditable.</div>
+            </div>
+          </div>
+          <div class="pilot-phase">
+            <span class="phase-num">02 / Weeks 2–4</span>
+            <div class="phase-content">
+              <div class="phase-title">Graph build and scoring</div>
+              <div class="phase-desc">Every node scored. Every TTR computed from material physics. Every reasoning chain generated.</div>
+            </div>
+          </div>
+          <div class="pilot-phase">
+            <span class="phase-num">03 / Weeks 5–6</span>
+            <div class="phase-content">
+              <div class="phase-title">Validated output review</div>
+              <div class="phase-desc">Every finding reviewed with your team. Every result traceable. No black boxes.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pilot-right fade-up d1">
+        <div class="pilot-form-card">
+          <div class="form-title">Request Pilot Access</div>
+          <div class="form-sub">We review every application personally. Pilot places are limited.</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>First name</label>
+              <input type="text" placeholder="First name">
+            </div>
+            <div class="form-group">
+              <label>Last name</label>
+              <input type="text" placeholder="Last name">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Work email</label>
+            <input type="email" placeholder="you@company.com">
+          </div>
+          <div class="form-group">
+            <label>Company</label>
+            <input type="text" placeholder="Company name">
+          </div>
+          <div class="form-group">
+            <label>Your role</label>
+            <select>
+              <option value="" disabled selected>Select your role</option>
+              <option>VP / Head of Supply Chain</option>
+              <option>Chief Operating Officer</option>
+              <option>Chief Procurement Officer</option>
+              <option>Supply Chain Director / Manager</option>
+              <option>Procurement Director / Manager</option>
+              <option>Risk &amp; Resilience Lead</option>
+              <option>Other executive / leadership</option>
+            </select>
+          </div>
+          <button class="form-submit">Submit Application</button>
+          <p class="form-note">Your infrastructure. Your data ownership. ECC provisions within your Azure and Neo4j accounts — no multi-tenant deployment.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── RESEARCH DOWNLOAD ── -->
+<section class="research" id="research">
+  <div class="container">
+    <div class="research-inner fade-up">
+      <div class="research-left">
+        <div class="research-tag">Industry Research — Free Download</div>
+        <h3 class="research-title">The Missing Phase: Why Supply Chain Disruption Response Remains Unoptimized</h3>
+        <p class="research-body">A synthesis of academic literature, analyst reports, and practitioner evidence documenting the gap in the SCRM lifecycle that costs enterprises an estimated $43–47M per year. Covers the respond-and-recover phase that no incumbent platform formally addresses — and what closing that gap is architecturally worth.</p>
+      </div>
+      <div class="research-right">
+        <a class="btn-primary" href="#" style="white-space:nowrap;">Download the Report</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo">Ecocomity<span>Chain</span>.AI</div>
+        <div class="footer-tagline">Value chain intelligence for manufacturers who can't afford to be caught off guard.</div>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <div class="footer-col-head">Solutions</div>
+          <a href="/platform/proactive-resilience">Value Chain Resilience</a>
+          <a href="#">Sustainability Intelligence</a>
+          <a href="#">Value Chain Optimisation</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-head">Platform</div>
+          <a href="/platform">Platform Overview</a>
+          <a href="#">Security &amp; Architecture</a>
+          <a href="#">Integration</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-head">Resources</div>
+          <a href="#">Research Report</a>
+          <a href="/blog">Blog</a>
+          <a href="#">About ECC</a>
+          <a href="#pilot">Request Pilot</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 EcocomityChain.AI. All rights reserved.</div>
+      <div class="footer-legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ── PLATFORM CAROUSEL MODAL ── -->
+<div class="modal-overlay" id="platformModal" role="dialog" aria-modal="true" aria-label="Platform screenshots">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title">Platform — Proactive Resilience</span>
+      <button class="modal-close" onclick="closeCarousel()" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-stage">
+      <img id="modalImg" src="" alt="" style="width:100%;display:block;max-height:60vh;object-fit:contain;background:#07090f;">
+    </div>
+    <div class="modal-caption">
+      <div class="modal-caption-tag" id="modalTag"></div>
+      <div class="modal-caption-text" id="modalCaption"></div>
+    </div>
+    <div class="modal-nav">
+      <button class="modal-btn" id="modalPrev" onclick="carouselNav(-1)">← Previous</button>
+      <div class="modal-dots" id="modalDots"></div>
+      <button class="modal-btn" id="modalNext" onclick="carouselNav(1)">Next →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Scroll-triggered fade-up animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+// Form submission placeholder
+document.querySelector('.form-submit').addEventListener('click', function(){
+  const inputs = document.querySelectorAll('.pilot-form-card input, .pilot-form-card select');
+  let filled = true;
+  inputs.forEach(i => { if(!i.value) filled = false; });
+  if(filled){
+    this.textContent = 'Application received — we\'ll be in touch.';
+    this.style.background = 'var(--green)';
+    this.style.color = '#07090f';
+    this.disabled = true;
+  } else {
+    this.textContent = 'Please complete all fields.';
+    setTimeout(() => { this.textContent = 'Submit Application'; }, 2000);
+  }
+});
+
+// Carousel
+const slides = [
+  {
+    src: '/assets/platform/pmg-tree.png',
+    tag: 'Full Supply Network — 8 Levels Deep',
+    caption: 'The complete material genealogy graph for a representative European BEV. 2,733 critical nodes (red) identified across eight BOM levels — from finished assembly to raw ore. Supply edges (blue) show cross-tier dependencies that are invisible at Tier 1 or Tier 2.'
+  },
+  {
+    src: '/assets/platform/diamond-niobium.png',
+    tag: 'Diamond Pattern Detection — Material Node',
+    caption: 'Niobium (Nb) ingot identified as a Type B convergence node — 19 assemblies converging on a single material. Risk score 1.0/1.0. Classification: Structural Criticality. The XAI panel explains precisely why: structural Single Point of Failure caused by material convergence across multiple assembly paths. EU-CRM compliance flag also active.'
+  },
+  {
+    src: '/assets/platform/supplier-detail-xai.png',
+    tag: 'Deep-Tier Supplier — XAI Risk Explanation',
+    caption: 'A Tier 7 supplier scored across three risk vectors: Geopolitical and Compliance Exposure (primary, 100%), Financial Health (secondary, 53%), Dependency Impact (tertiary, 99%). Financial health trajectory shown declining across four quarters. Base TTR computed at 25.7 weeks from material physics — not supplier declaration. Every factor traceable.'
+  },
+  {
+    src: '/assets/platform/world-map-diamond.png',
+    tag: 'Geographic Concentration — Supplier Diamond Formation',
+    caption: '99 critical and high-risk nodes plotted across the global supply network. 1,235 cross-country supply arcs visualised. Dominant risk corridor: USA → Germany, with 81% of single-point-of-failure nodes sourced from a single geography. Concentration this severe is invisible from Tier 1 supplier profiles.'
+  },
+  {
+    src: '/assets/platform/tariff-ndfeb.png',
+    tag: 'Tariff Risk — NdFeB Supply Chain',
+    caption: 'Tariff exposure for a Traction Motor NdFeB magnet chain quantified at $21.47M/yr under conservative (unresolved) origin assessment. The material path — Neodymium Iron Boron through Stator and Rotor assemblies to finished Traction Motor — is traced through the US Customs border. 71% tariff rate applied to the Chinese-origin NdFeB material node.'
+  }
+];
+
+let current = 0;
+
+function buildDots() {
+  const dotsEl = document.getElementById('modalDots');
+  dotsEl.innerHTML = '';
+  slides.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'modal-dot' + (i === current ? ' active' : '');
+    d.setAttribute('aria-label', 'Slide ' + (i+1));
+    d.onclick = () => goToSlide(i);
+    dotsEl.appendChild(d);
+  });
+}
+
+function goToSlide(idx) {
+  current = idx;
+  const s = slides[current];
+  document.getElementById('modalImg').src = s.src;
+  document.getElementById('modalImg').alt = s.tag;
+  document.getElementById('modalTag').textContent = s.tag;
+  document.getElementById('modalCaption').textContent = s.caption;
+  document.getElementById('modalPrev').disabled = current === 0;
+  document.getElementById('modalNext').disabled = current === slides.length - 1;
+  buildDots();
+}
+
+function carouselNav(dir) {
+  const next = current + dir;
+  if(next >= 0 && next < slides.length) goToSlide(next);
+}
+
+function openCarousel() {
+  current = 0;
+  goToSlide(0);
+  document.getElementById('platformModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCarousel() {
+  document.getElementById('platformModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('platformModal').addEventListener('click', function(e){
+  if(e.target === this) closeCarousel();
+});
+
+document.addEventListener('keydown', function(e){
+  const modal = document.getElementById('platformModal');
+  if(!modal.classList.contains('open')) return;
+  if(e.key === 'Escape') closeCarousel();
+  if(e.key === 'ArrowRight') carouselNav(1);
+  if(e.key === 'ArrowLeft') carouselNav(-1);
+});
+</script>
+</body>
+</html>

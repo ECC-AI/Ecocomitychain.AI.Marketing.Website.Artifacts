@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PMG Platform — What No Competitor Can Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:      #07060a;
+    --ink:     #f4f2f8;
+    --ink-dim: #b9b4c7;
+    --line:    rgba(190,180,220,.5);
+    --c-blue:   #3aa0d8;
+    --c-purple: #b06bff;
+    --c-amber:  #eca030;
+    --c-indigo: #6658aa;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: #000; overflow: hidden;
+    font-family: "Space Grotesk", system-ui, sans-serif;
+  }
+  #viewport {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: #000;
+  }
+  #stage {
+    width: 1920px; height: 1080px;
+    transform-origin: center center;
+    position: relative; flex: none;
+  }
+
+  /* ── Slide base ──────────────────────────────────────────────────── */
+  .slide {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(120% 80% at 50% -10%, rgba(124,92,255,.09), transparent 55%),
+      radial-gradient(90%  70% at 50% 120%, rgba(31,200,192,.06), transparent 60%),
+      var(--bg);
+    overflow: hidden; color: var(--ink);
+  }
+  .slide::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(130% 100% at 50% 45%, transparent 58%, rgba(0,0,0,.52));
+  }
+
+  /* ── Header ──────────────────────────────────────────────────────── */
+  .header {
+    position: absolute; top: 58px; left: 0; right: 0;
+    display: flex; flex-direction: column; align-items: center;
+    z-index: 10; text-align: center;
+  }
+  .title-glow {
+    position: absolute; top: -120px; left: 50%; transform: translateX(-50%);
+    width: 1400px; height: 460px; border-radius: 50%;
+    filter: blur(95px); opacity: .38; pointer-events: none; z-index: -1;
+    background: conic-gradient(from 200deg,
+      #7c5cff, #f0428c, #ff6a3d, #ffb23d, #1fc8c0, #4da6ff, #7c5cff);
+  }
+  .tag {
+    font-family: "Space Mono", monospace;
+    font-size: 17px; letter-spacing: .26em; text-transform: uppercase;
+    color: var(--ink-dim); padding: 8px 18px;
+    border: 1px solid rgba(190,180,220,.28); border-radius: 999px;
+    margin-bottom: 20px; background: rgba(255,255,255,.02);
+  }
+  .title {
+    font-size: 74px; font-weight: 700;
+    line-height: .96; letter-spacing: -.025em;
+    margin: 0 0 14px; color: var(--ink);
+  }
+  .subtitle {
+    font-size: 24px; font-weight: 400; color: var(--ink-dim);
+    line-height: 1.4; max-width: 960px; margin: 0 auto;
+  }
+
+  /* ── Stat tiles ──────────────────────────────────────────────────── */
+  .stats-row {
+    position: absolute;
+    left: 64px; right: 64px; top: 316px;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 18px; height: 188px; z-index: 5;
+  }
+  .stat-tile {
+    background: rgba(12,11,18,.82);
+    border-radius: 12px; padding: 20px 26px;
+    border-left: 3px solid var(--accent);
+    display: flex; flex-direction: column; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .stat-tile::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(130% 130% at 0% 50%,
+      rgba(255,255,255,.025), transparent 55%);
+  }
+  .stat-tag {
+    font-family: "Space Mono", monospace;
+    font-size: 11px; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 10px; opacity: .7;
+  }
+  .stat-main {
+    font-size: 36px; font-weight: 700; color: var(--ink);
+    line-height: 1.0; margin-bottom: 9px; letter-spacing: -.01em;
+  }
+  .stat-sub {
+    font-size: 15px; color: var(--ink-dim); line-height: 1.45;
+  }
+
+  /* ── Contrast section ────────────────────────────────────────────── */
+  .contrast {
+    position: absolute;
+    left: 64px; right: 64px; top: 526px;
+    height: 284px;
+    display: grid; grid-template-columns: 1fr 28px 1fr;
+    z-index: 5;
+  }
+  .contrast-panel {
+    border-radius: 12px; padding: 28px 34px;
+    display: flex; flex-direction: column;
+  }
+  .contrast-panel.left {
+    background: rgba(22,5,5,.75);
+    border: 1px solid rgba(200,55,55,.1);
+  }
+  .contrast-panel.right {
+    background: rgba(5,14,24,.75);
+    border: 1px solid rgba(26,104,168,.13);
+  }
+  .contrast-divider {
+    display: flex; align-items: center; justify-content: center;
+  }
+  .c-div-line {
+    width: 1px; height: 78%;
+    background: linear-gradient(180deg,
+      transparent 0%, rgba(190,180,220,.26) 22%,
+      rgba(190,180,220,.26) 78%, transparent 100%);
+  }
+  .cpanel-tag {
+    font-family: "Space Mono", monospace;
+    font-size: 12px; letter-spacing: .2em; text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .contrast-panel.left  .cpanel-tag { color: rgba(215,70,70,.72); }
+  .contrast-panel.right .cpanel-tag { color: rgba(58,160,216,.72); }
+  .contrast-body {
+    font-size: 20px; line-height: 1.58; color: var(--ink-dim);
+  }
+  .contrast-body p { margin: 0 0 10px; }
+  .contrast-body p:last-child { margin: 0; }
+  .contrast-body strong { color: var(--ink); font-weight: 600; }
+
+  /* ── Hook cards ──────────────────────────────────────────────────── */
+  .hooks-row {
+    position: absolute;
+    left: 64px; right: 64px; top: 832px;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 18px; height: 192px; z-index: 5;
+  }
+  .hook-card {
+    background: rgba(12,11,18,.80);
+    border-radius: 10px; padding: 22px 28px;
+    border-top: 2px solid var(--hook-accent);
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .hook-no {
+    font-family: "Space Mono", monospace;
+    font-size: 11px; letter-spacing: .24em; text-transform: uppercase;
+    color: var(--hook-accent); opacity: .65;
+  }
+  .hook-name {
+    font-family: "Space Mono", monospace;
+    font-size: 14px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--ink); font-weight: 700; line-height: 1.2;
+  }
+  .hook-text {
+    font-size: 18px; font-style: italic;
+    color: var(--ink-dim); line-height: 1.48; flex: 1;
+  }
+
+  /* ── Footer ──────────────────────────────────────────────────────── */
+  .footnote {
+    position: absolute; bottom: 20px; left: 64px; right: 64px;
+    font-family: "Space Mono", monospace;
+    font-size: 12px; letter-spacing: .08em;
+    color: rgba(185,180,199,.24); text-align: center;
+  }
+</style>
+</head>
+<body>
+<div id="viewport">
+  <div id="stage">
+    <div class="slide">
+
+      <!-- ── Header ──────────────────────────────────────────────────── -->
+      <div class="header">
+        <div class="title-glow"></div>
+        <span class="tag">ECC · Risk Analytics</span>
+        <h1 class="title">What No Competitor Can Map</h1>
+        <p class="subtitle">Supplier networks end at Tier 2. PMG's material genealogy traces every product to the raw ore — scoring risk at every level of the chain.</p>
+      </div>
+
+      <!-- ── Stat tiles ───────────────────────────────────────────────── -->
+      <div class="stats-row">
+
+        <div class="stat-tile" style="--accent: var(--c-blue)">
+          <div class="stat-tag">Per Vehicle BOM</div>
+          <div class="stat-main">Hundreds of<br>Thousands</div>
+          <div class="stat-sub">of connected nodes — every material,<br>compound, supplier and ore in the graph</div>
+        </div>
+
+        <div class="stat-tile" style="--accent: var(--c-purple)">
+          <div class="stat-tag">Supplier Depth</div>
+          <div class="stat-main">Every Tier</div>
+          <div class="stat-sub">traced from T1 all the way to the<br>mine — not just what procurement sees</div>
+        </div>
+
+        <div class="stat-tile" style="--accent: var(--c-amber)">
+          <div class="stat-tag">Material Genealogy</div>
+          <div class="stat-main">Eight<br>Levels Deep</div>
+          <div class="stat-sub">from final assembly down<br>to the raw ore in the ground</div>
+        </div>
+
+        <div class="stat-tile" style="--accent: var(--c-indigo)">
+          <div class="stat-tag">Risk Explainability</div>
+          <div class="stat-main">Every Single<br>Score</div>
+          <div class="stat-sub">explained — every signal, every weight,<br>zero black boxes across the graph</div>
+        </div>
+
+      </div>
+
+      <!-- ── Contrast section ─────────────────────────────────────────── -->
+      <div class="contrast">
+
+        <div class="contrast-panel left">
+          <div class="cpanel-tag">What every other tool gives you</div>
+          <div class="contrast-body">
+            <p>Supplier X is flagged <strong>HIGH risk</strong>. An alert is sent. An event was detected somewhere in your supply chain.</p>
+            <p>Which components? Unknown. Which assemblies depend on this node? Unknown. What happens downstream if it fails? Not in scope. What should you do about it? Not answered.</p>
+          </div>
+        </div>
+
+        <div class="contrast-divider"><div class="c-div-line"></div></div>
+
+        <div class="contrast-panel right">
+          <div class="cpanel-tag">What material genealogy adds</div>
+          <div class="contrast-body">
+            <p>Which specific materials depend on that source — traced from the supplier's output back to the raw ore it came from, through every chemical transformation in between.</p>
+            <p>Which assemblies across your entire product share that same upstream material — including ones in <strong>completely separate supply chains</strong> drawing from the same underlying ore. Alternate paths already modelled. The answer exists before the question is asked.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── Story hook cards ─────────────────────────────────────────── -->
+      <div class="hooks-row">
+
+        <div class="hook-card" style="--hook-accent: var(--c-amber)">
+          <div class="hook-no">Story 01</div>
+          <div class="hook-name">The Bastnasite<br>Disruption</div>
+          <div class="hook-text">Seven assemblies. One ore. The alternate sourcing path was already modelled in the graph.</div>
+        </div>
+
+        <div class="hook-card" style="--hook-accent: var(--c-purple)">
+          <div class="hook-no">Story 02</div>
+          <div class="hook-name">The Manganese<br>Squeeze</div>
+          <div class="hook-text">The same ore fed the steel chain and the battery cathode through separate supplier paths. Only one was visible to every other tool.</div>
+        </div>
+
+        <div class="hook-card" style="--hook-accent: var(--c-blue)">
+          <div class="hook-no">Story 03</div>
+          <div class="hook-name">The Substitution<br>Trap</div>
+          <div class="hook-text">The replacement magnet had higher China concentration, required more volume, and produced more carbon. Visible only at L8.</div>
+        </div>
+
+      </div>
+
+      <!-- ── Footer ──────────────────────────────────────────────────── -->
+      <div class="footnote">All figures are illustrative — based on a representative modelled automotive BOM &middot; ECC &middot; PMG Platform &middot; 2026</div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var stage = document.getElementById('stage');
+    function fit() {
+      var s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+      stage.style.transform = 'scale(' + s + ')';
+    }
+    window.addEventListener('resize', fit);
+    fit();
+  })();
+</script>
+</body>
+</html>
