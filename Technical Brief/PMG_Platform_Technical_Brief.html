@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PMG Platform — Technical Brief | EcocomityChain.AI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -311,13 +312,19 @@ p strong { color: var(--t1); font-weight: 500; }
 
 /* ── Print ────────────────────────────────────── */
 @media print {
-  body { background: var(--bg); }
+  body { background: var(--bg); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .page {
-    width: 210mm; min-height: 297mm; margin: 0;
+    width: 210mm; min-height: 0; height: auto; margin: 0;
     padding: 16mm 18mm; box-shadow: none;
-    page-break-after: always;
+    page-break-after: always; break-after: page;
+    overflow: hidden;
   }
-  .page:last-child { page-break-after: avoid; }
+  .page:last-child { page-break-after: avoid; break-after: avoid; }
+  /* Prevent content blocks from breaking across pages */
+  .pathway-card, .stat-block, .surface-row, .kv-pair, .phase-card,
+  .contact-box, .af-wrap, .cover-center { break-inside: avoid; }
+  /* Ensure no empty content generates blank pages */
+  .page:empty { display: none; }
 }
 @page { margin: 0; size: A4; }
 </style>
