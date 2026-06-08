@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PMG Platform — Technical Brief | EcocomityChain.AI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -311,14 +312,87 @@ p strong { color: var(--t1); font-weight: 500; }
 
 /* ── Print ────────────────────────────────────── */
 @media print {
-  body { background: var(--bg); }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  body { background: var(--bg); margin: 0; padding: 0; }
+
+  /* Base page — no clipping, natural height, forced page break after each */
   .page {
-    width: 210mm; min-height: 297mm; margin: 0;
-    padding: 16mm 18mm; box-shadow: none;
+    width: 210mm;
+    height: 297mm;
+    margin: 0;
+    padding: 14mm 18mm 12mm;
+    box-shadow: none;
     page-break-after: always;
+    break-after: page;
+    page-break-inside: avoid;
+    overflow: hidden;
+    box-sizing: border-box;
   }
-  .page:last-child { page-break-after: avoid; }
+  .page:last-child {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  /* Page 5: surface-table — 7 rows, reduce size to fit */
+  .surface-table {
+    font-size: 7.5pt !important;
+    line-height: 1.3 !important;
+  }
+  .surface-table td, .surface-table th {
+    padding: 4px 6px !important;
+  }
+  .surface-title { font-size: 8pt !important; }
+  .surface-desc { font-size: 7pt !important; line-height: 1.3 !important; }
+  .surface-tags { font-size: 6.5pt !important; }
+  .surface-num { font-size: 9pt !important; }
+
+  /* Page 6: pathway cards — reduce padding and font */
+  .p-cards {
+    gap: 6mm !important;
+  }
+  .p-card {
+    padding: 10px 12px !important;
+  }
+  .p-card-body {
+    font-size: 8pt !important;
+    line-height: 1.4 !important;
+  }
+  .fabric-callout {
+    padding: 10px 14px !important;
+    font-size: 8pt !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Page 7: two-col layout — tighten spacing */
+  .two-col {
+    gap: 6mm !important;
+  }
+  .check-list li {
+    font-size: 8pt !important;
+    line-height: 1.35 !important;
+    margin-bottom: 3px !important;
+  }
+  .block-card {
+    padding: 10px 12px !important;
+    font-size: 8pt !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Page footer must always be visible */
+  .page-footer {
+    position: absolute !important;
+    bottom: 10mm !important;
+    left: 18mm !important;
+    right: 18mm !important;
+  }
+
+  /* Prevent any single element from breaking across pages */
+  .arch-visual, .af-wrap, .facts-bar, .stat-pair,
+  .p-card, .pilot-phase, .v2-callout, .contact-block { 
+    break-inside: avoid !important; 
+  }
 }
+@page { margin: 0; padding: 0; size: A4; }
 @page { margin: 0; size: A4; }
 </style>
 </head>
@@ -820,6 +894,21 @@ p strong { color: var(--t1); font-weight: 500; }
     The ECC founding team includes a Microsoft-certified Cybersecurity and Solutions Architect.
   </p>
 
+  <div class="page-footer">
+    <span class="page-footer-conf">Confidential · EcocomityChain.AI</span>
+    <span class="page-footer-num">7</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE 7b — DPP DUAL RETURN (overflow from p7)
+════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <span class="page-header-logo">EcocomityChain.<span style="color:var(--amber)">AI</span> · PMG Platform</span>
+    <span class="page-header-section">Integration &amp; Deployment</span>
+  </div>
+
   <hr class="rule">
 
   <p class="eyebrow">DPP dual return</p>
@@ -832,10 +921,9 @@ p strong { color: var(--t1); font-weight: 500; }
 
   <div class="page-footer">
     <span class="page-footer-conf">Confidential · EcocomityChain.AI</span>
-    <span class="page-footer-num">7</span>
+    <span class="page-footer-num">8</span>
   </div>
 </div>
-
 
 <!-- ══════════════════════════════════════════
      PAGE 8 — PILOT + REACTIVE NOTE + CONTACT
@@ -899,7 +987,7 @@ p strong { color: var(--t1); font-weight: 500; }
 
   <div class="page-footer">
     <span class="page-footer-conf">Confidential · EcocomityChain.AI · v1.0</span>
-    <span class="page-footer-num">8</span>
+    <span class="page-footer-num">9</span>
   </div>
 </div>
 

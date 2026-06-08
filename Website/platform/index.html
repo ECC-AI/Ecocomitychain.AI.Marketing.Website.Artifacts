@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Platform — EcocomityChain.AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#07090f; --bg-r:#0c1018; --bg-c:#101622;
+  --border:rgba(255,255,255,0.07); --bhi:rgba(255,255,255,0.14);
+  --amber:#eca030; --adim:rgba(236,160,48,0.10);
+  --blue:#3aa0d8; --bdim:rgba(58,160,216,0.10);
+  --green:#32d282; --purple:#6b58ff;
+  --t1:#dde2f0; --t2:#8898b8; --t3:#4a5570;
+  --mono:"Space Mono",monospace;
+  --body:"Space Grotesk",sans-serif;
+  --disp:"Syne",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--t1);font-family:var(--body);-webkit-font-smoothing:antialiased;}
+.container{max-width:1140px;margin:0 auto;padding:0 32px;}
+
+nav{border-bottom:1px solid var(--border);padding:20px 0;position:sticky;top:0;z-index:100;background:rgba(7,9,15,0.92);backdrop-filter:blur(12px);}
+.nav-inner{max-width:1140px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{font-family:var(--disp);font-size:15px;font-weight:700;letter-spacing:.06em;color:var(--t1);text-decoration:none;}
+.nav-logo span{color:var(--amber);}
+.nav-links{display:flex;gap:32px;}
+.nav-links a{font-size:13px;color:var(--t2);text-decoration:none;transition:color .2s;}
+.nav-links a:hover,.nav-links a.active{color:var(--t1);}
+.nav-cta{font-size:13px;font-weight:600;background:var(--amber);color:#07090f;padding:8px 20px;border-radius:4px;text-decoration:none;}
+
+/* ── HERO ───────────────────────────────── */
+.hero{padding:100px 0 80px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-240px;left:50%;transform:translateX(-50%);width:800px;height:640px;background:radial-gradient(circle,rgba(236,160,48,0.055) 0%,transparent 65%);pointer-events:none;}
+.hero-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin-bottom:22px;}
+.hero h1{font-family:var(--disp);font-size:clamp(38px,5vw,62px);font-weight:800;letter-spacing:-.025em;line-height:1.07;color:var(--t1);margin-bottom:28px;max-width:820px;}
+.hero h1 em{font-style:normal;color:var(--amber);}
+.hero-lead{font-size:18px;color:var(--t2);line-height:1.7;max-width:640px;margin-bottom:20px;}
+.hero-lead strong{color:var(--t1);font-weight:500;}
+.hero-sub{font-size:15px;color:var(--t3);line-height:1.65;max-width:580px;margin-bottom:48px;}
+.hero-actions{display:flex;gap:16px;flex-wrap:wrap;}
+.btn-primary{font-size:14px;font-weight:600;background:var(--amber);color:#07090f;padding:13px 28px;border-radius:4px;text-decoration:none;}
+.btn-secondary{font-size:14px;font-weight:500;border:1px solid var(--bhi);color:var(--t2);padding:13px 28px;border-radius:4px;text-decoration:none;}
+
+/* ── TWO SEGMENTS ───────────────────────── */
+.segments{padding:80px 0;}
+.segments-intro{text-align:center;margin-bottom:56px;}
+.segments-intro h2{font-family:var(--disp);font-size:clamp(24px,3vw,34px);font-weight:700;letter-spacing:-.02em;color:var(--t1);margin-bottom:12px;}
+.segments-intro p{font-size:15px;color:var(--t2);max-width:540px;margin:0 auto;line-height:1.65;}
+.segments-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;border-radius:12px;overflow:hidden;border:1px solid var(--border);}
+.seg-card{background:var(--bg-c);padding:44px 40px;position:relative;}
+.seg-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.seg-card.proactive::before{background:linear-gradient(90deg,var(--amber),rgba(236,160,48,0.3));}
+.seg-card.reactive::before{background:linear-gradient(90deg,var(--blue),rgba(58,160,216,0.3));}
+.seg-tag{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:10px;}
+.seg-card.proactive .seg-tag{color:var(--amber);}
+.seg-card.reactive .seg-tag{color:var(--blue);}
+.seg-situation{font-size:13px;color:var(--t3);font-style:italic;margin-bottom:18px;line-height:1.5;}
+.seg-title{font-family:var(--disp);font-size:22px;font-weight:700;color:var(--t1);margin-bottom:16px;line-height:1.2;letter-spacing:-.01em;}
+.seg-body{font-size:14px;color:var(--t2);line-height:1.7;margin-bottom:20px;}
+.seg-body strong{color:var(--t1);font-weight:500;}
+.seg-points{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:28px;}
+.seg-points li{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--t2);line-height:1.55;}
+.seg-points li::before{font-family:var(--mono);flex:none;margin-top:1px;}
+.seg-card.proactive .seg-points li::before{content:'→';color:var(--amber);}
+.seg-card.reactive .seg-points li::before{content:'→';color:var(--blue);}
+.seg-points li strong{color:var(--t1);font-weight:500;}
+.seg-link{font-size:14px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:8px;}
+.seg-card.proactive .seg-link{color:var(--amber);}
+.seg-card.reactive .seg-link{color:var(--blue);}
+.seg-badge{position:absolute;top:20px;right:20px;font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:3px 9px;border-radius:3px;}
+.badge-live{color:var(--green);background:rgba(50,210,130,0.1);border:1px solid rgba(50,210,130,0.2);}
+.badge-full{color:var(--blue);background:rgba(58,160,216,0.1);border:1px solid rgba(58,160,216,0.2);}
+
+/* ── 4-I FRAMEWORK SECTION ──────────────── */
+.framework{padding:80px 0;background:var(--bg-r);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.framework-header{max-width:640px;margin:0 auto 52px;text-align:center;}
+.framework-header .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin-bottom:14px;}
+.framework-header h2{font-family:var(--disp);font-size:clamp(24px,3vw,34px);font-weight:700;letter-spacing:-.02em;color:var(--t1);margin-bottom:12px;}
+.framework-header p{font-size:15px;color:var(--t2);line-height:1.65;}
+.framework-header p a{color:var(--amber);text-decoration:none;font-family:var(--mono);font-size:12px;}
+.four-i{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.i-card{background:var(--bg-c);padding:28px 24px;}
+.i-letter{font-family:var(--disp);font-size:42px;font-weight:800;letter-spacing:-.03em;line-height:1;margin-bottom:6px;}
+.i-name{font-size:13px;font-weight:600;color:var(--t1);margin-bottom:8px;}
+.i-principle{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--t3);margin-bottom:10px;line-height:1.5;}
+.i-ecc{font-size:12px;color:var(--t2);line-height:1.6;}
+.i-ecc strong{color:var(--t1);font-weight:500;}
+.i-card:nth-child(1) .i-letter{color:var(--amber);}
+.i-card:nth-child(2) .i-letter{color:var(--purple);}
+.i-card:nth-child(3) .i-letter{color:var(--blue);}
+.i-card:nth-child(4) .i-letter{color:var(--green);}
+.framework-note{margin-top:20px;text-align:center;font-size:12px;color:var(--t3);line-height:1.6;}
+
+/* ── CONTINUITY SECTION ──────────────────── */
+.continuity{padding:80px 0;}
+.continuity-inner{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;}
+.continuity-left h2{font-family:var(--disp);font-size:clamp(24px,3vw,34px);font-weight:700;letter-spacing:-.02em;color:var(--t1);margin-bottom:16px;line-height:1.15;}
+.continuity-left p{font-size:15px;color:var(--t2);line-height:1.7;margin-bottom:14px;}
+.continuity-left p strong{color:var(--t1);font-weight:500;}
+.flow-visual{display:flex;flex-direction:column;gap:2px;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.flow-item{padding:18px 20px;background:var(--bg-c);display:flex;align-items:flex-start;gap:14px;}
+.flow-dot{width:8px;height:8px;border-radius:50%;flex:none;margin-top:6px;}
+.flow-item:nth-child(1) .flow-dot{background:var(--amber);box-shadow:0 0 8px rgba(236,160,48,0.5);}
+.flow-item:nth-child(2) .flow-dot{background:var(--blue);box-shadow:0 0 8px rgba(58,160,216,0.5);}
+.flow-item:nth-child(3) .flow-dot{background:var(--green);box-shadow:0 0 8px rgba(50,210,130,0.5);}
+.flow-item:nth-child(4) .flow-dot{background:var(--purple);box-shadow:0 0 8px rgba(107,88,255,0.5);}
+.flow-title{font-size:13px;font-weight:600;color:var(--t1);margin-bottom:3px;}
+.flow-desc{font-size:12px;color:var(--t2);line-height:1.55;}
+
+/* ── ENG CALLOUT ─────────────────────────── */
+.eng-band{padding:40px 0;background:var(--bg-r);border-top:1px solid var(--border);}
+.eng-inner{border:1px solid var(--border);border-radius:10px;padding:26px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px;}
+.eng-tag{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--t3);margin-bottom:6px;}
+.eng-title{font-size:16px;font-weight:600;color:var(--t1);margin-bottom:4px;}
+.eng-desc{font-size:13px;color:var(--t2);max-width:500px;line-height:1.55;}
+.eng-link{font-size:13px;font-weight:600;color:var(--amber);text-decoration:none;white-space:nowrap;}
+
+/* ── CTA ─────────────────────────────────── */
+.cta-band{text-align:center;padding:88px 0;border-top:1px solid var(--border);}
+.cta-headline{font-family:var(--disp);font-size:clamp(26px,4vw,42px);font-weight:800;letter-spacing:-.02em;color:var(--t1);margin-bottom:14px;line-height:1.1;}
+.cta-sub{font-size:16px;color:var(--t2);margin-bottom:32px;line-height:1.6;}
+.cta-note{font-family:var(--mono);font-size:11px;color:var(--t3);letter-spacing:.1em;margin-top:14px;}
+
+footer{border-top:1px solid var(--border);padding:28px 0;}
+.footer-inner{max-width:1140px;margin:0 auto;padding:0 32px;display:flex;justify-content:space-between;align-items:center;}
+.footer-copy{font-family:var(--mono);font-size:11px;color:var(--t3);letter-spacing:.08em;}
+.footer-links{display:flex;gap:24px;}
+.footer-links a{font-size:12px;color:var(--t3);text-decoration:none;}
+
+@media(max-width:900px){
+  .segments-grid,.four-i,.continuity-inner{grid-template-columns:1fr;}
+  .eng-inner{flex-direction:column;align-items:flex-start;}
+  .nav-links{display:none;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="#">Ecocomity<span>Chain</span>.AI</a>
+    <div class="nav-links">
+      <a href="#" class="active">Platform</a>
+      <a href="#">Engineering</a>
+      <a href="#">Blog</a>
+    </div>
+    <a class="nav-cta" href="#contact">Book a Conversation</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="container">
+    <p class="hero-eyebrow">Value Chain Resilience</p>
+    <h1>The supply chains that don't break<br>aren't lucky. <em>They're built differently.</em></h1>
+    <p class="hero-lead">
+      <strong>Built differently means two things.</strong>
+      It means knowing — before a disruption — which vulnerabilities in your value chain
+      could cost you millions and acting on them while there is still time.
+      And it means having a strategy ready for when disruption is inevitable:
+      one that brings your operations back in the shortest time,
+      at the lowest possible cost, grounded in science — not guesswork.
+    </p>
+    <p class="hero-sub">
+      ECC's platform delivers both. Proactive resilience intelligence and
+      reactive response strategy — two complementary capabilities on one platform,
+      informed by the same deep view of your value chain.
+    </p>
+    <div class="hero-actions">
+      <a class="btn-primary" href="/platform/proactive-resilience">Build proactive resilience →</a>
+      <a class="btn-secondary" href="#reactive">Plan your response strategy →</a>
+    </div>
+  </div>
+</div>
+
+<!-- TWO SEGMENTS -->
+<section class="segments">
+  <div class="container">
+    <div class="segments-intro">
+      <h2>Two capabilities. One continuous intelligence.</h2>
+      <p>Each addresses a distinct challenge. Together they form a complete resilience strategy.</p>
+    </div>
+    <div class="segments-grid">
+
+      <!-- PROACTIVE -->
+      <div class="seg-card proactive">
+        <span class="seg-badge badge-live">Live</span>
+        <p class="seg-tag">Before disruption</p>
+        <p class="seg-situation">"We keep getting caught off guard. By the time we know something's wrong, we're already managing a crisis."</p>
+        <h2 class="seg-title">Know what's coming. Act before it arrives.</h2>
+        <p class="seg-body">
+          Proactive resilience intelligence gives your procurement and risk teams
+          continuous visibility into the vulnerabilities building up in your value chain —
+          <strong>before they become events.</strong>
+          The financial argument is straightforward: acting on early intelligence
+          costs a fraction of managing a crisis after the fact.
+        </p>
+        <ul class="seg-points">
+          <li><strong>Risk analytics</strong> surface structural vulnerabilities, geographic concentration, deep-tier supplier stress, and regulatory exposure continuously</li>
+          <li><strong>Prescriptive guidance</strong> turns intelligence into prioritised action — what to do, in what order, with what expected outcome</li>
+          <li><strong>Scientifically grounded</strong> recommendations your engineering and procurement teams can evaluate, challenge, and own</li>
+        </ul>
+        <a class="seg-link" href="/platform/proactive-resilience">Explore proactive resilience →</a>
+      </div>
+
+      <!-- REACTIVE -->
+      <div class="seg-card reactive" id="reactive">
+        <span class="seg-badge badge-full">Live</span>
+        <p class="seg-tag">When disruption hits</p>
+        <p class="seg-situation">"We know something is broken. Now we have 48 hours to decide how to respond — and every option has trade-offs."</p>
+        <h2 class="seg-title">Navigate the chaos. Recover with a strategy.</h2>
+        <p class="seg-body">
+          When disruption is inevitable, the question is not whether you recover —
+          it is how fast and at what cost. These two objectives are in tension.
+          <strong>ECC's ICA Intelligence flows guide your team through a
+          response strategy that navigates both simultaneously</strong>,
+          using mathematical optimization to find the balance your business
+          actually needs.
+        </p>
+        <ul class="seg-points">
+          <li><strong>ICA Intelligence flows</strong> — Immediate Corrective Action planning grounded in the peer-reviewed 4-I framework (Insight · Interpretability · Interactivity · Improvisation)</li>
+          <li><strong>Resilience Copilot</strong> — answers your team's questions at every step of the ICA flow as the situation evolves. Conversational, context-aware, always grounded in your actual exposure</li>
+          <li><strong>Human and system co-created strategy</strong> — your team understands every recommendation through full XAI transparency. You own the decisions</li>
+          <li><strong>Dual objective optimisation</strong> — return to operational state in the shortest possible time, at the lowest mitigation cost. Not one or the other</li>
+        </ul>
+        <a class="seg-link" href="mailto:hello@ecocomitychain.ai">Request a reactive resilience demo →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- 4-I FRAMEWORK -->
+<section class="framework">
+  <div class="container">
+    <div class="framework-header">
+      <p class="eyebrow">Scientific foundation</p>
+      <h2>Decision intelligence — not just AI recommendations</h2>
+      <p>
+        ECC's reactive resilience capability is grounded in the 4-I framework —
+        a peer-reviewed design approach for combining AI with mathematical optimization
+        to empower frontline decision-makers.
+        <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5511218" target="_blank" rel="noopener">→ Read the research</a>
+      </p>
+    </div>
+    <div class="four-i">
+      <div class="i-card">
+        <div class="i-letter">I</div>
+        <p class="i-name">Insight</p>
+        <p class="i-principle">Trusted, up-to-date view of the state</p>
+        <p class="i-ecc">A complete picture of your disruption exposure — which assemblies are affected, which suppliers are at risk, what the cascading impact looks like. <strong>No guessing. No starting from zero.</strong></p>
+      </div>
+      <div class="i-card">
+        <div class="i-letter">I</div>
+        <p class="i-name">Interpretability</p>
+        <p class="i-principle">Explains model logic and trade-offs</p>
+        <p class="i-ecc">Every ICA recommendation comes with transparent reasoning through XAI. Your team understands <strong>why</strong> the platform recommends each action — and can challenge, adjust, and own it.</p>
+      </div>
+      <div class="i-card">
+        <div class="i-letter">I</div>
+        <p class="i-name">Interactivity</p>
+        <p class="i-principle">Conversational what-if analysis</p>
+        <p class="i-ecc">The Resilience Copilot answers your team's questions at every step of the ICA flow. <strong>What if this supplier can't deliver? What does this path cost?</strong> Strategy co-created, not dictated.</p>
+      </div>
+      <div class="i-card">
+        <div class="i-letter">I</div>
+        <p class="i-name">Improvisation</p>
+        <p class="i-principle">Event-driven reoptimisation</p>
+        <p class="i-ecc">As the disruption evolves and new information arrives, the platform reoptimises. <strong>The strategy adapts in real time.</strong> You are not locked into decisions made in the first 48 hours.</p>
+      </div>
+    </div>
+    <p class="framework-note">
+      ECC implements a variant of this framework adapted for value chain disruption response —
+      combining the scientific rigour of mathematical optimisation with the accessibility of conversational AI.
+    </p>
+  </div>
+</section>
+
+<!-- CONTINUITY -->
+<section class="continuity">
+  <div class="container">
+    <div class="continuity-inner">
+      <div class="continuity-left">
+        <p style="font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin-bottom:14px;">Why both capabilities matter</p>
+        <h2>Proactive intelligence doesn't stop when disruption starts</h2>
+        <p>
+          When an event occurs, your reactive response is only as good as
+          the intelligence behind it. Companies that built proactive resilience
+          do not start their ICA planning from scratch.
+          <strong>The exposure map is already built. The risk priorities are already scored.
+          The Resilience Copilot has context from day one.</strong>
+        </p>
+        <p>
+          And every lesson learned from navigating a disruption feeds back
+          into proactive readiness. The two capabilities improve each other
+          over time. That compounding is what separates a resilient supply chain
+          from one that simply survived the last event.
+        </p>
+      </div>
+      <div class="flow-visual">
+        <div class="flow-item">
+          <div class="flow-dot"></div>
+          <div>
+            <p class="flow-title">Early intelligence surfaces the exposure</p>
+            <p class="flow-desc">Risk analytics identify the vulnerability weeks or months before it becomes a crisis. Prescriptive guidance reduces it while there is still time.</p>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-dot"></div>
+          <div>
+            <p class="flow-title">When disruption hits, context is already in place</p>
+            <p class="flow-desc">The ICA flow does not start from zero. The platform already knows which assemblies are exposed, which suppliers matter most, and what the resilience fabric has validated before.</p>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-dot"></div>
+          <div>
+            <p class="flow-title">Copilot guides the team through every decision</p>
+            <p class="flow-desc">Conversational, context-aware, XAI-grounded. Your team asks questions, evaluates trade-offs, and owns the strategy — with the platform as a rigorous partner, not a black box.</p>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-dot"></div>
+          <div>
+            <p class="flow-title">Every response strengthens future readiness</p>
+            <p class="flow-desc">Lessons from the ICA flow feed back into proactive resilience. The resilience fabric grows. The platform gets better at anticipating the patterns your specific supply chain is exposed to.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ENGINEERING CALLOUT -->
+<div class="eng-band">
+  <div class="container">
+    <div class="eng-inner">
+      <div>
+        <p class="eng-tag">From the Engineering team</p>
+        <p class="eng-title">How ECC is built — in engineering depth</p>
+        <p class="eng-desc">Detailed write-ups on the architectural decisions behind the platform. Explainability infrastructure, graph computation patterns, state machine guardrails, agentic orchestration. Written for engineers, by engineers.</p>
+      </div>
+      <a class="eng-link" href="/engineering">Read the Engineering Blog →</a>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="container">
+  <div class="cta-band" id="contact">
+    <h2 class="cta-headline">Ready to build a supply chain<br>that doesn't break?</h2>
+    <p class="cta-sub">A scoped conversation. No commitment. We show you what ECC finds in a value chain like yours.</p>
+    <a class="btn-primary" href="mailto:hello@ecocomitychain.ai">Book a Conversation →</a>
+    <p class="cta-note">Proactive resilience · ICA Intelligence flows · Resilience Copilot</p>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-copy">© 2026 EcocomityChain.AI · All rights reserved</span>
+    <div class="footer-links">
+      <a href="#">Privacy</a><a href="#">Security</a><a href="#">Contact</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

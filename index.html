@@ -978,7 +978,7 @@ const observer = new IntersectionObserver((entries) => {
 document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
 // Pilot form
-document.querySelector('.form-submit').addEventListener('click', function(){
+document.querySelector('.form-submit').addEventListener('click', async function(){
   const form = document.querySelector('.pilot-form-card');
   const inputs = form.querySelectorAll('input, select');
   let filled = true;

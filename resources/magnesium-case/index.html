@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case Brief — The Warning Was Clear | ECC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #07090f; --bg2: #0c1018; --bg3: #101622;
+  --border: rgba(255,255,255,0.07); --bhi: rgba(255,255,255,0.12);
+  --amber: #eca030; --adim: rgba(236,160,48,0.08);
+  --blue: #3aa0d8; --bdim: rgba(58,160,216,0.08); --bbright: rgba(58,160,216,0.15);
+  --green: #32d282;
+  --t1: #dde2f0; --t2: #8898b8; --t3: #4a5570;
+  --mono: "Space Mono", monospace;
+  --body: "Space Grotesk", sans-serif;
+  --display: "Syne", sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--t1);font-family:var(--body);-webkit-font-smoothing:antialiased;min-height:100vh;}
+.page{max-width:800px;margin:0 auto;padding:52px 40px;}
+
+.brief-header{border-bottom:1px solid var(--border);padding-bottom:32px;margin-bottom:36px;}
+.brief-type{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--blue);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.brief-type::before{content:'';width:20px;height:1px;background:var(--blue);opacity:.6;}
+.brief-h1{font-family:var(--display);font-size:clamp(28px,4vw,42px);font-weight:800;letter-spacing:-.03em;line-height:1.08;color:var(--t1);margin-bottom:16px;}
+.brief-h1 em{font-style:normal;color:var(--blue);}
+.brief-lead{font-size:16px;color:var(--t2);line-height:1.72;max-width:640px;}
+.brief-meta{display:flex;gap:28px;flex-wrap:wrap;margin-top:24px;}
+.meta-item{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--t3);}
+.meta-item strong{color:var(--t2);display:block;margin-bottom:3px;}
+
+.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px;}
+.content-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:24px 26px;}
+.content-card.accent-amber{border-top:2px solid var(--amber);}
+.content-card.accent-blue{border-top:2px solid var(--blue);}
+.card-label{font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px;}
+.accent-amber .card-label{color:var(--amber);}
+.accent-blue .card-label{color:var(--blue);}
+.card-h{font-family:var(--display);font-size:16px;font-weight:700;color:var(--t1);margin-bottom:10px;line-height:1.2;letter-spacing:-.01em;}
+.card-body{font-size:13px;color:var(--t2);line-height:1.68;}
+
+.section{margin-bottom:28px;}
+.section-label{font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--t3);margin-bottom:12px;}
+.section-h{font-family:var(--display);font-size:18px;font-weight:700;color:var(--t1);margin-bottom:10px;letter-spacing:-.012em;}
+.section-body{font-size:14px;color:var(--t2);line-height:1.72;}
+.section-body+.section-body{margin-top:10px;}
+
+.timeline{display:flex;flex-direction:column;gap:0;margin:16px 0;}
+.tl-item{display:flex;gap:16px;position:relative;}
+.tl-item:not(:last-child)::after{content:'';position:absolute;left:15px;top:30px;bottom:-1px;width:1px;background:var(--border);}
+.tl-dot{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;font-weight:700;z-index:1;}
+.tl-dot.blue{background:var(--bdim);border:1px solid rgba(58,160,216,0.3);color:var(--blue);}
+.tl-dot.red{background:rgba(220,60,60,0.1);border:1px solid rgba(220,60,60,0.3);color:#e05555;}
+.tl-dot.amber{background:var(--adim);border:1px solid rgba(236,160,48,0.3);color:var(--amber);}
+.tl-dot.dim{background:rgba(255,255,255,0.03);border:1px solid var(--border);color:var(--t3);}
+.tl-content{padding:4px 0 20px;}
+.tl-date{font-family:var(--mono);font-size:10px;color:var(--t3);margin-bottom:3px;letter-spacing:.06em;}
+.tl-text{font-size:13px;color:var(--t2);line-height:1.55;}
+.tl-text strong{color:var(--t1);font-weight:500;}
+
+.stat-row{display:flex;gap:3px;margin:16px 0;}
+.stat-block{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px 18px;text-align:center;}
+.stat-num{font-family:var(--display);font-size:24px;font-weight:800;color:var(--blue);letter-spacing:-.025em;}
+.stat-lbl{font-size:11px;color:var(--t3);margin-top:4px;line-height:1.4;}
+
+.question-block{background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--blue);border-radius:0 6px 6px 0;padding:16px 20px;margin:12px 0;}
+.question-label{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue);margin-bottom:6px;}
+.question-text{font-size:14px;color:var(--t1);line-height:1.55;font-weight:500;}
+.question-why{font-size:12px;color:var(--t3);margin-top:5px;line-height:1.5;}
+
+.ecc-lens{background:var(--bdim);border:1px solid rgba(58,160,216,0.15);border-radius:8px;padding:24px 28px;margin:24px 0;}
+.lens-label{font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);margin-bottom:10px;}
+.lens-h{font-family:var(--display);font-size:17px;font-weight:700;color:var(--t1);margin-bottom:10px;letter-spacing:-.01em;}
+.lens-body{font-size:13px;color:var(--t2);line-height:1.7;}
+.lens-points{list-style:none;margin-top:14px;display:flex;flex-direction:column;gap:9px;}
+.lens-points li{font-size:13px;color:var(--t2);display:flex;gap:10px;line-height:1.55;}
+.lens-points li::before{content:'→';color:var(--blue);flex:none;font-family:var(--mono);font-size:11px;margin-top:1px;}
+.lens-points li strong{color:var(--t1);font-weight:500;}
+
+.playbook-block{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:22px 26px;margin:16px 0;}
+.playbook-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--t3);margin-bottom:12px;}
+.playbook-items{display:flex;gap:12px;flex-wrap:wrap;}
+.playbook-item{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:4px;padding:8px 14px;font-size:12px;color:var(--t2);}
+.playbook-stat{font-family:var(--mono);font-size:10px;color:var(--t3);margin-top:10px;}
+
+.brief-footer{border-top:1px solid var(--border);padding-top:24px;margin-top:36px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px;}
+.footer-cta-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--t3);margin-bottom:8px;}
+.footer-cta-h{font-size:15px;font-weight:600;color:var(--t1);margin-bottom:14px;line-height:1.3;}
+.btn-cta{display:inline-block;background:var(--amber);color:#07090f;font-size:13px;font-weight:700;padding:10px 22px;border-radius:4px;text-decoration:none;font-family:var(--body);}
+.footer-brand{text-align:right;}
+.footer-logo{font-family:var(--display);font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--t2);}
+.footer-logo span{color:var(--amber);}
+.footer-tag{font-size:11px;color:var(--t3);margin-top:3px;}
+.source-note{font-family:var(--mono);font-size:9px;color:var(--t3);margin-top:16px;line-height:1.6;padding-top:16px;border-top:1px solid var(--border);}
+
+@media(max-width:640px){
+  .page{padding:36px 24px;}
+  .content-grid{grid-template-columns:1fr;}
+  .stat-row{flex-direction:column;gap:8px;}
+  .playbook-items{flex-direction:column;}
+}
+@media print{
+  body{background:#07090f;}
+  .page{padding:40px;}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="brief-header">
+    <div class="brief-type">Reactive Resilience — Industry Case Brief</div>
+    <h1 class="brief-h1">The warning was<br><em>unambiguous.</em><br>The response wasn't.</h1>
+    <p class="brief-lead">In October 2021, twelve European industry associations issued a joint emergency statement about an imminent magnesium shortage. European automotive stock was projected to reach zero within five weeks. The warning was clear. What was missing was a system that could translate it into a constraint-aware, executable response — before every OEM reached for the same three levers simultaneously.</p>
+    <div class="brief-meta">
+      <div class="meta-item"><strong>Event</strong>Chinese magnesium shortage</div>
+      <div class="meta-item"><strong>Date</strong>September–December 2021</div>
+      <div class="meta-item"><strong>Sector</strong>Automotive — aluminium alloys</div>
+      <div class="meta-item"><strong>Case type</strong>Reactive — unoptimised response</div>
+    </div>
+  </div>
+
+  <!-- WHAT HAPPENED -->
+  <div class="section">
+    <div class="section-label">What happened</div>
+    <h2 class="section-h">95% dependency. 35 of 50 plants closed. Five weeks to zero stock.</h2>
+    <p class="section-body">China's government curbed domestic power consumption starting in September 2021. The impact on magnesium production was immediate: 35 of China's 50 magnesium smelters in Shaanxi province were forced to close. China accounted for 87% of global magnesium production and 95% of EU magnesium supply. Prices rose from approximately $2,000/tonne to $10,000–$14,000/tonne — a five-to-seven times increase — within weeks.</p>
+    <p class="section-body">Magnesium is embedded in the aluminium alloys used across automotive manufacturing: body panels, gearboxes, seat frames, engine blocks, wheel rims. The automotive sector consumes 35% of global magnesium production. By mid-October, the German Non-Ferrous Metals Association had written to the government stating that European magnesium stocks would be exhausted by end of November 2021.</p>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-block">
+      <div class="stat-num">95%</div>
+      <div class="stat-lbl">EU magnesium supply dependent on China</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-num">35/50</div>
+      <div class="stat-lbl">Shaanxi smelters forced to close</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-num">7×</div>
+      <div class="stat-lbl">Price increase — $2K to $14K/tonne</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-num">5 wks</div>
+      <div class="stat-lbl">Window from public alarm to projected stock exhaustion</div>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="section">
+    <div class="section-label">The sequence</div>
+    <h2 class="section-h">A five-week window. No structured response.</h2>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot blue">W1</div>
+        <div class="tl-content">
+          <div class="tl-date">September 2021</div>
+          <div class="tl-text"><strong>Chinese government energy restrictions begin.</strong> 35 of 50 Shaanxi magnesium smelters halt or reduce production. Prices begin rising. The signal is present in public reporting — but its implications for specific automotive assemblies are not mapped by any OEM.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot blue">W2</div>
+        <div class="tl-content">
+          <div class="tl-date">October 24, 2021</div>
+          <div class="tl-text"><strong>ACEA joint emergency statement issued.</strong> Twelve European industry associations — including ACEA, Eurofer, European Aluminium, and CLEPA — issue a formal call for action. The statement is unambiguous: EU magnesium stocks will be exhausted within weeks. Prices are already at $10,000–$14,000/tonne. Production stoppages across automotive, construction, and packaging are described as imminent.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot amber">!</div>
+        <div class="tl-content">
+          <div class="tl-date">Late October 2021</div>
+          <div class="tl-text"><strong>OEM response begins — under competition.</strong> Volkswagen's purchasing manager publicly confirmed the team was "already taking countermeasures." But every European OEM was simultaneously competing for the same shrinking pool of alternatives. Build inventory where available. Dual source where possible. The three-lever playbook — applied across an industry simultaneously — compressed the alternative supply pool to near-zero.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot dim">→</div>
+        <div class="tl-content">
+          <div class="tl-date">November–December 2021</div>
+          <div class="tl-text"><strong>Partial resolution as China restarts at ~50% capacity.</strong> The European Commission acknowledged ongoing shortages. Automotive production disruptions were contained — but at significantly elevated cost and with no structural resilience improvement for the next shock.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THE MISSING QUESTIONS -->
+  <div class="section">
+    <div class="section-label">The questions that weren't answered fast enough</div>
+    <h2 class="section-h">The warning existed. The structured response didn't.</h2>
+    <p class="section-body">When the ACEA statement landed on October 24, a supply chain leader needed answers to five questions in hours — not days. None of these could be answered without sub-tier supply network visibility and real-time exposure mapping:</p>
+
+    <div class="question-block">
+      <div class="question-label">Question 1</div>
+      <div class="question-text">Which of my assemblies contain magnesium — directly or in an aluminium alloy?</div>
+      <div class="question-why">Without material-level BOM mapping, this question requires weeks of engineering consultation across product lines.</div>
+    </div>
+    <div class="question-block">
+      <div class="question-label">Question 2</div>
+      <div class="question-text">Which of my Tier 2–4 suppliers source from the affected Shaanxi facilities?</div>
+      <div class="question-why">Tier 1 scorecards do not capture this. Most OEMs had no sub-tier visibility into Shaanxi sourcing geography.</div>
+    </div>
+    <div class="question-block">
+      <div class="question-label">Question 3</div>
+      <div class="question-text">What is my exposure in revenue-at-risk per week if stock runs out?</div>
+      <div class="question-why">This requires assembly-level exposure mapping linked to production scheduling data — unavailable without an integrated platform.</div>
+    </div>
+    <div class="question-block">
+      <div class="question-label">Question 4</div>
+      <div class="question-text">Given that every OEM is now competing for the same alternates, what is the optimal response for my specific constraints?</div>
+      <div class="question-why">The playbook answer (build inventory, dual source) collapses when every buyer does it simultaneously. An optimal response requires constraint-aware optimisation, not a standard playbook.</div>
+    </div>
+  </div>
+
+  <!-- THE PLAYBOOK PROBLEM -->
+  <div class="section">
+    <div class="section-label">The response that followed</div>
+    <h2 class="section-h">The same three levers. Again.</h2>
+    <div class="playbook-block">
+      <div class="playbook-label">Standard disruption response — applied across the industry simultaneously</div>
+      <div class="playbook-items">
+        <div class="playbook-item">Build inventory where available</div>
+        <div class="playbook-item">Pursue dual sourcing</div>
+        <div class="playbook-item">Wait for China to restart</div>
+      </div>
+      <div class="playbook-stat">McKinsey (2025): Fewer than 7% of companies introduce genuinely new countermeasures during disruptions. The other 93% apply the same levers, regardless of disruption type.</div>
+    </div>
+    <p class="section-body">The problem with the standard response in this case was structural: every European OEM reached for the same alternates simultaneously. The alternative supply pool — already constrained — was overwhelmed by simultaneous demand. The cost of alternatives reflected competitive pressure, not optimal sourcing. Pre-build decisions were made without knowing which assemblies were actually exposed, because the BOM-level mapping didn't exist.</p>
+  </div>
+
+  <!-- ECC LENS -->
+  <div class="ecc-lens">
+    <div class="lens-label">The ECC lens — what reactive intelligence changes</div>
+    <h2 class="lens-h">From a five-week scramble to a five-day response plan</h2>
+    <p class="lens-body">ECC's reactive layer fuses disruption signals with the operational supply graph — mapping which assemblies are exposed, computing revenue-at-risk, and generating a ranked set of constraint-aware response options. Applied to the October 2021 magnesium shortage, it would have produced the following within hours of the ACEA statement:</p>
+    <ul class="lens-points">
+      <li><strong>Assembly exposure map:</strong> Immediate identification of which vehicle lines and assemblies contain magnesium-bearing aluminium alloys — with revenue-at-risk quantified per assembly per week of shortage.</li>
+      <li><strong>Sub-tier sourcing geography:</strong> Identification of which Tier 2–4 suppliers source from the Shaanxi smelter cluster — before the call for information went out to Tier 1 suppliers.</li>
+      <li><strong>Constraint-aware response options:</strong> Ranked alternatives accounting for the competitive environment — not "dual source" as a generic recommendation, but a schedule of which alternates are viable given competitor demand, lead times, and logistics constraints.</li>
+      <li><strong>ICA and PCA pathways:</strong> Immediate corrective actions (pre-build prioritisation by assembly exposure rank) and permanent corrective actions (geographic diversification of magnesium input sourcing, documented as a structural fix for the next energy restriction event).</li>
+      <li><strong>Full explainability:</strong> Every recommendation traceable to the specific exposure data and constraint that produced it — defensible to procurement leadership, finance, and the board in the first 24 hours.</li>
+    </ul>
+  </div>
+
+  <!-- TWO COLUMN -->
+  <div class="content-grid">
+    <div class="content-card accent-amber">
+      <div class="card-label">Without reactive intelligence</div>
+      <h3 class="card-h">What actually happened</h3>
+      <p class="card-body">A five-week window between the ACEA alarm and projected stock exhaustion was partially consumed by the time needed to understand which assemblies were exposed, which suppliers were affected, and what the alternatives were. The response that followed was the standard playbook — applied under competitive pressure, without optimisation, at elevated cost.</p>
+    </div>
+    <div class="content-card accent-blue">
+      <div class="card-label">With reactive intelligence</div>
+      <h3 class="card-h">What was possible</h3>
+      <p class="card-body">Five weeks is sufficient time for an optimised, constraint-aware response — if the exposure mapping exists. An assembly-level impact assessment, a ranked set of alternatives accounting for competitive dynamics, and a pre-build schedule optimised against production priorities could have been generated within the first 24–48 hours of the ACEA warning. The window was not too short. The tools were.</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="brief-footer">
+    <div class="footer-cta-block">
+      <div class="footer-cta-label">See how ECC responds to disruption</div>
+      <div class="footer-cta-h">From signal to executable plan.<br>In minutes, not weeks.</div>
+      <a class="btn-cta" href="https://www.ecocomitychain.ai/#pilot">Request Pilot Access →</a>
+    </div>
+    <div class="footer-brand">
+      <div class="footer-logo">Ecocomity<span>Chain</span>.AI</div>
+      <div class="footer-tag">Value Chain Intelligence</div>
+    </div>
+  </div>
+
+  <div class="source-note">
+    Sources: ACEA joint statement on magnesium supply shortage (October 24, 2021) · European Parliament question E-004662/2021 · Green Car Congress (October 2021) · IndexBox Global Magnesium Market analysis (October 2021) · Fortune / Reuters magnesium reporting (November 2021) · CIPS Supply Management (November 2021) · Energy Industry Review (January 2022) · McKinsey Supply Chain Risk Pulse 2025 (7% novelty finding). All financial and operational figures are from published public sources. The ECC analysis lens represents ECC's interpretation of what structured reactive intelligence would have produced — not a customer case study.
+  </div>
+
+</div>
+</body>
+</html>
