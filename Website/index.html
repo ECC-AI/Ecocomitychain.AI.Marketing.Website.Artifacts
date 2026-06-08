@@ -983,11 +983,9 @@ document.querySelector('.form-submit').addEventListener('click', function(){
   const inputs = form.querySelectorAll('input, select');
   let filled = true;
   const data = { _subject: 'ECC Pilot Access Application' };
-  inputs.forEach(i => {
+  inputs.forEach(function(i) {
     if(!i.value) filled = false;
-    const label = form.querySelector(\`label[for="\${i.id}"]\`) || i.previousElementSibling;
-    const key = i.placeholder || (label && label.textContent) || i.type;
-    data[key] = i.value;
+    data[i.placeholder || i.name || i.type || 'field'] = i.value;
   });
   if(!filled){
     this.textContent = 'Please complete all fields.';
