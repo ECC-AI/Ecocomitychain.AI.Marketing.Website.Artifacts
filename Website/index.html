@@ -378,7 +378,7 @@ footer{padding:52px 0 40px;border-top:1px solid var(--border);}
         </div>
       </div>
       <a href="/platform">Platform</a>
-      <a href="/blog">Resources</a>
+      <a href="https://www.ecocomitychain.ai/blog">Resources</a>
       <a href="#">About</a>
     </div>
     <a class="nav-cta" href="#pilot">Request Pilot Access</a>
@@ -874,7 +874,7 @@ footer{padding:52px 0 40px;border-top:1px solid var(--border);}
         <div class="footer-col">
           <div class="footer-col-head">Resources</div>
           <a href="#">Research Report</a>
-          <a href="/blog">Blog</a>
+          <a href="https://www.ecocomitychain.ai/blog">Blog</a>
           <a href="#">About ECC</a>
           <a href="#pilot">Request Pilot</a>
         </div>
@@ -997,7 +997,7 @@ document.querySelector('.form-submit').addEventListener('click', function(){
   this.textContent = 'Submitting...';
   this.disabled = true;
   try {
-    const resp = await fetch('https://formspree.io/f/ECC_PILOT_FORM_ID', {
+    const resp = await fetch('https://formspree.io/f/mqeoqpaq', {
       method: 'POST',
       headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
       body: JSON.stringify(data)
@@ -1070,6 +1070,45 @@ function closeTemporalModal() {
 }
 document.getElementById('temporalModal').addEventListener('click', function(e){ if(e.target===this) closeTemporalModal(); });
 
+
+// Report gate functions
+function openReportGate() {
+  document.getElementById('reportGateModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeReportGate() {
+  document.getElementById('reportGateModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+async function submitReportGate() {
+  const email = document.getElementById('reportEmail').value;
+  const company = document.getElementById('reportCompany').value;
+  const btn = document.getElementById('reportSubmitBtn');
+  if (!email || !company) {
+    btn.textContent = 'Please fill both fields';
+    setTimeout(() => { btn.textContent = 'Get the Report'; }, 2000);
+    return;
+  }
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+  try {
+    await fetch('https://formspree.io/f/mykawezp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ email, company, _subject: 'ECC Report Download Request' })
+    });
+  } catch(e) {}
+  btn.textContent = 'Opening report...';
+  btn.style.background = 'var(--green)';
+  btn.style.color = '#07090f';
+  setTimeout(() => {
+    window.open('https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/Website/resources/PMG_Platform_Technical_Brief.pdf', '_blank');
+    closeReportGate();
+  }, 800);
+}
+document.getElementById('reportGateModal').addEventListener('click', function(e) {
+  if (e.target === this) closeReportGate();
+});
 document.addEventListener('keydown', function(e){
   if(document.getElementById('platformModal').classList.contains('open')) {
     if(e.key==='Escape') closeCarousel();
