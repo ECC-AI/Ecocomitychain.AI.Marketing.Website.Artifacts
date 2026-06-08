@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECC — The Five-Phase Resolution Pipeline</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:    #1F4E79;
+    --accent:  #2E75B6;
+    --lightbg: #DEEAF1;
+    --red:     #C00000;
+    --redbg:   #FBEAEA;
+    --amber:   #7F6000;
+    --amberbg: #FFF2CC;
+    --teal:    #196060;
+    --tealbg:  #D4EFEF;
+    --green:   #375623;
+    --greenbg: #E2EFDA;
+    --cobalt:  #003366;
+    --cobaltbg:#D0E4FF;
+    --gray:    #F5F5F5;
+    --mid:     #CCCCCC;
+    --white:   #FFFFFF;
+    --dark:    #1A1A1A;
+    --muted:   #666666;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: #DEDEDE;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px;
+    gap: 24px;
+  }
+
+  .page {
+    width: 794px;
+    background: var(--white);
+    box-shadow: 0 6px 40px rgba(0,0,0,0.18);
+    display: flex;
+    flex-direction: column;
+    min-height: 1020px;
+  }
+
+  /* ─── SHARED HEADER ─── */
+  .hdr {
+    background: var(--cobalt);
+    padding: 20px 26px 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hdr::after {
+    content: '';
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 300px; height: 100%;
+    background: linear-gradient(135deg, transparent 40%, rgba(46,117,182,0.18) 100%);
+    pointer-events: none;
+  }
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #9DC3E6;
+    margin-bottom: 8px;
+  }
+  .headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    font-weight: 900;
+    line-height: 1.1;
+    color: var(--white);
+    max-width: 620px;
+    margin-bottom: 7px;
+  }
+  .headline .hl { color: #FFD966; }
+  .subhead {
+    font-size: 10.5px;
+    font-weight: 300;
+    color: #BDD7EE;
+    font-style: italic;
+    line-height: 1.5;
+    max-width: 640px;
+  }
+  .page-tag {
+    position: absolute;
+    top: 14px; right: 22px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 1px;
+  }
+
+  /* ─── SHARED FOOTER ─── */
+  .ftr {
+    background: var(--navy);
+    padding: 7px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 2px solid var(--accent);
+    margin-top: auto;
+  }
+  .ftr-l, .ftr-r {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7.5px;
+    color: #9DC3E6;
+  }
+  .ftr-c {
+    font-family: 'Playfair Display', serif;
+    font-size: 10px;
+    font-weight: 700;
+    color: #FFD966;
+  }
+
+  /* ══════════════════════════════
+     PAGE 1 — THE PROBLEM
+  ══════════════════════════════ */
+
+  .problem-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 24px;
+  }
+
+  .problem-intro {
+    font-size: 11px;
+    line-height: 1.65;
+    color: var(--dark);
+    margin-bottom: 18px;
+    max-width: 720px;
+    font-weight: 300;
+  }
+  .problem-intro strong { color: var(--navy); font-weight: 700; }
+
+  /* Three problem columns */
+  .problem-cols {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  .prob-col {
+    background: var(--gray);
+    border-top: 3px solid var(--red);
+    padding: 12px 14px;
+  }
+  .prob-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--red);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .prob-title {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 7px;
+    line-height: 1.3;
+  }
+  .prob-text {
+    font-size: 9.5px;
+    line-height: 1.55;
+    color: var(--dark);
+    font-weight: 300;
+  }
+
+  /* Status quo box */
+  .status-quo {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border: 1px solid var(--mid);
+    margin-bottom: 18px;
+  }
+  .sq-cell {
+    padding: 10px 14px;
+    border-right: 1px solid var(--mid);
+  }
+  .sq-cell:last-child { border-right: none; }
+  .sq-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 5px;
+  }
+  .sq-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.0;
+    margin-bottom: 3px;
+  }
+  .sq-sub {
+    font-size: 8.5px;
+    color: var(--muted);
+    line-height: 1.4;
+    font-style: italic;
+  }
+  .sq-red { color: var(--red); }
+  .sq-amber { color: var(--amber); }
+  .sq-navy { color: var(--navy); }
+
+  /* Bridge */
+  .bridge {
+    background: var(--cobalt);
+    padding: 14px 18px;
+    border-left: 4px solid #FFD966;
+    margin-bottom: 0;
+  }
+  .bridge-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #FFD966;
+    margin-bottom: 6px;
+  }
+  .bridge-text {
+    font-size: 10px;
+    color: rgba(255,255,255,0.88);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+  .bridge-text strong { color: var(--white); font-weight: 600; }
+
+  /* How it currently works (reactive) */
+  .reactive-flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 18px;
+    background: var(--redbg);
+    border: 1px solid #E8B0B0;
+    padding: 10px 14px;
+  }
+  .rf-step {
+    flex: 1;
+    text-align: center;
+    padding: 0 8px;
+    position: relative;
+  }
+  .rf-step:not(:last-child)::after {
+    content: '→';
+    position: absolute;
+    right: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: var(--red);
+    font-weight: 700;
+  }
+  .rf-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7.5px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--red);
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+  .rf-text {
+    font-size: 9px;
+    color: var(--dark);
+    line-height: 1.4;
+  }
+  .reactive-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 7px;
+    font-weight: 600;
+  }
+
+  /* ══════════════════════════════
+     PAGE 2 — THE PIPELINE
+  ══════════════════════════════ */
+
+  .pipeline-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 22px;
+  }
+
+  .pipeline-intro {
+    font-size: 10.5px;
+    font-weight: 300;
+    color: var(--muted);
+    margin-bottom: 14px;
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  /* Five phase boxes */
+  .phases {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    border: 1px solid var(--mid);
+    margin-bottom: 0;
+  }
+
+  .phase {
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(255,255,255,0.2);
+  }
+  .phase:last-child { border-right: none; }
+
+  .phase-header {
+    padding: 10px 10px 8px;
+    text-align: center;
+    position: relative;
+  }
+  .phase-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+  }
+  .phase-state {
+    font-family: 'Playfair Display', serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.2;
+  }
+  .phase-basis {
+    font-size: 8px;
+    color: rgba(255,255,255,0.65);
+    font-style: italic;
+    margin-top: 3px;
+    line-height: 1.3;
+  }
+
+  /* Colour each phase header */
+  .ph-1 .phase-header { background: var(--red); }
+  .ph-2 .phase-header { background: #7B5500; }
+  .ph-3 .phase-header { background: var(--teal); }
+  .ph-4 .phase-header { background: var(--green); }
+  .ph-5 .phase-header { background: var(--cobalt); }
+
+  .phase-body {
+    padding: 10px 10px;
+    background: var(--white);
+    flex: 1;
+    border-top: 1px solid var(--mid);
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .phase-exposure {
+    text-align: center;
+  }
+  .pe-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7.5px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 2px;
+  }
+  .pe-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.0;
+  }
+  .pe-note {
+    font-size: 8px;
+    color: var(--muted);
+    font-style: italic;
+    line-height: 1.3;
+  }
+
+  .ph-1 .pe-value { color: var(--red); }
+  .ph-2 .pe-value { color: #7B5500; }
+  .ph-3 .pe-value { color: var(--teal); }
+  .ph-4 .pe-value { color: var(--green); }
+  .ph-5 .pe-value { color: var(--cobalt); }
+
+  .phase-divider {
+    border: none;
+    border-top: 1px solid var(--mid);
+  }
+
+  .phase-action-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7.5px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 2px;
+  }
+  .phase-action {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--dark);
+    line-height: 1.4;
+  }
+
+  .phase-time {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 2px;
+    align-self: flex-start;
+  }
+  .ph-1 .phase-time { background: var(--redbg); color: var(--red); }
+  .ph-2 .phase-time { background: var(--amberbg); color: var(--amber); }
+  .ph-3 .phase-time { background: var(--tealbg); color: var(--teal); }
+  .ph-4 .phase-time { background: var(--greenbg); color: var(--green); }
+  .ph-5 .phase-time { background: var(--cobaltbg); color: var(--cobalt); }
+
+  /* Arrows between phases */
+  .phase-arrows {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    padding: 0;
+    background: var(--white);
+    border-left: 1px solid var(--mid);
+    border-right: 1px solid var(--mid);
+    border-bottom: 1px solid var(--mid);
+  }
+  .arrow-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 4px;
+    border-right: 1px solid var(--mid);
+    font-size: 9px;
+    color: var(--muted);
+    line-height: 1.35;
+    font-style: italic;
+    font-weight: 300;
+    text-align: center;
+  }
+  .arrow-cell:last-child { border-right: none; }
+  .ph-1.arrow-cell { color: var(--red); font-style: normal; font-weight: 600; font-size: 8px; }
+  .ph-2.arrow-cell { color: #7B5500; font-style: normal; font-weight: 600; font-size: 8px; }
+  .ph-3.arrow-cell { color: var(--teal); font-style: normal; font-weight: 600; font-size: 8px; }
+  .ph-4.arrow-cell { color: var(--green); font-style: normal; font-weight: 600; font-size: 8px; }
+  .ph-5.arrow-cell { color: var(--cobalt); font-style: normal; font-weight: 600; font-size: 8px; }
+
+  /* Exposure reduction bar */
+  .exposure-bar-section {
+    margin-top: 13px;
+    margin-bottom: 13px;
+  }
+  .eb-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 7px;
+  }
+  .eb-track {
+    height: 22px;
+    background: var(--gray);
+    border: 1px solid var(--mid);
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+  }
+  .eb-segment {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    font-weight: 600;
+    color: var(--white);
+    transition: width 0.3s;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .eb-resolved { background: var(--green);   width: 97.2%; }
+  .eb-remain   { background: #B0B0B0;         width: 2.8%;  }
+
+  .eb-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+  }
+  .eb-label {
+    font-size: 8.5px;
+    color: var(--muted);
+    font-style: italic;
+  }
+  .eb-label strong { color: var(--dark); font-style: normal; }
+
+  /* Who does what */
+  .actor-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 13px;
+  }
+  .actor-card {
+    padding: 9px 12px;
+    border-top: 2px solid;
+    background: var(--gray);
+  }
+  .actor-card.system  { border-color: var(--accent); }
+  .actor-card.collab  { border-color: var(--amber); }
+  .actor-card.human   { border-color: var(--green); }
+
+  .actor-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7.5px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+  .actor-card.system .actor-label { color: var(--accent); }
+  .actor-card.collab .actor-label { color: var(--amber); }
+  .actor-card.human  .actor-label { color: var(--green); }
+
+  .actor-phases {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 3px;
+  }
+  .actor-desc {
+    font-size: 9px;
+    color: var(--muted);
+    line-height: 1.4;
+    font-weight: 300;
+  }
+
+  /* Closing */
+  .closing-strip {
+    background: var(--navy);
+    padding: 12px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .closing-left {
+    font-size: 9.5px;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.55;
+    font-weight: 300;
+    max-width: 420px;
+  }
+  .closing-left strong { color: var(--white); font-weight: 600; }
+  .closing-right {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #FFD966;
+    text-align: right;
+    line-height: 1.5;
+  }
+
+  @media print {
+    body { background: none; padding: 0; gap: 0; }
+    .page { box-shadow: none; min-height: auto; }
+    .page:nth-child(2) { page-break-before: always; }
+    @page { size: A4 portrait; margin: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     PAGE 1 — THE PROBLEM
+══════════════════════════════════════════ -->
+<div class="page">
+  <div class="hdr">
+    <div class="page-tag">01 / 02</div>
+    <div class="eyebrow">Trade &amp; Tariff Risk Intelligence &nbsp;·&nbsp; ECC / PMG &nbsp;·&nbsp; 2025 / 2026</div>
+    <div class="headline">Most companies discover their tariff exposure<br>the <span class="hl">same way. CBP tells them.</span></div>
+    <div class="subhead">By the time a CF-28 arrives, the duty liability has been accumulating for months or years. The evidence needed to defend the position does not exist. The response window is 30 days.</div>
+  </div>
+
+  <div class="problem-body">
+
+    <!-- How it currently works — reactive -->
+    <div style="margin-bottom:16px;">
+      <div class="reactive-title">The Reactive Discovery Pattern — How It Works Today</div>
+      <div class="reactive-flow">
+        <div class="rf-step">
+          <div class="rf-label">Trigger</div>
+          <div class="rf-text">CBP audit flags unusual classification or routing pattern using AI anomaly detection</div>
+        </div>
+        <div class="rf-step">
+          <div class="rf-label">CF-28 Issued</div>
+          <div class="rf-text">Request for Information arrives. 30-day response window begins. Compliance team scrambles.</div>
+        </div>
+        <div class="rf-step">
+          <div class="rf-label">Documentation Gap</div>
+          <div class="rf-text">No BOM-level evidence. No origin proof below T1. Suppliers unresponsive to urgent requests.</div>
+        </div>
+        <div class="rf-step">
+          <div class="rf-label">CF-29 Action</div>
+          <div class="rf-text">CBP issues Notice of Action. Reclassification applied. Retroactive duties assessed.</div>
+        </div>
+        <div class="rf-step">
+          <div class="rf-label">Penalty</div>
+          <div class="rf-text">Up to 4× unpaid duties under 19 U.S.C. § 1592. No prior disclosure protection available.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Three problem columns -->
+    <div class="problem-cols">
+      <div class="prob-col">
+        <div class="prob-num">01</div>
+        <div class="prob-title">The Reactive Discovery Problem</div>
+        <div class="prob-text">Tariff exposure is invisible until enforcement makes it visible. CBP's Automated Targeting System flags entries using pattern recognition trained on millions of prior cases. By the time a CF-28 arrives, the importer is already the subject of an investigation — not a routine enquiry.</div>
+      </div>
+      <div class="prob-col">
+        <div class="prob-num">02</div>
+        <div class="prob-title">The Visibility Gap</div>
+        <div class="prob-text">Standard supply chain platforms map supplier relationships to Tier 2–3. Tariff liability is determined at L4–L5 — the material chemistry level. This is where Chinese-origin content lives: inside German-assembled motors, inside Japanese-processed components, invisible on the customs entry.</div>
+      </div>
+      <div class="prob-col">
+        <div class="prob-num">03</div>
+        <div class="prob-title">The Response Paralysis</div>
+        <div class="prob-text">Once the CF-28 arrives, the OEM has three options: pay the retroactive duty, provide documentation they don't have, or argue for prior disclosure protection they cannot claim. Every option is expensive. None are good. All were avoidable.</div>
+      </div>
+    </div>
+
+    <!-- Stats row -->
+    <div class="status-quo" style="margin-bottom:18px;">
+      <div class="sq-cell">
+        <div class="sq-label">CBP Collections FY2025</div>
+        <div class="sq-value sq-red">$195B</div>
+        <div class="sq-sub">250% increase from FY2024. The enforcement budget has never been larger.</div>
+      </div>
+      <div class="sq-cell">
+        <div class="sq-label">Max Penalty Multiplier</div>
+        <div class="sq-value sq-amber">4×</div>
+        <div class="sq-sub">Unpaid duties under 19 U.S.C. § 1592(c) gross negligence. No prior disclosure = no protection.</div>
+      </div>
+      <div class="sq-cell">
+        <div class="sq-label">CF-28 Response Window</div>
+        <div class="sq-value sq-navy">30 days</div>
+        <div class="sq-sub">To produce BOM-level evidence of origin and transformation that was never assembled.</div>
+      </div>
+    </div>
+
+    <!-- Bridge to page 2 -->
+    <div class="bridge">
+      <div class="bridge-title">ECC converts this from a reactive crisis into a proactive five-step process.</div>
+      <div class="bridge-text">Every phase of the ECC resolution pipeline has a <strong>specific evidence requirement</strong>, a <strong>quantified dollar exposure</strong>, a <strong>defined action</strong>, and a <strong>timeline</strong>. The CF-28 response package is assembled before CBP sends the form — not after. The overpage shows how.</div>
+    </div>
+
+  </div>
+
+  <div class="ftr">
+    <div class="ftr-l">ECC / PMG Supply Chain Intelligence &nbsp;·&nbsp; Trade &amp; Tariff Risk Intelligence Platform</div>
+    <div class="ftr-c">ecc-pmg.com</div>
+    <div class="ftr-r">Page 1 of 2</div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     PAGE 2 — THE PIPELINE
+══════════════════════════════════════════ -->
+<div class="page">
+  <div class="hdr">
+    <div class="page-tag">02 / 02</div>
+    <div class="eyebrow">Tariff Risk Intelligence &nbsp;·&nbsp; ECC / PMG &nbsp;·&nbsp; The Resolution Pipeline</div>
+    <div class="headline">From <span class="hl">$31.95M at risk</span> to <span class="hl">$0.9M confirmed</span><br>and defended — in five measurable steps.</div>
+    <div class="subhead">Each phase represents a distinct evidence state. Moving through the pipeline reduces exposure, builds legal defensibility, and generates the documentation package that CBP would require on audit. NdFeB magnet chain used as illustrative example — same pipeline applies to any tariff-applicable material stream.</div>
+  </div>
+
+  <div class="pipeline-body">
+
+    <div class="pipeline-intro">Figures based on NdFeB permanent magnet chain (HS 8505.11), traction motor assembly, 150K EV units/year at $1,400 motor value. Section 301 + IEEPA stacked rate: 71%.</div>
+
+    <!-- Five Phase Boxes -->
+    <div class="phases">
+
+      <div class="phase ph-1">
+        <div class="phase-header">
+          <div class="phase-num">PHASE 01</div>
+          <div class="phase-state">Conservative</div>
+          <div class="phase-basis">Automated BOM scoring</div>
+        </div>
+        <div class="phase-body">
+          <div class="phase-exposure">
+            <span class="pe-label">Annual Exposure</span>
+            <div class="pe-value">$31.95M</div>
+            <div class="pe-note">Worst-case CN origin.<br>71% stacked rate applied.</div>
+          </div>
+          <hr class="phase-divider">
+          <div>
+            <div class="phase-action-label">What ECC Does</div>
+            <div class="phase-action">Scores all L4 nodes at worst-case rate. CPD flags Chinese-origin concentration. Full BOM exposure calculated.</div>
+          </div>
+          <div>
+            <div class="phase-action-label">Action Required</div>
+            <div class="phase-action">Compliance team reviews exposure dashboard. Approves Panjiva intelligence queries.</div>
+          </div>
+          <div class="phase-time">⏱ Minutes — fully automated</div>
+        </div>
+      </div>
+
+      <div class="phase ph-2">
+        <div class="phase-header">
+          <div class="phase-num">PHASE 02</div>
+          <div class="phase-state">Intelligence Confirmed</div>
+          <div class="phase-basis">Panjiva trade records</div>
+        </div>
+        <div class="phase-body">
+          <div class="phase-exposure">
+            <span class="pe-label">Annual Exposure</span>
+            <div class="pe-value">$3.1M</div>
+            <div class="pe-note">Panjiva confirms VN<br>transformation. 92% reduction.</div>
+          </div>
+          <hr class="phase-divider">
+          <div>
+            <div class="phase-action-label">What ECC Does</div>
+            <div class="phase-action">Queries Panjiva for HS chapter change (28→85) at TDK Vietnam. Confirms transformation. Recalculates at MFN 2%.</div>
+          </div>
+          <div>
+            <div class="phase-action-label">Action Required</div>
+            <div class="phase-action">Review intelligence findings. Sign pre-drafted attestation request letter to supplier.</div>
+          </div>
+          <div class="phase-time">⏱ Hours — same day</div>
+        </div>
+      </div>
+
+      <div class="phase ph-3">
+        <div class="phase-header">
+          <div class="phase-num">PHASE 03</div>
+          <div class="phase-state">Supplier Declared</div>
+          <div class="phase-basis">Written self-declaration</div>
+        </div>
+        <div class="phase-body">
+          <div class="phase-exposure">
+            <span class="pe-label">Annual Exposure</span>
+            <div class="pe-value">$0.9M</div>
+            <div class="pe-note">Supplier confirms VN origin.<br>Binding on supplier. Not yet formal CO.</div>
+          </div>
+          <hr class="phase-divider">
+          <div>
+            <div class="phase-action-label">What ECC Does</div>
+            <div class="phase-action">Receives supplier declaration. AI validates content against node data. Updates tariff state across all 8 assemblies.</div>
+          </div>
+          <div>
+            <div class="phase-action-label">Action Required</div>
+            <div class="phase-action">Request formal Certificate of Origin or manufacturer's affidavit from T4 supplier.</div>
+          </div>
+          <div class="phase-time">⏱ Days to weeks</div>
+        </div>
+      </div>
+
+      <div class="phase ph-4">
+        <div class="phase-header">
+          <div class="phase-num">PHASE 04</div>
+          <div class="phase-state">Attested Confirmed</div>
+          <div class="phase-basis">Certificate of Origin</div>
+        </div>
+        <div class="phase-body">
+          <div class="phase-exposure">
+            <span class="pe-label">Annual Exposure</span>
+            <div class="pe-value">$0.9M</div>
+            <div class="pe-note">MFN 2% locked. Legally<br>defensible. Audit-ready.</div>
+          </div>
+          <hr class="phase-divider">
+          <div>
+            <div class="phase-action-label">What ECC Does</div>
+            <div class="phase-action">AI extracts CO content. Validates HS codes, facility, transformation description. Writes ATTESTED_CONFIRMED with full audit trail.</div>
+          </div>
+          <div>
+            <div class="phase-action-label">Action Required</div>
+            <div class="phase-action">Update customs filing at confirmed Vietnamese origin + MFN rate. Issue instructions to customs broker.</div>
+          </div>
+          <div class="phase-time">⏱ Weeks — legal review</div>
+        </div>
+      </div>
+
+      <div class="phase ph-5">
+        <div class="phase-header">
+          <div class="phase-num">PHASE 05</div>
+          <div class="phase-state">CBP Disclosure Ready</div>
+          <div class="phase-basis">49-measure validated</div>
+        </div>
+        <div class="phase-body">
+          <div class="phase-exposure">
+            <span class="pe-label">Hidden Exposure</span>
+            <div class="pe-value">$0</div>
+            <div class="pe-note">Full audit trail. CF-28<br>response pre-assembled.</div>
+          </div>
+          <hr class="phase-divider">
+          <div>
+            <div class="phase-action-label">What ECC Does</div>
+            <div class="phase-action">SG-AI TariffRAG validates all 49 duty measures. Confirms no ADD/CVD applies to VN-origin HS 8505.11. Generates CBP prior disclosure narrative if retroactive exposure exists.</div>
+          </div>
+          <div>
+            <div class="phase-action-label">Action Required</div>
+            <div class="phase-action">File updated customs entries or submit CBP prior disclosure. Evidence package complete.</div>
+          </div>
+          <div class="phase-time">⏱ Ready — on demand</div>
+        </div>
+      </div>
+
+    </div><!-- end phases -->
+
+    <!-- Evidence descriptions per phase -->
+    <div class="phase-arrows">
+      <div class="arrow-cell ph-1">ECC auto-scores every L4 node. No data upload required.</div>
+      <div class="arrow-cell ph-2">Panjiva confirms. 92% of exposure resolved. One query.</div>
+      <div class="arrow-cell ph-3">Supplier writes it. ECC pre-drafts it. One letter sent.</div>
+      <div class="arrow-cell ph-4">Formal CO uploaded. AI validates. State locked legally.</div>
+      <div class="arrow-cell ph-5">49 measures cleared. Audit trail complete. Position defended.</div>
+    </div>
+
+    <!-- Exposure reduction bar -->
+    <div class="exposure-bar-section">
+      <div class="eb-title">Annual Exposure Reduction — From Phase 1 to Phase 5</div>
+      <div class="eb-track">
+        <div class="eb-segment eb-resolved">$31.05M resolved &nbsp;·&nbsp; 97.2% of conservative exposure eliminated</div>
+        <div class="eb-segment eb-remain"></div>
+      </div>
+      <div class="eb-labels">
+        <span class="eb-label"><strong>$31.95M</strong> — Phase 1 conservative exposure</span>
+        <span class="eb-label"><strong>$31.05M</strong> — resolved through attestation &nbsp;|&nbsp; <strong>$0.9M</strong> — confirmed MFN exposure (unavoidable)</span>
+      </div>
+    </div>
+
+    <!-- Who does what -->
+    <div class="actor-row">
+      <div class="actor-card system">
+        <div class="actor-label">ECC System — Automated</div>
+        <div class="actor-phases">Phases 1 &amp; 2</div>
+        <div class="actor-desc">BOM scoring, Panjiva queries, HS code validation, state transitions, exposure calculation, cross-assembly aggregation. No human input required.</div>
+      </div>
+      <div class="actor-card collab">
+        <div class="actor-label">ECC + Procurement Team</div>
+        <div class="actor-phases">Phase 3</div>
+        <div class="actor-desc">ECC generates pre-drafted attestation request. Procurement reviews, approves, and sends to T4 supplier. ECC processes response and updates state.</div>
+      </div>
+      <div class="actor-card human">
+        <div class="actor-label">Legal / Compliance Team</div>
+        <div class="actor-phases">Phases 4 &amp; 5</div>
+        <div class="actor-desc">Reviews CO against ECC evidence package. Updates customs filing. If prior-period exposure exists, uses ECC audit trail to file CBP prior disclosure.</div>
+      </div>
+    </div>
+
+    <!-- Closing strip -->
+    <div class="closing-strip">
+      <div class="closing-left">
+        ECC does not replace your customs counsel. It arrives at their door with <strong>the evidence already assembled, the transformation argument already made, and the 49-measure duty calculation already validated.</strong> The lawyer's job goes from six weeks of investigation to two days of review.
+      </div>
+      <div class="closing-right">
+        See your exposure.<br>
+        Prove your origin.<br>
+        Defend your position.
+      </div>
+    </div>
+
+  </div>
+
+  <div class="ftr">
+    <div class="ftr-l">ECC / PMG Supply Chain Intelligence &nbsp;·&nbsp; Trade &amp; Tariff Risk Intelligence Platform</div>
+    <div class="ftr-c">ecc-pmg.com</div>
+    <div class="ftr-r">Page 2 of 2 &nbsp;·&nbsp; May 2026 &nbsp;·&nbsp; For sales use</div>
+  </div>
+</div>
+
+</body>
+</html>
