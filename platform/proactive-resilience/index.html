@@ -225,14 +225,38 @@ footer { border-top: 1px solid var(--border); padding: 28px 0; }
 
 <nav>
   <div class="nav-inner">
-    <a class="nav-logo" href="#">Ecocomity<span>Chain</span>.AI</a>
+    <a class="nav-logo" href="/">Ecocomity<span>Chain</span>.AI</a>
     <div class="nav-links">
-      <a href="#">Platform</a>
-      <a href="#">How It Works</a>
-      <a href="#">Engineering</a>
-      <a href="#">Blog</a>
+      <div class="nav-dropdown">
+        <a href="#">Solutions</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="/platform/proactive-resilience">
+            <div>
+              <div class="dropdown-item-label">Value Chain Resilience</div>
+              <div class="dropdown-item-sub">Proactive + Reactive intelligence</div>
+            </div>
+            <span class="dropdown-badge badge-live">Live</span>
+          </a>
+          <a class="dropdown-item" href="#">
+            <div>
+              <div class="dropdown-item-label">Sustainability Intelligence</div>
+              <div class="dropdown-item-sub">Scope 3, DPP, material compliance</div>
+            </div>
+            <span class="dropdown-badge badge-soon">Coming</span>
+          </a>
+          <a class="dropdown-item" href="#">
+            <div>
+              <div class="dropdown-item-label">Value Chain Optimization</div>
+              <div class="dropdown-item-sub">Cost, route, and efficiency intelligence</div>
+            </div>
+            <span class="dropdown-badge badge-soon">Coming</span>
+          </a>
+        </div>
+      </div>
+      <a href="https://blog.ecocomitychain.ai/blog">Blog</a>
+      <a href="#pilot">How It Works</a>
     </div>
-    <a class="nav-cta" href="#contact">Book a Conversation</a>
+    <a class="nav-cta" href="#pilot">Request Pilot Access</a>
   </div>
 </nav>
 
@@ -738,7 +762,7 @@ footer { border-top: 1px solid var(--border); padding: 28px 0; }
         <p class="download-desc">Architecture, scoring methodology, agent intelligence layer, integration model, and deployment design — written for technical evaluators, procurement architects, and risk leads who want depth before a conversation.</p>
         <p class="download-badge">PDF · 6–8 pages · Requires email</p>
       </div>
-      <a class="btn-primary" href="#">Download Brief →</a>
+      <button class="btn-primary" onclick="openReportGate()" style="border:none;cursor:pointer;font-family:var(--display);">Download Brief →</button>
     </div>
   </div>
 </section>
@@ -816,7 +840,7 @@ footer { border-top: 1px solid var(--border); padding: 28px 0; }
     <div class="cta-band">
       <h2 class="cta-headline">See what lives beneath<br>your Tier 1 suppliers.</h2>
       <p class="cta-sub">A scoped conversation. No commitment. We show you the methodology and what it finds in a value chain like yours.</p>
-      <a class="btn-primary" href="mailto:hello@ecocomitychain.ai">Book a Conversation →</a>
+      <a class="btn-primary" href="#pilot">Request Pilot Access →</a>
       <p class="cta-note">One plant · One vehicle line · 4–6 weeks · No stack changes required</p>
     </div>
   </div>
@@ -841,6 +865,65 @@ function toggleFaq(btn) {
 function togglePrescriptive() {
   document.getElementById('prescriptive-band').classList.toggle('open');
 }
+</script>
+
+<!-- REPORT GATE MODAL -->
+<div style="position:fixed;inset:0;background:rgba(4,5,10,0.92);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;" id="reportGateModal">
+  <div style="background:#0c1018;border:1px solid rgba(255,255,255,0.1);border-radius:12px;width:100%;max-width:460px;margin:20px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid rgba(255,255,255,0.07);">
+      <span style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#dde2f0;">Download Platform Technical Brief</span>
+      <button onclick="closeReportGate()" style="background:none;border:none;color:#4a5570;font-size:20px;cursor:pointer;line-height:1;">✕</button>
+    </div>
+    <div style="padding:28px 24px;">
+      <p style="font-size:13px;color:#8898b8;margin-bottom:20px;line-height:1.6;">Architecture, scoring methodology, integration model and deployment design — written for technical evaluators.</p>
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#4a5570;margin-bottom:6px;">Work email</label>
+        <input type="email" id="reportEmail" placeholder="you@company.com" style="width:100%;padding:10px 14px;background:#07090f;border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:#dde2f0;font-size:14px;box-sizing:border-box;">
+      </div>
+      <div style="margin-bottom:20px;">
+        <label style="display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#4a5570;margin-bottom:6px;">Company</label>
+        <input type="text" id="reportCompany" placeholder="Company name" style="width:100%;padding:10px 14px;background:#07090f;border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:#dde2f0;font-size:14px;box-sizing:border-box;">
+      </div>
+      <button id="reportSubmitBtn" onclick="submitReportGate()" style="width:100%;padding:12px;background:#eca030;border:none;border-radius:6px;color:#07090f;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;cursor:pointer;">Get the Brief</button>
+      <p style="font-size:11px;color:#4a5570;margin-top:10px;text-align:center;">No spam. Download link sent immediately.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+function openReportGate() {
+  document.getElementById('reportGateModal').style.opacity = '1';
+  document.getElementById('reportGateModal').style.pointerEvents = 'all';
+  document.body.style.overflow = 'hidden';
+}
+function closeReportGate() {
+  document.getElementById('reportGateModal').style.opacity = '0';
+  document.getElementById('reportGateModal').style.pointerEvents = 'none';
+  document.body.style.overflow = '';
+}
+async function submitReportGate() {
+  var email = document.getElementById('reportEmail').value;
+  var company = document.getElementById('reportCompany').value;
+  var btn = document.getElementById('reportSubmitBtn');
+  if (!email || !company) { btn.textContent = 'Please fill both fields'; setTimeout(function(){btn.textContent='Get the Brief';},2000); return; }
+  btn.textContent = 'Opening brief...';
+  btn.disabled = true;
+  try {
+    await fetch('https://formspree.io/f/mykawezp', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+      body: JSON.stringify({email: email, company: company, _subject: 'ECC Platform Brief Download - Proactive Page'})
+    });
+  } catch(e) {}
+  btn.style.background = '#32d282';
+  setTimeout(function() {
+    window.open('https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/resources/PMG_Platform_Technical_Brief.pdf', '_blank');
+    closeReportGate();
+  }, 600);
+}
+document.getElementById('reportGateModal').addEventListener('click', function(e) {
+  if (e.target === this) closeReportGate();
+});
 </script>
 </body>
 </html>
