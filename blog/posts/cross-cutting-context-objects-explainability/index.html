@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cross-Cutting Context Objects: Threading Structured Evidence Through a Multi-Engine Pipeline | EcocomityChain.AI</title>
+<meta name="description" content="Explainability is infrastructure, not a feature. How we built a cross-cutting context object that accumulates structured reasoning across independent scoring engines — and why post-hoc reconstruction is not enough.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07090f;--bg-c:#0c1018;--amber:#eca030;--blue:#3aa0d8;--green:#32d282;--t1:#dde2f0;--t2:#8898b8;--t3:#4a5570;--border:rgba(255,255,255,0.07);--display:'Syne',sans-serif;--body:'Space Grotesk',sans-serif;--mono:'Space Mono',monospace;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);color:var(--t1);font-family:var(--body);line-height:1.6;}
+a{color:var(--amber);text-decoration:none;}
+a:hover{text-decoration:underline;}
+nav{position:sticky;top:0;z-index:100;background:rgba(7,9,15,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+.nav-inner{max-width:820px;margin:0 auto;padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{font-family:var(--display);font-weight:800;font-size:16px;color:var(--t1);text-decoration:none;}
+.nav-logo span{color:var(--amber);}
+.nav-back{font-size:13px;color:var(--t2);text-decoration:none;display:flex;align-items:center;gap:6px;}
+.nav-back:hover{color:var(--t1);text-decoration:none;}
+.post-container{max-width:720px;margin:0 auto;padding:60px 24px 100px;}
+.post-meta{display:flex;align-items:center;gap:12px;margin-bottom:32px;flex-wrap:wrap;}
+.post-cat{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#3aa0d8;background:rgba(255,255,255,0.05);padding:4px 10px;border-radius:4px;border:1px solid rgba(255,255,255,0.08);}
+.post-date{font-family:var(--mono);font-size:11px;color:var(--t3);}
+.post-title{font-family:var(--display);font-size:clamp(26px,4vw,40px);font-weight:800;line-height:1.15;letter-spacing:-.02em;color:var(--t1);margin-bottom:20px;}
+.post-excerpt{font-size:17px;color:var(--t2);line-height:1.65;margin-bottom:40px;padding-bottom:40px;border-bottom:1px solid var(--border);font-style:italic;}
+.post-h1{font-family:var(--display);font-size:26px;font-weight:700;color:var(--t1);margin:40px 0 14px;letter-spacing:-.01em;}
+.post-h2{font-family:var(--display);font-size:20px;font-weight:700;color:var(--t1);margin:32px 0 12px;}
+.post-h3{font-family:var(--display);font-size:16px;font-weight:600;color:var(--amber);margin:24px 0 8px;letter-spacing:.02em;}
+.post-p{font-size:16px;color:var(--t2);line-height:1.75;margin-bottom:18px;}
+.post-p strong{color:var(--t1);font-weight:600;}
+.post-p em{color:var(--t2);font-style:italic;}
+.post-rule{border:none;border-top:1px solid var(--border);margin:32px 0;}
+.post-quote{border-left:3px solid var(--amber);padding:14px 20px;margin:28px 0;background:rgba(236,160,48,0.05);border-radius:0 6px 6px 0;}
+.post-quote p,.post-quote{font-size:15px;color:var(--t1);font-style:italic;line-height:1.65;}
+.post-footer{margin-top:64px;padding-top:32px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:gap;gap:16px;}
+.post-footer-back{font-size:14px;color:var(--t2);text-decoration:none;}
+.post-footer-back:hover{color:var(--amber);text-decoration:none;}
+.post-cta{background:var(--amber);color:#07090f;padding:12px 24px;border-radius:6px;font-family:var(--display);font-weight:700;font-size:14px;text-decoration:none;}
+.post-cta:hover{background:#d4901e;text-decoration:none;}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="/">Ecocomity<span>Chain</span>.AI</a>
+    <a class="nav-back" href="/blog">← All posts</a>
+  </div>
+</nav>
+<div class="post-container">
+  <div class="post-meta">
+    <span class="post-cat">Engineering Excellence</span>
+    <span class="post-date">June 2026</span>
+  </div>
+  <h1 class="post-title">Cross-Cutting Context Objects: Threading Structured Evidence Through a Multi-Engine Pipeline</h1>
+  <p class="post-excerpt">Explainability is infrastructure, not a feature. How we built a cross-cutting context object that accumulates structured reasoning across independent scoring engines — and why post-hoc reconstruction is not enough.</p>
+  <div class="post-body">
+<h2 class="post-h1">Cross-Cutting Context Objects: Threading Structured Evidence Through a Multi-Engine Pipeline</h2>
+<p class="post-p"><em>By [Author Name], Engineering @ EcocomityChain</em></p>
+<hr class="post-rule">
+<h3 class="post-h2">The Hard Way</h3>
+<p class="post-p">During a validation session for our tariff compliance layer, a team member asked us to walk through why a Tier 7 rare earth ore supplier had been rated at higher risk than a Tier 1 assembly partner with three times the annual procurement spend. We had the score. We had the risk bucket. We had the label for the dominant vector. What we did not have was a structured answer to <em>why</em> Vector B outweighed Vector D for that specific supplier at that specific assessment cycle.</p>
+<p class="post-p">The reasoning had existed in engine memory for approximately 40 milliseconds. Then it was gone.</p>
+<p class="post-p">We had logs. We had the final numbers. What we didn't have was the causal chain — which upstream engine set the preconditions that downstream engines consumed, what weight each signal received at the moment of computation, and why the threshold comparison that tipped the score went the way it did. We had built three independent scoring engines, got the numbers right, and shipped. We had planned to add explainability afterwards.</p>
+<p class="post-p">This is the first mistake. By the time you try to explain a score after the fact, the reasoning context is gone.</p>
+<p class="post-p">The key insight that reframed our architecture: <strong>explainability is infrastructure, not a feature.</strong> It cannot be added after the scoring pipeline is built, because the reasoning context that needs to be captured only exists during computation — live in engine memory, discarded when the engine returns a number. The moment the engine exits, that context is unrecoverable. Logs are not a substitute. Post-hoc LLM summarisation is not a substitute. Reconstruction is not the same as capture.</p>
+<p class="post-p">This post describes the pattern we built instead: a cross-cutting context object that accumulates structured evidence across N independent engines, without coupling them, and serves that evidence to three fundamentally different consumers.</p>
+<p class="post-p">Our risk analytics platform scores ~170,000 nodes across an 8-level bill-of-materials graph. The scoring pipeline consists of multiple independent engines: a `DerivedPropertiesEngine` that detects pre-conditions (geographic concentration, structural single-points-of-failure, financial distress signals), a `TTRPICalculator` that computes time-to-recover and performance impact, a `RiskSeverityEngine` that produces a weighted multi-vector score, and — more recently — agentic tariff compliance workflows. Each engine has its own domain logic, its own data sources, its own computation model. No engine knows about the others.</p>
+<p class="post-p">The question this post addresses: <strong>how do you design a first-class data object that accumulates structured evidence across N independent engines, without coupling them to each other, and then serve that evidence to three fundamentally different consumers?</strong></p>
+<hr class="post-rule">
+<h3 class="post-h2">The Alternatives We Rejected</h3>
+<h4 class="post-h3">Option 1: Logging</h4>
+<p class="post-p">Every engine already logs. We could parse log files to reconstruct explanations.</p>
+<p class="post-p">The problem isn't volume — it's structure. A log line says `"geo_concentration=0.87 exceeds threshold 0.80"`. But it doesn't say whether that <strong>increased</strong> or <strong>decreased</strong> the risk score, what <strong>weight</strong> it carried, or which <strong>engine</strong> produced it relative to the others in the pipeline. Logs are append-only text streams with no semantic meaning. You cannot build a UI from them. You cannot feed them to a copilot for question-answering. You cannot present them to a regulator as an audit trail.</p>
+<h4 class="post-h3">Option 2: Per-Engine Explanation Endpoints</h4>
+<p class="post-p">Each engine exposes a `/explain` route. The caller stitches N separate explanations together.</p>
+<p class="post-p">This creates two problems. First, Engine 3's explanation depends on Engine 2's output — explaining why Vector B was weighted at 40% requires knowing that the diamond pattern was already detected upstream. The caller becomes an explanation orchestrator, tightly coupled to every engine's internals. Second, the stitching logic itself is a source of bugs: if you add Engine 7, every stitching call site needs to be updated. You've moved the coupling from the engines to the explanation layer.</p>
+<h4 class="post-h3">Option 3: Post-Hoc LLM Summarisation</h4>
+<p class="post-p">Feed the final score plus the raw inputs to an LLM and ask "why is this supplier high risk?"</p>
+<p class="post-p">This is fast to build and produces plausible-sounding text. It is also the most dangerous option in a regulated environment. The LLM is <strong>reasoning about the score</strong> — it might infer a justification that sounds correct but doesn't match what the engine actually computed. If Vector B dominated because of a FHR threshold breach, but the LLM attributes the high score to geographic concentration (which is a more "interesting" story), you have an explanation that contradicts the math. In a CBP audit, that's not just unhelpful — it's a liability.</p>
+<p class="post-p">All three options share the same structural mistake: they treat explainability as something that reads the scoring result and infers a narrative. But the reasoning context only exists <strong>during</strong> computation, not after.</p>
+<hr class="post-rule">
+<h3 class="post-h2">The Pattern: A First-Class Accumulator Object</h3>
+<p class="post-p">The `ExplanationContext` is created at the start of each entity assessment and threaded through every engine that touches that entity. An `ExplanationStep` is a single reasoning event — one threshold comparison, one weight assignment, one signal activation — recorded as structured data with a declared impact direction (`INCREASES_RISK`, `DECREASES_RISK`, `NEUTRAL`, or `SETS_CONTEXT`). An `ExplanationDimension` captures a complete scored risk dimension: its weight, its contribution to the final score, the rationale, and the signals that drove it. The `FinalVerdict` is the terminal record: bucket, score, dominant factor, weighting rationale.</p>
+<p class="post-p">Each engine receives the `ExplanationContext` as a parameter, calls `add_step()` and `add_dimension()` as it computes, and passes it along. No engine reads what previous engines wrote — it only appends.</p>
+<p class="post-p">Here is the actual class:</p>
+<p class="post-p">```python class ExplanationContext: """ Audit trail object — created per entity, passed through all engines. Each engine adds reasoning steps and dimensions; ExplainabilityEngine converts to NL at the end. """</p>
+<p class="post-p">def __init__(self, entity_type: str, entity_id: str, entity_name: str, computation_context: dict = None): self.entity_type = entity_type       # "supplier" | "material" self.entity_id = entity_id self.entity_name = entity_name self.steps: List[ExplanationStep] = [] self.dimensions: List[ExplanationDimension] = [] self.final_verdict: Optional[FinalVerdict] = None self.created_at = datetime.utcnow().isoformat() + "Z" self.computation_context: dict = computation_context or {} self._step_counter: dict = {}  # For generating unique step_ids per engine</p>
+<p class="post-p">def add_step(self, engine: str, description: str, technical_detail: dict = None, impact: str = "NEUTRAL") -> None: """Append a reasoning step to the audit trail.""" if engine not in self._step_counter: self._step_counter[engine] = 1 else: self._step_counter[engine] += 1 step_id = f"{engine}_{self._step_counter[engine]:03d}" self.steps.append(ExplanationStep( engine=engine, step_id=step_id, description=description, technical_detail=technical_detail or {}, impact=impact )) ```</p>
+<p class="post-p">And here is what a single `ExplanationStep` looks like:</p>
+<p class="post-p">```python @dataclass class ExplanationStep: engine: str              # "DERIVED_PROPERTIES" | "TTR_PI" | "RISK_SEVERITY" step_id: str             # Unique within context: "DERIVED_PROPERTIES_001" description: str         # Human-readable: what was computed and why technical_detail: dict   # Raw values: {"threshold": 0.80, "actual": 0.87} impact: str = "NEUTRAL"  # "INCREASES_RISK" | "DECREASES_RISK" | "NEUTRAL" | "SETS_CONTEXT" timestamp: str = ...     # ISO timestamp ```</p>
+<p class="post-p">The `impact` field is the critical design decision. It's not computed from the score — the engine that produces the step <strong>declares</strong> whether this computation increases or decreases risk. This is a direct extension of the core principle: impact direction must be captured at computation time, not inferred afterwards. The same problem that makes post-hoc LLM summarisation dangerous applies here too. Downstream consumers (UI, copilot, auditor) get a machine-readable signal direction without ever needing to reverse-engineer the scoring math.</p>
+<hr class="post-rule">
+<h3 class="post-h2">How Engines Participate</h3>
+<p class="post-p">Each engine in the pipeline receives the `ExplanationContext` as an optional parameter (`ctx`). The contract is simple: if `ctx` is not None, append your reasoning steps. If it is None, compute the score without explanation (useful for batch performance testing where xAI overhead is unwanted).</p>
+<h4 class="post-h3">DerivedPropertiesEngine — Signal Detection</h4>
+<p class="post-p">The first engine in the pipeline detects pre-conditions: geographic concentration, diamond patterns (structural single-points-of-failure), financial distress signals, quality degradation. Each detection becomes a step:</p>
+<p class="post-p">```python def _add_derived_property_steps(entity_data: dict, ctx: ExplanationContext) -> None: geo_conc = entity_data.get("geographic_concentration") if geo_conc and geo_conc > 0.80: dominant = entity_data.get("dominant_supplier_country", "unknown") ctx.add_step( engine="DERIVED_PROPERTIES", description=( f"Vector D signal activated: geo_concentration={geo_conc:.2f} " f"exceeds threshold 0.80. Dominant sourcing country: {dominant}." ), technical_detail={ "geo_concentration": geo_conc, "threshold": 0.80, "dominant_country": dominant }, impact="INCREASES_RISK", )</p>
+<p class="post-p">is_diamond = entity_data.get("is_diamond_node") if is_diamond: diamond_type = entity_data.get("diamond_type", "MATERIAL_CONVERGENCE") ctx.add_step( engine="DERIVED_PROPERTIES", description=( f"Diamond pattern detected ({diamond_type}): node converges " f"{entity_data.get('diamond_assembly_count', '?')} assembly paths. " f"Structural SPOF risk elevated." ), technical_detail={ "diamond_type": diamond_type, "is_diamond": True }, impact="INCREASES_RISK", ) ```</p>
+<p class="post-p">Notice: the `DerivedPropertiesEngine` doesn't know that a `RiskSeverityEngine` will run next. It doesn't know what weights its signals will receive. It just records what it found and tags the impact direction.</p>
+<h4 class="post-h3">TTRPICalculator — Supply Chain Depth</h4>
+<p class="post-p">The second engine computes time-to-recover and performance impact. Its steps explain how the numbers were derived — not just the output, but the propagation logic:</p>
+<p class="post-p">```python if inherited_ttr is not None: base_ttr_context = ( f" (supplier's own base TTR: {base_ttr} weeks)" if base_ttr is not None and base_ttr != inherited_ttr else "" ) ctx.add_step( engine="TTR_PI", description=( f"Inherited TTR = {inherited_ttr} weeks — the maximum time-to-recover " f"propagated from the deepest upstream supply chain node{base_ttr_context}. " f"Exposure window = {exposure_weeks} weeks beyond JIT buffer " f"({self.TTS_JIT_WEEKS} weeks)." ), technical_detail={ "inherited_ttr_weeks": inherited_ttr, "base_ttr_weeks": base_ttr, "tts_jit_weeks": self.TTS_JIT_WEEKS, "exposure_weeks": exposure_weeks, }, impact="SETS_CONTEXT", ) ```</p>
+<p class="post-p">The `SETS_CONTEXT` impact tag is deliberate — TTR doesn't directly increase or decrease the risk score, but it provides context that influences downstream weighting. The distinction matters in the UI: steps tagged `SETS_CONTEXT` are rendered differently from steps tagged `INCREASES_RISK`.</p>
+<h4 class="post-h3">RiskSeverityEngine — Weighted Multi-Vector Scoring</h4>
+<p class="post-p">The final scoring engine records both per-dimension contributions and the aggregation logic:</p>
+<p class="post-p">```python</p>
+<h2 class="post-h1">ExplanationContext instrumentation inside RiskSeverityEngine</h2>
+<p class="post-p">if ctx is not None: for i, assessment in enumerate(sorted_dimensions): dim_code, dim_display_name = _DIMENSION_CODE_MAP.get( assessment.name, (assessment.name.upper(), assessment.label) ) ctx.add_dimension( name=dim_display_name, dimension_code=dim_code, score=assessment.score, weight=assessment.weight, rationale=f"{assessment.summary} Weight={assessment.weight<em>100:.0f}% of final score.", signals=list(assessment.evidence), is_primary=(i == 0 and assessment.score >= 0.1), ) ctx.add_step( engine="RISK_SEVERITY", description=( f"{dim_display_name}: score={assessment.score:.2f}, " f"weight={assessment.weight</em>100:.0f}%, " f"contribution={assessment.score <em> assessment.weight:.2f}." ), technical_detail={ "dimension": assessment.name, "score": assessment.score, "weight": assessment.weight, "contribution": assessment.score </em> assessment.weight, }, impact="INCREASES_RISK" if assessment.score >= 0.25 else "NEUTRAL", )</p>
+<p class="post-p">ctx.set_final( bucket=risk_bucket, score=risk_score, dominant_factor=dominant_factor, weighting_rationale=weighting_rationale, color=risk_color, ) ```</p>
+<p class="post-p">At this point, the `ExplanationContext` contains the complete reasoning chain: 2-3 steps from signal detection, 2 steps from TTR/PI calculation, 6+ steps from multi-vector scoring (one per dimension plus the final verdict). A typical supplier assessment produces 10-12 steps.</p>
+<p class="post-p">The engines don't coordinate. They don't know about each other's steps. The `ExplanationContext` is the only connective tissue — and its contract is trivially simple: `add_step()`, `add_dimension()`, `set_final()`.</p>
+<blockquote class="post-quote"><strong>[DIAGRAM 1 — ExplanationContext Flow]</strong></blockquote>
+<blockquote class="post-quote"></blockquote>
+<blockquote class="post-quote">Horizontal pipeline with 4 engine boxes: `DerivedPropertiesEngine` → `TTRPICalculator` → `RiskSeverityEngine` → `ExplainabilityEngine`. A single `ExplanationContext` document flows left-to-right, growing taller (more steps appended) at each engine. Each engine box shows example steps being added. The `ExplainabilityEngine` at the end splits into two outputs: human-readable NL and structured JSON.</blockquote>
+<hr class="post-rule">
+<h3 class="post-h2">The LLM's Role: Humaniser, Not Reasoner</h3>
+<p class="post-p">After all engines have run, the `ExplanationContext` is complete. But it's structured data — step_ids, dimension codes, technical_detail dictionaries. A compliance analyst doesn't want to read JSON.</p>
+<p class="post-p">This is where the LLM enters. But its role is precisely scoped: <strong>translate structured evidence into professional prose</strong>. The LLM never reasons about why the score is what it is. It receives the complete context — every step, every dimension, every weight, the final verdict — and is instructed to write a narrative that faithfully represents what the engines actually computed.</p>
+<p class="post-p">The `ExplanationContext` class has a `to_llm_prompt()` method that builds a deterministic, structured prompt:</p>
+<p class="post-p">```python def to_llm_prompt(self) -> str: steps_text = "\n".join([ f"{i+1}. [{s.engine}] {s.step_id}: {s.description}\n   Impact: {s.impact}" for i, s in enumerate(self.steps) ]) dimensions_text = "\n".join([ f"- {d.name} (code: {d.dimension_code}): score={d.score:.2f}, " f"weight={d.weight:.2f} ({d.weighted_contribution:.2f} contribution)\n" f"  Rationale: {d.rationale}\n" f"  Signals: {', '.join(d.signals) if d.signals else 'none'}\n" f"  Primary driver: {d.is_primary}" for d in self.dimensions ]) # ... entity context, final verdict, instructions return prompt.strip() ```</p>
+<p class="post-p">The `ExplainabilityEngine` wraps this in a GPT-4.1 call with low temperature (0.2) for consistent output:</p>
+<p class="post-p">```python class ExplainabilityEngine: def __init__(self, llm_client): self.llm_client = llm_client self.model = "gpt-4.1" self.temperature = 0.2  # Low temperature for consistent, professional output</p>
+<p class="post-p">def generate(self, ctx: ExplanationContext) -> ExplanationResult: """ Takes completed ExplanationContext, calls GPT-4.1, returns ExplanationResult. Handles LLM failures gracefully — falls back to template-based explanation. """ ```</p>
+<p class="post-p">Why this separation matters: if the LLM hallucinates or the API call fails, the structured evidence in the `ExplanationContext` is still intact. The `ExplainabilityEngine` has a `_template_fallback()` method that generates a rule-based explanation from the context without any LLM call. The LLM is a rendering layer, not a reasoning layer. Swap it, upgrade it, or disable it — the evidence trail is unchanged.</p>
+<blockquote class="post-quote"><strong>[DIAGRAM 2 — Single ExplanationStep Anatomy]</strong></blockquote>
+<blockquote class="post-quote"></blockquote>
+<blockquote class="post-quote">A blown-up card view of one ExplanationStep:</blockquote>
+<blockquote class="post-quote">```</blockquote>
+<blockquote class="post-quote">┌─────────────────────────────────────────────────┐</blockquote>
+<blockquote class="post-quote">│ engine: RISK_SEVERITY                           │</blockquote>
+<blockquote class="post-quote">│ step_id: RISK_SEVERITY_003                      │</blockquote>
+<blockquote class="post-quote">│ description: "Vector D (Geopolitical): score=   │</blockquote>
+<blockquote class="post-quote">│   0.65, weight=25%, contribution=0.16.          │</blockquote>
+<blockquote class="post-quote">│   Taiwan concentration 85% exceeds threshold."  │</blockquote>
+<blockquote class="post-quote">│ technical_detail:                                │</blockquote>
+<blockquote class="post-quote">│   { dimension: "geo_concentration",             │</blockquote>
+<blockquote class="post-quote">│     score: 0.65, weight: 0.25,                  │</blockquote>
+<blockquote class="post-quote">│     contribution: 0.16 }                        │</blockquote>
+<blockquote class="post-quote">│ impact: INCREASES_RISK ▲                        │</blockquote>
+<blockquote class="post-quote">│ timestamp: 2026-04-25T08:12:03Z                 │</blockquote>
+<blockquote class="post-quote">└─────────────────────────────────────────────────┘</blockquote>
+<blockquote class="post-quote">```</blockquote>
+<blockquote class="post-quote">Caption: "Not a log line. A structured evidence record with declared impact direction."</blockquote>
+<hr class="post-rule">
+<h3 class="post-h2">Scaling the Pattern: From 12 Engine Steps to 40+ Agentic Steps</h3>
+<p class="post-p">The `ExplanationContext` was designed for deterministic engines that produce 10-12 steps per entity. Then we introduced agentic tariff compliance workflows, and the pattern was stress-tested.</p>
+<h4 class="post-h3">The Tariff xAI Challenge</h4>
+<p class="post-p">The tariff compliance layer adds an AI agent (the `TariffWorkerAgent`) that operates in a ReAct loop: it gathers external trade intelligence (Panjiva shipment records, supplier verification data), evaluates which regulatory case applies, and writes a scoring decision to the graph. A single agent run can involve:</p>
+<p class="post-p">- <strong>NODE_SELECTION</strong> — deterministic Tier-0 step recording why this node was flagged for tariff analysis (origin country, HS code, rate stack, conservative exposure calculation) - <strong>STATE_TRANSITION</strong> — the agent moves the node from one compliance state to another (e.g., `SCORED_CONSERVATIVE → INTELLIGENCE_CONFIRMED`), recording the evidence that justified the transition - <strong>ATTESTATION</strong> — a supplier declaration or certificate of origin arrives, triggering a transition to `SUPPLIER_DECLARED` or `ATTESTED_CONFIRMED`</p>
+<p class="post-p">Each of these events produces an `ExplanationStep` with the same schema as the deterministic engines — `engine`, `step_id`, `description`, `technical_detail`, `impact`, `timestamp` — but with additional tariff-specific fields:</p>
+<p class="post-p">```json { "engine": "TARIFF_RISK_AGENT", "step_id": "TARIFF_RISK_AGENT_4:abc123_1716312736", "event_type": "STATE_TRANSITION", "state_from": "SCORED_CONSERVATIVE", "state_to": "INTELLIGENCE_CONFIRMED", "impact": "DECREASES_RISK", "description": "Panjiva confirmed VN origin via 47 shipments. HS chapter change 28→85 confirmed.", "technical_detail": { "source": "Panjiva", "record_ref": "PANJ-2024-VN-8505-00441", "rate_before": 0.71, "rate_after": 0.02, "annual_exposure_before": 31950000, "annual_exposure_after": 900000 }, "timestamp": "2026-05-21T19:12:16Z" } ```</p>
+<p class="post-p">A single material node that goes through the full compliance lifecycle (conservative scoring → Panjiva intelligence → supplier declaration → formal attestation) accumulates 4-6 tariff xAI steps on top of the initial 10-12 deterministic risk steps. For a complex material with multiple enrichment rounds, the count can reach 40+ steps.</p>
+<h4 class="post-h3">What Didn't Need to Change</h4>
+<p class="post-p">The `ExplanationStep` schema is identical. The tariff agent uses the same `engine`, `step_id`, `description`, `technical_detail`, `impact` fields. The only addition is `event_type` (NODE_SELECTION / INITIAL_SCORING / STATE_TRANSITION / ATTESTATION) which drives timeline rendering in the UI.</p>
+<p class="post-p">The accumulator pattern scaled without modification — append-only semantics means the tariff agent simply appends more steps to the same array. The deterministic engines wrote 12 steps; the agentic layer writes 12 + N more. No schema migration, no breaking change.</p>
+<h4 class="post-h3">What Did Need to Change: The PENDING Write Fence</h4>
+<p class="post-p">The agentic layer introduced a crash-safety concern that the deterministic pipeline didn't have. If the `TariffWorkerAgent` dies mid-run, the node's tariff state must not be left in an inconsistent state. The solution was a write fence: before calling the agent, the orchestrator atomically writes:</p>
+<p class="post-p">```cypher SET n.tariff_state = 'PENDING', n.tariff_state_pending_prior = CASE WHEN n.tariff_state IS NOT NULL AND n.tariff_state <> 'PENDING' THEN n.tariff_state ELSE n.tariff_state_pending_prior END, n.tariff_checkpoint_at = $timestamp ```</p>
+<p class="post-p">This creates a problem for the explanation trail: by the time the agent's write tool runs, the node's `tariff_state` in Neo4j is `PENDING`, not the actual prior state. Reading `tariff_state` directly would always yield `PENDING` → wrong `state_from` → incorrect explanation step.</p>
+<p class="post-p">The solution is <strong>backward iteration</strong> through the stored explanation steps:</p>
+<p class="post-p">```python for step in reversed(existing_steps): candidate = step.get("state_to") if candidate and candidate not in ("PENDING", "SCORING_QUEUED"): state_from = candidate break ```</p>
+<blockquote class="post-quote"><strong>The trail serves double duty: audit trail for humans, state-reconstruction mechanism for the system itself.</strong> We didn't design this second use case. It emerged from the append-only semantics and the decision to treat the trail as canonical state. If you'd asked us during design whether the explanation trail would become load-bearing infrastructure for crash recovery, we would have said no.</blockquote>
+<p class="post-p">The explanation trail is not just an output artifact — it became the system of record for deriving prior state. That's an emergent property of append-only accumulation: once you commit to "the trail is always the truth," other parts of the system can rely on it too.</p>
+<hr class="post-rule">
+<h3 class="post-h2">Dual Consumers: Same Data, Different Interfaces</h3>
+<p class="post-p">The same `ExplanationContext` feeds two completely different output paths through two methods on the same class.</p>
+<h4 class="post-h3">Consumer 1: Human-Readable UI (via LLM)</h4>
+<p class="post-p">The `to_llm_prompt()` method builds a structured prompt that gets sent to GPT-4.1. The output is a 2-3 sentence `summary` plus per-factor `ExplainedFactor` objects, each with a full NL explanation. This is what appears in the risk detail panel when an analyst clicks on a supplier.</p>
+<p class="post-p">Example output for a specific supplier:</p>
+<blockquote class="post-quote">*"Acme Electronics is rated HIGH risk, primarily driven by active financial distress signals. An FHR of 42 places the company in the distressed range with a 68% probability of default within 12 months — the model's highest-weighted factor. A secondary concentration risk from Taiwan (85% of sourcing) amplifies this assessment."*</blockquote>
+<p class="post-p">Every claim in that text maps to a specific `ExplanationStep` in the context. The LLM's temperature is 0.2 — it isn't generating creative prose, it's translating structured evidence into professional narrative. If the LLM call fails, the `_template_fallback()` method generates a mechanical but accurate explanation from the same data.</p>
+<h4 class="post-h3">Consumer 2: RAG / Copilot (via Structured Text)</h4>
+<p class="post-p">The `to_rag_chunk()` method produces a dense, semantically-tagged text block optimised for vector store indexing:</p>
+<p class="post-p">```python def to_rag_chunk(self) -> str: # Entity header with machine-readable tags rag_sections.append( f"[ENTITY_TYPE: {self.entity_type}] [ENTITY_ID: {self.entity_id}]\n" f"[RISK_BUCKET: {verdict.bucket}] [SCORE: {verdict.score}/25]" ) # Risk drivers by priority order rag_sections.append( f"PRIMARY_DRIVER: {d.name}. Score={d.score:.2f}, Weight={d.weight:.0%}.\n" f"{d.rationale} Signals: {', '.join(d.signals)}." ) # Bucket logic from SETS_CONTEXT steps bucket_steps = [s for s in self.steps if s.impact == "SETS_CONTEXT" and "bucket" in s.description.lower()] rag_sections.append(f"BUCKET_LOGIC: " + " ".join(s.description for s in bucket_steps)) # ... ```</p>
+<p class="post-p">When a user asks the copilot "why is Acme Electronics high risk?", the retrieval system finds this chunk by semantic similarity and returns the facts — not a re-interpretation. The copilot's LLM generates a response from the retrieved structured evidence, grounded in the same data that produced the original score. Two LLM calls, both constrained by the same source-of-truth `ExplanationContext`.</p>
+<h4 class="post-h3">Why Not One Format?</h4>
+<p class="post-p">NL prose is lossy — it's readable but drops precision. Structured text preserves precision but isn't readable. The `ExplanationContext` is the canonical representation; the two output methods are projections of the same data for different access patterns. If we had used only one format, one consumer would always be underserved.</p>
+<blockquote class="post-quote"><strong>[DIAGRAM 3 — Dual Consumer Fork]</strong></blockquote>
+<blockquote class="post-quote"></blockquote>
+<blockquote class="post-quote">Y-shaped diagram. `ExplanationContext` sits at the fork point. LEFT branch → `to_llm_prompt()` → GPT-4.1 (low temperature) → NL summary for UI panel. RIGHT branch → `to_rag_chunk()` → structured text → Copilot vector store for question-answering. Annotation: "Same data object. Two rendering paths. The LLM translates — it never reasons."</blockquote>
+<hr class="post-rule">
+<h3 class="post-h2">Change Detection: When to Re-Explain</h3>
+<p class="post-p">Re-generating explanations is expensive (LLM calls, token costs, latency). The `ExplanationContext` includes a `has_material_change()` method that compares the current context against a previous one:</p>
+<p class="post-p">```python def has_material_change(self, previous_context: Optional["ExplanationContext"]) -> bool: if not previous_context: return True  # First time → always generate</p>
+<p class="post-p">return False ```</p>
+<p class="post-p">A `context_hash` (SHA-256 of the inputs) is stored on the entity node in Neo4j alongside the summary. During refresh cycles, the hash is compared before invoking the LLM. If the inputs haven't changed, the existing explanation is reused. This typically avoids regeneration for 60-70% of entities in a refresh cycle.</p>
+<hr class="post-rule">
+<h3 class="post-h2">Honest Limitations</h3>
+<h4 class="post-h3">Linear Growth</h4>
+<p class="post-p">The context object grows linearly with pipeline depth. A deterministic assessment produces ~12 steps. A tariff-enriched assessment reaches 20-25 steps. A node that goes through multiple enrichment rounds can hit 40+ steps. We chose "accumulate everything, filter at read time" over "selective recording" because selective recording requires every engine to know which steps are "important" — a coupling we wanted to avoid.</p>
+<p class="post-p">The tradeoff: serialisation cost at the tail. For the top 5% of nodes by step count, the `ExplanationContext` JSON exceeds 15KB. We store the full `ExplanationResult` on a linked `ExplanationNode` in Neo4j (not as a node property, which has practical size limits) and keep only the 2-3 sentence summary as a direct property for fast list-view reads.</p>
+<h4 class="post-h3">Synthesis as Backfill</h4>
+<p class="post-p">Not every node enters the pipeline through the orchestrator. Some are seeded directly (for demos or data migration), bypassing the engines entirely. These nodes have scores but no explanation trail. A `_synthesise_explanation_steps()` function reconstructs a plausible trace from the node's persisted properties — but it's reverse-engineering, exactly the anti-pattern we designed against. Synthesis is a pragmatic concession: it's deterministic (same properties → same output), but it doesn't capture the original reasoning.</p>
+<p class="post-p">We track which explanations are synthesised (`"synthesised": true` in the API response) so consumers can distinguish between genuine audit trails and reconstructed ones.</p>
+<h4 class="post-h3">The LLM Is a Rendering Dependency</h4>
+<p class="post-p">If the LLM provider is down, the human-readable summary is unavailable until it recovers (or the template fallback kicks in). The structured evidence in the `ExplanationContext` and the RAG chunk are unaffected — they don't touch the LLM at all. But the UI panel shows a degraded experience. We consider this acceptable because the <em>data</em> is never lost, only the <em>presentation</em> is delayed.</p>
+<hr class="post-rule">
+<h3 class="post-h2">Production Numbers</h3>
+<p class="post-p">- <strong>Entities scored</strong>: ~170,000 nodes per batch cycle - <strong>Steps per deterministic assessment</strong>: 10-12 (3 engines × 3-4 steps each) - <strong>Steps per tariff-enriched assessment</strong>: 20-40 (deterministic base + agent ReAct trace) - <strong>ExplanationResult stored</strong>: linked `ExplanationNode` in Neo4j (no 64KB property limit) - <strong>Summary property</strong>: 2-3 sentences on the entity node itself (zero-hop read in list views) - <strong>Regeneration skip rate</strong>: 60-70% of entities unchanged between refresh cycles (hash-based) - <strong>LLM fallback rate</strong>: <2% of calls use template fallback (GPT-4.1 reliability at low temperature)</p>
+<hr class="post-rule">
+<h3 class="post-h2">Conclusion</h3>
+<p class="post-p">The `ExplanationContext` pattern — an append-only accumulator threaded through N independent engines — solved the cross-engine coupling problem cleanly. But the more durable finding was something we didn't design for: append-only, structured evidence collection becomes load-bearing in unexpected ways. The trail became the system's own state-reconstruction mechanism when the agentic layer introduced crash-safety requirements. Explainability that lives in a cross-cutting accumulator is explainability that exists when you need it. Everything else is forensics.</p>
+<p class="post-p">The pattern is also extensible in the direction the system is already heading. As the platform moves toward human-in-the-loop workflows, every step will carry `actor_type` (SYSTEM vs. HUMAN) and `proof_docs` (blob references to the actual source documents — Panjiva PDFs, supplier declarations, certificates of origin). Human overrides create new steps, never mutate existing ones. The append-only property makes this natural. The audit trail becomes a complete compliance timeline: system recommended X, human overrode to Y at timestamp T, document Z is why.</p>
+<hr class="post-rule">
+<p class="post-p"><em>Tags: Distributed Systems, Explainability, Multi-Engine Architecture, Audit Trail, Software Design Patterns</em></p>
+  </div>
+  <div class="post-footer">
+    <a class="post-footer-back" href="/blog">← Back to all posts</a>
+    <a class="post-cta" href="/#pilot">Request Pilot Access</a>
+  </div>
+</div>
+</body>
+</html>
