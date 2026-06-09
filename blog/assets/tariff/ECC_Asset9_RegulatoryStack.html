@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECC Asset 9 — Regulatory Stack: One Material Graph. Every Mandate.</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:     #1F4E79;
+    --accent:   #2E75B6;
+    --lightbg:  #DEEAF1;
+    --red:      #C00000;
+    --redbg:    #FBEAEA;
+    --amber:    #7F6000;
+    --amberbg:  #FFF2CC;
+    --teal:     #196060;
+    --tealbg:   #D4EFEF;
+    --green:    #375623;
+    --greenbg:  #E2EFDA;
+    --cobalt:   #003366;
+    --cobaltbg: #D0E4FF;
+    --gray:     #F5F5F5;
+    --mid:      #CCCCCC;
+    --white:    #FFFFFF;
+    --dark:     #1A1A1A;
+    --muted:    #666666;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: #DEDEDE;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px;
+    gap: 24px;
+  }
+
+  .page {
+    width: 794px;
+    background: var(--white);
+    box-shadow: 0 6px 40px rgba(0,0,0,0.18);
+    display: flex;
+    flex-direction: column;
+    min-height: 1020px;
+  }
+
+  /* ── HEADER ── */
+  .hdr {
+    background: var(--cobalt);
+    padding: 20px 26px 17px;
+  }
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #9DC3E6;
+    margin-bottom: 8px;
+  }
+  .headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.15;
+    margin-bottom: 8px;
+  }
+  .subhead {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 300;
+    font-style: italic;
+    color: #BDD7EE;
+    line-height: 1.55;
+    max-width: 700px;
+  }
+
+  /* ── BODY WRAP ── */
+  .body-wrap {
+    padding: 16px 26px 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 5px;
+  }
+
+  /* ── REGULATION MAP TABLE ── */
+  .reg-group-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7.5px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    margin-bottom: 0;
+  }
+  .reg-group-label.active { background: var(--navy); color: #9DC3E6; }
+  .reg-group-label.roadmap { background: var(--amber); color: #FFF8E1; margin-top: 6px; }
+
+  table.reg-map {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9px;
+  }
+  table.reg-map thead tr { background: var(--lightbg); }
+  table.reg-map thead th {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7.5px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--navy);
+    padding: 5px 10px;
+    text-align: left;
+    border-bottom: 2px solid var(--accent);
+  }
+  table.reg-map tbody tr:nth-child(odd)  { background: var(--white); }
+  table.reg-map tbody tr:nth-child(even) { background: var(--gray); }
+  table.reg-map tbody td {
+    padding: 6px 10px;
+    font-size: 9px;
+    line-height: 1.45;
+    vertical-align: top;
+    border-bottom: 1px solid var(--mid);
+    color: var(--dark);
+  }
+  table.reg-map tbody td:first-child {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8.5px;
+    font-weight: 600;
+    color: var(--navy);
+    white-space: nowrap;
+    width: 130px;
+  }
+  table.reg-map tbody td:nth-child(2) {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    color: var(--muted);
+    white-space: nowrap;
+    width: 70px;
+  }
+  /* Roadmap rows */
+  table.reg-map tr.roadmap-row td:first-child { color: var(--amber); }
+  table.reg-map tr.roadmap-row { background: var(--amberbg) !important; }
+
+  /* ── COBALT CALLOUT ── */
+  .callout-cobalt {
+    background: var(--cobalt);
+    padding: 12px 16px;
+    border-radius: 2px;
+  }
+  .callout-cobalt-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7.5px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #9DC3E6;
+    margin-bottom: 5px;
+  }
+  .callout-cobalt-text {
+    font-size: 9.5px;
+    font-weight: 300;
+    color: #BDD7EE;
+    line-height: 1.6;
+  }
+  .callout-cobalt-text strong {
+    color: var(--white);
+    font-weight: 600;
+  }
+
+  /* ── THREE COLUMN BREAKDOWN (Page 2) ── */
+  .three-col {
+    display: flex;
+    gap: 10px;
+  }
+  .cap-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .cap-col-hdr {
+    padding: 7px 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7.5px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+  }
+  .cap-col-hdr.c1 { background: var(--navy);   color: var(--white); }
+  .cap-col-hdr.c2 { background: #375623;        color: var(--white); }
+  .cap-col-hdr.c3 { background: var(--accent);  color: var(--white); }
+  .cap-col-body {
+    flex: 1;
+    padding: 9px 10px;
+    font-size: 9px;
+    line-height: 1.5;
+    color: var(--dark);
+    border: 1px solid var(--mid);
+    border-top: none;
+  }
+  .cap-col-body.c1 { background: var(--lightbg); }
+  .cap-col-body.c2 { background: var(--greenbg); }
+  .cap-col-body.c3 { background: var(--cobaltbg); }
+  .cap-col-body ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .cap-col-body ul li {
+    padding-left: 12px;
+    position: relative;
+    font-size: 8.5px;
+  }
+  .cap-col-body.c1 ul li::before { content: '→'; position: absolute; left: 0; color: var(--navy); font-size: 8px; }
+  .cap-col-body.c2 ul li::before { content: '✓'; position: absolute; left: 0; color: #375623; font-weight: 700; font-size: 8px; }
+  .cap-col-body.c3 ul li::before { content: '·'; position: absolute; left: 0; color: var(--accent); font-weight: 700; font-size: 11px; line-height: 1; top: 1px; }
+  .cap-col-body li strong {
+    display: block;
+    font-weight: 600;
+    font-size: 8.5px;
+    margin-bottom: 1px;
+    color: var(--dark);
+  }
+  .cap-col-body li span {
+    font-size: 8px;
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  /* ── STATUS STRIP ── */
+  .status-strip {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--mid);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .status-block {
+    flex: 1;
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .status-block.s-green  { background: var(--greenbg);  border-right: 1px solid var(--mid); }
+  .status-block.s-amber  { background: var(--amberbg);  border-right: 1px solid var(--mid); }
+  .status-block.s-cobalt { background: var(--cobaltbg); }
+  .status-pill {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 2px;
+    width: fit-content;
+  }
+  .s-green  .status-pill { background: #4E7A2A; color: var(--white); }
+  .s-amber  .status-pill { background: var(--amber); color: var(--white); }
+  .s-cobalt .status-pill { background: var(--cobalt); color: var(--white); }
+  .status-items {
+    font-size: 8.5px;
+    color: var(--dark);
+    line-height: 1.5;
+  }
+
+  /* ── CLOSING CALLOUT (green) ── */
+  .callout-green {
+    border-left: 4px solid #70AD47;
+    background: var(--greenbg);
+    padding: 10px 14px;
+    border-radius: 0 2px 2px 0;
+  }
+  .callout-green-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7.5px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #375623;
+    margin-bottom: 4px;
+  }
+  .callout-green-text {
+    font-size: 9.5px;
+    color: var(--dark);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+  .callout-green-text strong { font-weight: 700; color: #375623; }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--navy);
+    padding: 7px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 2px solid var(--accent);
+    margin-top: auto;
+  }
+
+  @media print {
+    body { background: none; padding: 0; gap: 0; }
+    .page { box-shadow: none; }
+    .page:nth-child(2) { page-break-before: always; }
+    @page { size: A4 portrait; margin: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════ PAGE 1 ═══════════════════════════════ -->
+<div class="page">
+
+  <div class="hdr">
+    <div class="eyebrow">REGULATORY COMPLIANCE INTELLIGENCE · ECC / PMG</div>
+    <div class="headline">One material graph. Every mandate.</div>
+    <div class="subhead">Section 301 to CBAM. UFLPA to REACH. RoHS to EU Battery Regulation. The information every regulation requires is the same: what is in your product, where did it come from, and how was it made. ECC builds that answer once — at L1 through L8.</div>
+  </div>
+
+  <div class="body-wrap">
+
+    <div>
+      <div class="section-label">Regulatory Coverage Map</div>
+
+      <!-- ACTIVE GROUP -->
+      <div class="reg-group-label active">Active now — ECC addresses today</div>
+      <table class="reg-map">
+        <thead>
+          <tr>
+            <th>Regulation</th>
+            <th>Jurisdiction</th>
+            <th>ECC's Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Section 301 / IEEPA</td>
+            <td>US</td>
+            <td>Material-level tariff scoring at L4–L5. HS codes assigned at every graph node. Origin confirmed via third-party trade monitoring platform records. 49-measure duty stack via partner tariff intelligence network.</td>
+          </tr>
+          <tr>
+            <td>Section 232</td>
+            <td>US</td>
+            <td>Steel (HS 72–73), aluminum (HS 76), copper (HS 74) origin and transformation confirmation. Production route characterisation determines whether Section 232 applies at the component level.</td>
+          </tr>
+          <tr>
+            <td>UFLPA</td>
+            <td>US</td>
+            <td>Entity List matched against the material genealogy graph at L3–L8 — not the supplier list at T1–T2. Affected BOM positions identified and compliance actions pre-generated on each Entity List update.</td>
+          </tr>
+          <tr>
+            <td>REACH SVHC</td>
+            <td>EU</td>
+            <td>Substance of Very High Concern screening at material chemistry level (L4–L6). Composition data drawn from material composition database. Flags SVHC candidates across all assemblies simultaneously.</td>
+          </tr>
+          <tr>
+            <td>RoHS</td>
+            <td>EU</td>
+            <td>Restricted substance screening (Pb, Hg, Cd, Cr6+, PBB, PBDE) at component level. HS codes identify components in scope. Composition data flags restricted substances before product launch.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- ROADMAP GROUP -->
+      <div class="reg-group-label roadmap">Roadmap — ECC's architecture is ready, data layer extends</div>
+      <table class="reg-map">
+        <thead>
+          <tr>
+            <th>Regulation</th>
+            <th>Jurisdiction</th>
+            <th>ECC's Roadmap Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="roadmap-row">
+            <td>EU CBAM</td>
+            <td>EU</td>
+            <td>Per-supply-path embedded carbon calculation. BOF vs EAF production route flagged per steel and aluminum node. Same material graph, different calculation layer. Carbon intensity flows from production route characterisation already in the graph.</td>
+          </tr>
+          <tr class="roadmap-row">
+            <td>EU Battery Regulation</td>
+            <td>EU</td>
+            <td>Carbon footprint per kWh, recycled content tracking, supply chain due diligence for cobalt, lithium, nickel, and natural graphite. LCA data layer feeds battery regulation disclosure directly from the existing material genealogy.</td>
+          </tr>
+          <tr class="roadmap-row">
+            <td>CSDDD / LkSG</td>
+            <td>EU / DE</td>
+            <td>Supplier ESG risk flags from partner ESG risk intelligence mapped to BOM positions. Human rights and environmental due diligence at material origin level — down to the mining and primary processing nodes.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- COBALT CALLOUT -->
+    <div class="callout-cobalt">
+      <div class="callout-cobalt-label">Why This Architecture Wins</div>
+      <div class="callout-cobalt-text">Most compliance platforms are built regulation by regulation — a REACH module, a RoHS module, a tariff module. Each requires its own data collection. Each creates its own supplier questionnaire burden. Each is incomplete without the others. <strong>ECC inverts this: the material genealogy graph is built once. Every regulation is a calculation layer on top of the same underlying truth about what your product contains and where it came from.</strong> One data collection effort. Every mandate served.</div>
+    </div>
+
+  </div><!-- /body-wrap -->
+
+  <div class="footer">
+    <span style="font-family:'IBM Plex Mono',monospace; font-size:7.5px; color:#9DC3E6;">ECC / PMG Supply Chain Intelligence · Trade &amp; Tariff Risk Intelligence Platform</span>
+    <span style="font-family:'Playfair Display',serif; font-size:10px; font-weight:700; color:#FFD966;">ecc-pmg.com</span>
+    <span style="font-family:'IBM Plex Mono',monospace; font-size:7.5px; color:#9DC3E6; text-align:right;">May 2026 · For sales use</span>
+  </div>
+
+</div><!-- /page 1 -->
+
+
+<!-- ═══════════════════════════════ PAGE 2 ═══════════════════════════════ -->
+<div class="page">
+
+  <div class="hdr">
+    <div class="eyebrow">THE PLATFORM ARCHITECTURE · WHY ONE GRAPH SERVES ALL MANDATES</div>
+    <div class="headline">What changes per regulation is the rule.<br>What never changes is the material.</div>
+  </div>
+
+  <div class="body-wrap">
+
+    <!-- THREE COLUMN BREAKDOWN -->
+    <div>
+      <div class="section-label">Platform Capability Breakdown</div>
+      <div class="three-col">
+
+        <div class="cap-col">
+          <div class="cap-col-hdr c1">What every regulation needs</div>
+          <div class="cap-col-body c1">
+            <ul>
+              <li>
+                <strong>Composition</strong>
+                <span>What substance or material is present at each level</span>
+              </li>
+              <li>
+                <strong>Quantity</strong>
+                <span>Volume or mass per BOM position, per assembly</span>
+              </li>
+              <li>
+                <strong>Origin</strong>
+                <span>Country and facility where material was produced or processed</span>
+              </li>
+              <li>
+                <strong>Production route</strong>
+                <span>How it was processed — essential for carbon accounting and transformation determination</span>
+              </li>
+              <li>
+                <strong>Attestation</strong>
+                <span>Is origin consistent with supplier declaration or certificate of origin?</span>
+              </li>
+              <li>
+                <strong>Audit trail</strong>
+                <span>Can you prove all of the above to a regulator, with timestamped evidence?</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="cap-col">
+          <div class="cap-col-hdr c2">What ECC provides</div>
+          <div class="cap-col-body c2">
+            <ul>
+              <li>
+                <strong>Material genealogy L1→L8</strong>
+                <span>Composition data from material composition database, DoE/USGS/USLCI baseline</span>
+              </li>
+              <li>
+                <strong>Quantity at every level</strong>
+                <span>qty_per_parent relationship at every graph node, propagated automatically</span>
+              </li>
+              <li>
+                <strong>CPD origin field</strong>
+                <span>Critical Precursor Dependency origin + third-party trade monitoring platform records confirmation</span>
+              </li>
+              <li>
+                <strong>Production route characterisation</strong>
+                <span>NREL USLCI + DoE Critical Materials Assessment for carbon and transformation evidence</span>
+              </li>
+              <li>
+                <strong>ExplanationStep audit trail</strong>
+                <span>State transitions with timestamps, evidence sources, actor attribution — per node</span>
+              </li>
+              <li>
+                <strong>Pre-generated compliance packages</strong>
+                <span>Evidence structured per regulatory instrument — not one generic export</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="cap-col">
+          <div class="cap-col-hdr c3">What the compliance team does</div>
+          <div class="cap-col-body c3">
+            <ul>
+              <li>
+                <strong>Reviews ECC's starting point</strong>
+                <span>Pre-populated baseline from public data — not a blank questionnaire</span>
+              </li>
+              <li>
+                <strong>Corrects supplier-specific data</strong>
+                <span>Where actual sourcing differs from ECC's baseline inference, suppliers update directly</span>
+              </li>
+              <li>
+                <strong>Approves attestation requests</strong>
+                <span>Signs off on supplier attestations generated by ECC's workflow</span>
+              </li>
+              <li>
+                <strong>Uploads formal certificates</strong>
+                <span>CO, SVHC disclosure, RoHS declaration — attached to the relevant graph node</span>
+              </li>
+              <li>
+                <strong>Submits to regulators</strong>
+                <span>Uses ECC's audit trail as the exhibit in CBP, REACH, and battery regulation submissions</span>
+              </li>
+              <li>
+                <strong>Monitors evolving exposure</strong>
+                <span>As regulations change, ECC re-scores from the same graph — no new data collection</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- STATUS STRIP -->
+    <div>
+      <div class="section-label">Current Status by Regulatory Instrument</div>
+      <div class="status-strip">
+        <div class="status-block s-green">
+          <div class="status-pill">Live today</div>
+          <div class="status-items">
+            Section 301 / IEEPA<br>
+            Section 232<br>
+            UFLPA<br>
+            REACH SVHC<br>
+            RoHS
+          </div>
+        </div>
+        <div class="status-block s-amber">
+          <div class="status-pill">In development</div>
+          <div class="status-items">
+            EU Battery Regulation<br>
+            Digital Product Passport integration<br>
+            CBAM carbon calculation layer
+          </div>
+        </div>
+        <div class="status-block s-cobalt">
+          <div class="status-pill">Architecture ready</div>
+          <div class="status-items">
+            CSDDD full due diligence module<br>
+            LkSG reporting layer<br>
+            Timeline: TBC with pilot customers
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLOSING CALLOUT -->
+    <div class="callout-green">
+      <div class="callout-green-label">The Durable Advantage</div>
+      <div class="callout-green-text">The regulations will keep changing. The enforcement will keep intensifying. <strong>The material inside your product will not change.</strong> ECC maps it once — and keeps it current as your supply chain evolves. Every new mandate is a calculation layer. The underlying material truth is already built.</div>
+    </div>
+
+  </div><!-- /body-wrap -->
+
+  <div class="footer">
+    <span style="font-family:'IBM Plex Mono',monospace; font-size:7.5px; color:#9DC3E6;">ECC / PMG Supply Chain Intelligence · Trade &amp; Tariff Risk Intelligence Platform</span>
+    <span style="font-family:'Playfair Display',serif; font-size:10px; font-weight:700; color:#FFD966;">ecc-pmg.com</span>
+    <span style="font-family:'IBM Plex Mono',monospace; font-size:7.5px; color:#9DC3E6; text-align:right;">May 2026 · For sales use</span>
+  </div>
+
+</div><!-- /page 2 -->
+
+</body>
+</html>
