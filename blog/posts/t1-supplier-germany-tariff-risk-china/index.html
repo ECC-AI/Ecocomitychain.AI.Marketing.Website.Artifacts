@@ -69,7 +69,20 @@ hr{border:none;border-top:1px solid var(--border);margin:32px 0;}
 
   <div class="diagram-embed">
     <div class="diagram-label">ECC · T1 Blindspot — Material Depth Diagram</div>
-    <iframe src="https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/blog/assets/tariff/ECC_Asset1_T1Blindspot.html" height="720" scrolling="no"></iframe>
+    <iframe id="asset1frame" src="https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/blog/assets/tariff/ECC_Asset1_T1Blindspot.html" height="1150" scrolling="no"></iframe>
+    <script>
+    // Auto-resize iframe once loaded — catches any render height variation
+    var f = document.getElementById('asset1frame');
+    f.addEventListener('load', function() {
+      try {
+        var h = f.contentWindow.document.documentElement.scrollHeight
+             || f.contentWindow.document.body.scrollHeight;
+        if (h > 400) f.height = h + 24;
+      } catch(e) {
+        // cross-origin fallback — 1150px static is sufficient
+      }
+    });
+    </script>
   </div>
 
   <div class="post-body">
