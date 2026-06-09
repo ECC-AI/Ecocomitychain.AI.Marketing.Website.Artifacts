@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECC — CFO Tariff Exposure Brief</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:    #1F4E79;
+    --accent:  #2E75B6;
+    --lightbg: #DEEAF1;
+    --red:     #C00000;
+    --redbg:   #FBEAEA;
+    --amber:   #7F6000;
+    --amberbg: #FFF2CC;
+    --teal:    #196060;
+    --tealbg:  #D4EFEF;
+    --green:   #375623;
+    --greenbg: #E2EFDA;
+    --cobalt:  #003366;
+    --cobaltbg:#D0E4FF;
+    --gray:    #F5F5F5;
+    --mid:     #CCCCCC;
+    --white:   #FFFFFF;
+    --dark:    #1A1A1A;
+    --muted:   #666666;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: #DEDEDE;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px;
+    gap: 24px;
+  }
+
+  .page {
+    width: 794px;
+    background: var(--white);
+    box-shadow: 0 6px 40px rgba(0,0,0,0.18);
+    display: flex;
+    flex-direction: column;
+    min-height: 1060px;
+  }
+
+  /* ── HEADER ── */
+  .hdr {
+    background: var(--cobalt);
+    padding: 20px 26px 17px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hdr::after {
+    content: '';
+    position: absolute;
+    right: 0; top: 0;
+    width: 220px; height: 100%;
+    background: linear-gradient(135deg, transparent 50%, rgba(46,117,182,0.15) 100%);
+    pointer-events: none;
+  }
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #9DC3E6;
+    margin-bottom: 8px;
+  }
+  .headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 900;
+    line-height: 1.1;
+    color: var(--white);
+    max-width: 650px;
+    margin-bottom: 7px;
+  }
+  .headline .hl { color: #FFD966; }
+  .subhead {
+    font-size: 10.5px;
+    font-weight: 300;
+    color: #BDD7EE;
+    font-style: italic;
+    line-height: 1.5;
+    max-width: 660px;
+  }
+  .page-tag {
+    position: absolute;
+    top: 14px; right: 22px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 1px;
+  }
+
+  /* ── FOOTER ── */
+  .ftr {
+    background: var(--navy);
+    padding: 7px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 2px solid var(--accent);
+    margin-top: auto;
+  }
+  .ftr-l, .ftr-r {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7.5px;
+    color: #9DC3E6;
+  }
+  .ftr-c {
+    font-family: 'Playfair Display', serif;
+    font-size: 10px;
+    font-weight: 700;
+    color: #FFD966;
+  }
+
+  /* ── SHARED ── */
+  .section-lbl {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .mono { font-family: 'IBM Plex Mono', monospace; font-size: 9px; }
+
+  /* ══════════════════════════════
+     PAGE 1 — EXPOSURE MODEL
+  ══════════════════════════════ */
+
+  .p1-body {
+    flex: 1;
+    padding: 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  /* Opening statement */
+  .opening {
+    background: var(--gray);
+    border-left: 4px solid var(--red);
+    padding: 11px 14px;
+  }
+  .opening-text {
+    font-size: 10.5px;
+    line-height: 1.6;
+    color: var(--dark);
+    font-weight: 300;
+  }
+  .opening-text strong { color: var(--navy); font-weight: 700; }
+  .opening-text .alert { color: var(--red); font-weight: 700; }
+
+  /* Two scenario blocks */
+  .scenarios {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .scenario {
+    border: 1px solid var(--mid);
+    display: flex;
+    flex-direction: column;
+  }
+  .sc-header {
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sc-header.imported  { background: var(--navy); }
+  .sc-header.assembled { background: var(--cobalt); }
+  .sc-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 20px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.4);
+    line-height: 1;
+  }
+  .sc-title-wrap {}
+  .sc-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7.5px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    display: block;
+    margin-bottom: 2px;
+  }
+  .sc-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.2;
+  }
+  .sc-body {
+    padding: 10px 12px;
+    flex: 1;
+    background: var(--white);
+  }
+  .sc-example {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+  .sc-text {
+    font-size: 9.5px;
+    line-height: 1.55;
+    color: var(--dark);
+    font-weight: 300;
+    margin-bottom: 8px;
+  }
+  .sc-text strong { color: var(--navy); font-weight: 600; }
+  .sc-risk {
+    display: flex;
+    gap: 5px;
+    align-items: flex-start;
+    padding: 7px 10px;
+    background: var(--redbg);
+    border-left: 3px solid var(--red);
+  }
+  .sc-risk-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7.5px;
+    font-weight: 600;
+    color: var(--red);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    white-space: nowrap;
+    margin-top: 1px;
+  }
+  .sc-risk-text {
+    font-size: 9px;
+    color: var(--dark);
+    line-height: 1.45;
+  }
+
+  /* Multi-stream exposure table */
+  .exposure-table {
+    border: 1px solid var(--mid);
+  }
+  .et-header {
+    display: grid;
+    grid-template-columns: 180px 80px 100px 120px 1fr;
+    background: var(--navy);
+    padding: 6px 10px;
+    gap: 0;
+  }
+  .eth {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.8);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+  .et-row {
+    display: grid;
+    grid-template-columns: 180px 80px 100px 120px 1fr;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--mid);
+    gap: 0;
+    align-items: center;
+  }
+  .et-row:last-child { border-bottom: none; }
+  .et-row.alt { background: var(--gray); }
+  .et-row.alert-row { background: var(--amberBg, #FFF2CC); }
+  .et-row.source-row {
+    background: var(--cobaltbg);
+    padding: 4px 10px;
+  }
+  .etc {
+    font-size: 9.5px;
+    color: var(--dark);
+    line-height: 1.4;
+  }
+  .etc.mono-s {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8.5px;
+    color: var(--navy);
+  }
+  .etc.rate {
+    font-weight: 700;
+    color: var(--red);
+    font-size: 9.5px;
+  }
+  .etc.rate-amber {
+    font-weight: 700;
+    color: var(--amber);
+    font-size: 9.5px;
+  }
+  .etc.note {
+    font-size: 8.5px;
+    color: var(--muted);
+    font-style: italic;
+    line-height: 1.4;
+  }
+  .etc.source-note {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7.5px;
+    color: var(--cobalt);
+    line-height: 1.4;
+  }
+  .unknown-badge {
+    display: inline-block;
+    background: var(--amberbg);
+    color: var(--amber);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7px;
+    font-weight: 600;
+    padding: 1px 5px;
+    border-radius: 2px;
+    border: 1px solid #D4A800;
+  }
+  .confirmed-badge {
+    display: inline-block;
+    background: var(--redbg);
+    color: var(--red);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7px;
+    font-weight: 600;
+    padding: 1px 5px;
+    border-radius: 2px;
+    border: 1px solid var(--red);
+  }
+
+  /* Enforcement context strip */
+  .enf-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background: var(--navy);
+    border: 1px solid var(--navy);
+  }
+  .enf-cell {
+    padding: 10px 12px;
+    border-right: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
+  }
+  .enf-cell:last-child { border-right: none; }
+  .enf-cell.red-c  { background: var(--red); }
+  .enf-cell.amber-c { background: #7B5800; }
+  .enf-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .enf-lbl {
+    font-size: 8px;
+    color: rgba(255,255,255,0.72);
+    line-height: 1.4;
+    font-weight: 300;
+  }
+  .enf-lbl em { color: #FFD966; font-style: normal; font-weight: 600; }
+
+  /* ══════════════════════════════
+     PAGE 2 — RESOLUTION ROI
+  ══════════════════════════════ */
+
+  .p2-body {
+    flex: 1;
+    padding: 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  /* The unknown → known bridge */
+  .bridge-row {
+    display: grid;
+    grid-template-columns: 1fr 44px 1fr;
+    gap: 0;
+    align-items: stretch;
+  }
+  .bridge-left {
+    background: var(--redbg);
+    border: 1px solid #E8B0B0;
+    padding: 12px 14px;
+  }
+  .bridge-right {
+    background: var(--greenbg);
+    border: 1px solid #A8C890;
+    padding: 12px 14px;
+  }
+  .bridge-arrow {
+    background: var(--navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: #FFD966;
+    font-weight: 700;
+  }
+  .bridge-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    margin-bottom: 7px;
+  }
+  .bridge-left .bridge-title  { color: var(--red); }
+  .bridge-right .bridge-title { color: var(--green); }
+  .bridge-item {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 5px;
+    align-items: flex-start;
+  }
+  .bi-arrow {
+    font-size: 9px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .bridge-left  .bi-arrow { color: var(--red); }
+  .bridge-right .bi-arrow { color: var(--green); }
+  .bi-text {
+    font-size: 9.5px;
+    line-height: 1.5;
+    color: var(--dark);
+  }
+  .bi-text strong { font-weight: 700; }
+  .bridge-left  .bi-text strong { color: var(--red); }
+  .bridge-right .bi-text strong { color: var(--green); }
+
+  /* Resolution paths */
+  .paths {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: 1px solid var(--mid);
+  }
+  .path {
+    border-right: 1px solid var(--mid);
+    display: flex;
+    flex-direction: column;
+  }
+  .path:last-child { border-right: none; }
+  .path-hdr {
+    padding: 8px 12px;
+    text-align: center;
+  }
+  .pa { background: var(--accent); }
+  .pb { background: var(--teal); }
+  .pc { background: var(--cobalt); }
+  .path-ltr {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .path-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.2;
+  }
+  .path-body {
+    padding: 10px 12px;
+    flex: 1;
+    background: var(--white);
+    border-top: 1px solid var(--mid);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .path-when {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7.5px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 2px;
+  }
+  .path-condition {
+    font-size: 9.5px;
+    font-weight: 600;
+    color: var(--navy);
+    line-height: 1.4;
+    margin-bottom: 5px;
+  }
+  .path-desc {
+    font-size: 9px;
+    line-height: 1.5;
+    color: var(--dark);
+    font-weight: 300;
+    flex: 1;
+  }
+  .path-metric {
+    background: var(--gray);
+    padding: 7px 9px;
+    border-top: 1px solid var(--mid);
+    margin: 0 -12px -10px -12px;
+  }
+  .pm-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 3px;
+  }
+  .pm-label {
+    font-size: 8.5px;
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .pm-value {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--green);
+  }
+  .pm-value.red { color: var(--red); }
+  .pm-value.amber { color: var(--amber); }
+
+  /* ECC value table */
+  .value-table {
+    border: 1px solid var(--mid);
+  }
+  .vt-hdr {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    background: var(--navy);
+    padding: 7px 12px;
+  }
+  .vth {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.8);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+  .vth.right { text-align: right; }
+  .vt-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    padding: 7px 12px;
+    border-bottom: 1px solid var(--mid);
+    align-items: center;
+  }
+  .vt-row:last-child { border-bottom: none; }
+  .vt-row.alt { background: var(--gray); }
+  .vt-row.total-row {
+    background: var(--cobalt);
+    padding: 8px 12px;
+  }
+  .vtc { font-size: 9.5px; color: var(--dark); }
+  .vtc.right { text-align: right; }
+  .vtc.green { color: var(--green); font-weight: 700; text-align: right; }
+  .vtc.red   { color: var(--red);   font-weight: 700; text-align: right; }
+  .vtc.amber { color: var(--amber); font-weight: 700; text-align: right; }
+  .vtc.white { color: var(--white); font-weight: 700; }
+  .vtc.white.right { text-align: right; }
+
+  /* Disclaimer */
+  .disclaimer {
+    background: var(--lightBg, #DEEAF1);
+    padding: 9px 14px;
+    border-left: 3px solid var(--accent);
+    font-size: 8.5px;
+    color: var(--muted);
+    line-height: 1.55;
+    font-style: italic;
+  }
+  .disclaimer strong { color: var(--navy); font-style: normal; }
+
+  /* Closing strip */
+  .closing {
+    background: var(--cobalt);
+    padding: 12px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+  }
+  .cl-text {
+    font-size: 10px;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.6;
+    font-weight: 300;
+    flex: 1;
+  }
+  .cl-text strong { color: var(--white); font-weight: 600; }
+  .cl-right {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #FFD966;
+    text-align: right;
+    line-height: 1.5;
+    white-space: nowrap;
+  }
+
+  @media print {
+    body { background: none; padding: 0; gap: 0; }
+    .page { box-shadow: none; min-height: auto; }
+    .page:nth-child(2) { page-break-before: always; }
+    @page { size: A4 portrait; margin: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════
+     PAGE 1 — EXPOSURE MODEL
+══════════════════════════ -->
+<div class="page">
+  <div class="hdr">
+    <div class="page-tag">01 / 02</div>
+    <div class="eyebrow">CFO / VP Finance Brief &nbsp;·&nbsp; ECC / PMG &nbsp;·&nbsp; Trade &amp; Tariff Risk Intelligence &nbsp;·&nbsp; May 2026</div>
+    <div class="headline">The tariff exposure in your supply chain<br>is <span class="hl">not on your customs entry.</span><br>It is on your P&amp;L.</div>
+    <div class="subhead">Section 301, IEEPA, and Section 232 tariffs are assessed on materials at the point they cross the US border — not on the finished product. Untraced Chinese-origin content in imported components represents an unknown financial exposure that sits between your current cost base and your actual liability. ECC makes it visible, quantifiable, and resolvable.</div>
+  </div>
+
+  <div class="p1-body">
+
+    <!-- Opening -->
+    <div class="opening">
+      <div class="opening-text">
+        The standard view: your vehicle is assembled in Germany or Tennessee. Your customs entry declares the correct origin. Your tariff rate is MFN. <span class="alert">The problem:</span> the tariff liability on Chinese-origin materials inside imported components is not determined by where the vehicle was assembled. <strong>It is determined by where the materials inside those components came from — at the chemical precursor level.</strong> Most supply chain platforms stop at Tier 1-2. Tariff exposure lives at L4-L5. The gap between those two layers is what this brief quantifies.
+      </div>
+    </div>
+
+    <!-- Two scenarios -->
+    <div class="scenarios">
+
+      <div class="scenario">
+        <div class="sc-header imported">
+          <div class="sc-num">A</div>
+          <div class="sc-title-wrap">
+            <span class="sc-label">Scenario A</span>
+            <div class="sc-title">European-Assembled<br>Vehicle Import</div>
+          </div>
+        </div>
+        <div class="sc-body">
+          <div class="sc-example">Reference: BMW Group — ~200,000 vehicles/year imported to US from European plants. Source: BMW / US Dept. of Commerce, 2025.</div>
+          <div class="sc-text">Vehicle assembled in Germany, UK, or Austria. Customs entry filed as European-origin at MFN rate. Chinese-origin content at L4-L5 — magnets, steel, copper, electronics — is invisible on the customs entry. <strong>If CBP applies substantial transformation analysis and determines Chinese-origin content is dominant, retroactive reclassification is possible under 19 U.S.C. § 1592.</strong></div>
+          <div class="sc-risk">
+            <div class="sc-risk-label">Risk Type</div>
+            <div class="sc-risk-text">Latent CBP audit risk — contingent on focused assessment. Penalty on reclassification: up to 4× unpaid duties. Resolution path: attestation before audit begins.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="scenario">
+        <div class="sc-header assembled">
+          <div class="sc-num">B</div>
+          <div class="sc-title-wrap">
+            <span class="sc-label">Scenario B</span>
+            <div class="sc-title">US-Assembled Vehicle<br>with Imported Components</div>
+          </div>
+        </div>
+        <div class="sc-body">
+          <div class="sc-example">Reference: VW ID.4 Chattanooga, TN. Traction motor imported from VW Kassel, Germany (permanent magnet type). Battery cells from SK On, Commerce, GA. Source: VW Group Components / Electrive, 2022.</div>
+          <div class="sc-text">Vehicle assembled in the US. But the traction motor is imported from Germany and uses permanent magnets whose alloy powder origin is undocumented. The battery cells use NMC 811 cathode — <strong>over 90% of Korean cathode precursor was imported from China as of March 2025 (SNE Research).</strong> Each imported component with Chinese-origin content at L4-L5 carries existing tariff exposure today.</div>
+          <div class="sc-risk">
+            <div class="sc-risk-label">Risk Type</div>
+            <div class="sc-risk-text">Existing exposure on imported component stream — not contingent on vehicle reclassification. Tariff liability accrues on each component crossing the US border with undocumented Chinese-origin content.</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end scenarios -->
+
+    <!-- Multi-stream exposure model -->
+    <div>
+      <div class="section-lbl">Multi-Stream BOM Tariff Exposure — Key Material Streams (Illustrative Per-Vehicle Model)</div>
+      <div class="exposure-table">
+        <div class="et-header">
+          <div class="eth">Material Stream</div>
+          <div class="eth">Tariff Rate</div>
+          <div class="eth">Regime</div>
+          <div class="eth">Origin Status</div>
+          <div class="eth">Note</div>
+        </div>
+
+        <div class="et-row">
+          <div class="etc">NdFeB Permanent Magnets<br><span class="mono">HS 8505.11 / 2846.90</span></div>
+          <div class="etc rate">71%</div>
+          <div class="etc note">Sect. 301 + IEEPA + MFN</div>
+          <div class="etc"><span class="unknown-badge">UNKNOWN</span><br><span style="font-size:8px;color:var(--muted);">China &gt;85% global production</span></div>
+          <div class="etc note">Applies at L5 alloy powder. Chapter 28→85 transformation test required.</div>
+        </div>
+
+        <div class="et-row alt">
+          <div class="etc">Battery Graphite Anode<br><span class="mono">HS 3801.10 / 2504.10</span></div>
+          <div class="etc rate">93.5%</div>
+          <div class="etc note">ADD + Section 301 + IEEPA</div>
+          <div class="etc"><span class="unknown-badge">UNKNOWN</span><br><span style="font-size:8px;color:var(--muted);">China &gt;90% processing capacity</span></div>
+          <div class="etc note">93.5% AD duty confirmed July 2025. ~50-100 kg per EV. Largest EV battery component by mass.</div>
+        </div>
+
+        <div class="et-row">
+          <div class="etc">Copper — Motor Windings &amp; Wiring<br><span class="mono">HS 7408.11 / 7413.00</span></div>
+          <div class="etc rate">50%</div>
+          <div class="etc note">Section 232 + IEEPA</div>
+          <div class="etc"><span class="unknown-badge">UNKNOWN</span><br><span style="font-size:8px;color:var(--muted);">China &gt;40% refining capacity</span></div>
+          <div class="etc note">~83 kg per EV. China controls midstream refining. Tariff applies on Chinese-refined copper.</div>
+        </div>
+
+        <div class="et-row alt">
+          <div class="etc">Silicon Steel Laminations<br><span class="mono">HS 7226.11 / 7225.11</span></div>
+          <div class="etc rate">50%</div>
+          <div class="etc note">Section 232 + IEEPA</div>
+          <div class="etc"><span class="unknown-badge">UNKNOWN</span><br><span style="font-size:8px;color:var(--muted);">Significant Chinese production</span></div>
+          <div class="etc note">Motor stator core material. Chinese-origin content depends on motor supplier's sourcing — undocumented.</div>
+        </div>
+
+        <div class="et-row">
+          <div class="etc">NMC 811 Cathode Precursor<br><span class="mono">HS 2841.90</span></div>
+          <div class="etc rate-amber">64.9%</div>
+          <div class="etc note">Section 301 + IEEPA (cumulative)</div>
+          <div class="etc"><span class="confirmed-badge">HIGH RISK</span><br><span style="font-size:8px;color:var(--muted);">&gt;90% Korean precursor from CN (SNE Research, Mar 2025)</span></div>
+          <div class="etc note">Cathode = 40% of battery cost. SK On Georgia cells use precursor predominantly sourced from China until POSCO China-free plant opened Jun 2025.</div>
+        </div>
+
+        <div class="et-row alt">
+          <div class="etc">Aluminum — Motor Housing &amp; Structure<br><span class="mono">HS 7601.10</span></div>
+          <div class="etc rate">25%</div>
+          <div class="etc note">Section 232</div>
+          <div class="etc"><span class="unknown-badge">UNKNOWN</span><br><span style="font-size:8px;color:var(--muted);">China largest global producer</span></div>
+          <div class="etc note">Lower rate than other streams but large volume. Norwegian/Icelandic EAF-route aluminum qualifies for lower CBAM exposure.</div>
+        </div>
+
+        <div class="et-row source-row">
+          <div class="etc source-note" style="grid-column: 1 / -1;">
+            Tariff rates: CSIS Battery Industry Report May 2026 | Acculon Energy Tariff Guide Aug 2025 | Section 301 USTR schedules | IEEPA EO 14257
+            &nbsp;·&nbsp; Origin concentration: DoE Critical Materials Assessment 2023 | USGS MCS 2024 | SNE Research (via KED Global, Jun 2025)
+            &nbsp;·&nbsp; <strong>All rates confirmed from authoritative sources. Origin status reflects documented industry-level concentration — individual supply chain origin requires ECC material-level tracing to confirm.</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Enforcement strip -->
+    <div class="enf-strip">
+      <div class="enf-cell red-c">
+        <span class="enf-num">61%</span>
+        <div class="enf-lbl">of UFLPA-detained shipments<br><em>denied entry</em> — not released<br>Jun 2022 – Jul 2025 (CBP)</div>
+      </div>
+      <div class="enf-cell">
+        <span class="enf-num">$195B</span>
+        <div class="enf-lbl">US customs duties collected<br>FY2025 — <em>250% increase</em><br>from FY2024 (CRFB)</div>
+      </div>
+      <div class="enf-cell amber-c">
+        <span class="enf-num">4×</span>
+        <div class="enf-lbl">maximum penalty on<br>unpaid duties — <em>gross negligence</em><br>19 U.S.C. § 1592(c)</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="ftr">
+    <div class="ftr-l">ECC / PMG Supply Chain Intelligence &nbsp;·&nbsp; Trade &amp; Tariff Risk Intelligence Platform</div>
+    <div class="ftr-c">ecc-pmg.com</div>
+    <div class="ftr-r">Page 1 of 2</div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════
+     PAGE 2 — RESOLUTION ROI
+══════════════════════════ -->
+<div class="page">
+  <div class="hdr">
+    <div class="page-tag">02 / 02</div>
+    <div class="eyebrow">CFO / VP Finance Brief &nbsp;·&nbsp; ECC / PMG &nbsp;·&nbsp; Resolution ROI &amp; Platform Value</div>
+    <div class="headline">Unknown exposure is a <span class="hl">P&amp;L risk.</span><br>Quantified exposure is a <span class="hl">procurement decision.</span></div>
+    <div class="subhead">The financial model on Page 1 shows what the tariff exposure looks like at industry-level concentration rates. ECC converts those unknowns into confirmed figures against your actual BOM — then generates the specific actions that resolve the highest-exposure positions first, ranked by resolution value.</div>
+  </div>
+
+  <div class="p2-body">
+
+    <!-- Unknown → Known bridge -->
+    <div class="bridge-row">
+      <div class="bridge-left">
+        <div class="bridge-title">Without ECC — The Unknown</div>
+        <div class="bridge-item">
+          <span class="bi-arrow">→</span>
+          <span class="bi-text">NdFeB magnet origin: <strong>undocumented.</strong> Conservative exposure: maximum rate applies. No evidence to defend lower rate.</span>
+        </div>
+        <div class="bridge-item">
+          <span class="bi-arrow">→</span>
+          <span class="bi-text">Graphite anode in Georgia-assembled cells: <strong>Chinese-origin likely, undocumented.</strong> 93.5% ADD exposure: unquantified.</span>
+        </div>
+        <div class="bridge-item">
+          <span class="bi-arrow">→</span>
+          <span class="bi-text">CF-28 from CBP arrives: <strong>30 days to produce evidence that was never assembled.</strong></span>
+        </div>
+        <div class="bridge-item">
+          <span class="bi-arrow">→</span>
+          <span class="bi-text">CFO exposure range: <strong>$40M–$200M+ per year</strong> depending on volume and confirmed Chinese-origin content across streams. Range reflects uncertainty, not precision.</span>
+        </div>
+      </div>
+      <div class="bridge-arrow">→</div>
+      <div class="bridge-right">
+        <div class="bridge-title">With ECC — The Confirmed Number</div>
+        <div class="bridge-item">
+          <span class="bi-arrow">→</span>
+          <span class="bi-text">NdFeB magnet: Panjiva confirms Vietnamese sintering. <strong>State: INTELLIGENCE_CONFIRMED. Exposure: $0.9M (MFN 2%). Resolution: one CO request.</strong></span>
+        </div>
+        <div class="bridge-item">
+          <span class="bi-arrow">→</span>
+          <span class="bi-text">Graphite: origin confirmed against SK On supply chain. <strong>Attestation path identified or sourcing switch modelled with net saving calculated.</strong></span>
+        </div>
+        <div class="bridge-item">
+          <span class="bi-arrow">→</span>
+          <span class="bi-text">CF-28 response package: <strong>pre-assembled from ECC audit trail.</strong> Evidence is ready before CBP asks.</span>
+        </div>
+        <div class="bridge-item">
+          <span class="bi-arrow">→</span>
+          <span class="bi-text">CFO sees a <strong>specific number per BOM position</strong> ranked by resolution value — not a range, not an estimate.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Three resolution paths -->
+    <div>
+      <div class="section-lbl">Resolution Paths — Three Actions, Three Financial Outcomes</div>
+      <div class="paths">
+
+        <div class="path">
+          <div class="path-hdr pa">
+            <span class="path-ltr">PATH A</span>
+            <div class="path-name">Attestation</div>
+          </div>
+          <div class="path-body">
+            <div class="path-when">When to use</div>
+            <div class="path-condition">Transformation confirmed at non-CN geography — ECC has Panjiva evidence</div>
+            <div class="path-desc">ECC identifies the transformation step (e.g. Vietnamese sintering: Chapter 28 → Chapter 85). Pre-drafted attestation request sent to T4 supplier. Formal CO received. State moves to ATTESTED_CONFIRMED. MFN rate applies.</div>
+            <div class="path-metric">
+              <div class="pm-row">
+                <span class="pm-label">Action cost</span>
+                <span class="pm-value amber">~$50K per stream</span>
+              </div>
+              <div class="pm-row">
+                <span class="pm-label">NdFeB example saving</span>
+                <span class="pm-value">$31.05M/year</span>
+              </div>
+              <div class="pm-row">
+                <span class="pm-label">ROI</span>
+                <span class="pm-value">620:1</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="path">
+          <div class="path-hdr pb">
+            <span class="path-ltr">PATH B</span>
+            <div class="path-name">Sourcing Switch</div>
+          </div>
+          <div class="path-body">
+            <div class="path-when">When to use</div>
+            <div class="path-condition">Origin confirmed as Chinese — no non-CN transformation in chain</div>
+            <div class="path-desc">ECC identifies alternative T4 suppliers in JP, KR, DE, TW via SG-AI Regional Substitution. Total Materia confirms grade equivalence — no redesign required. Net saving = tariff reduction minus supplier price premium, calculated per vehicle across all affected assemblies.</div>
+            <div class="path-metric">
+              <div class="pm-row">
+                <span class="pm-label">Transition cost</span>
+                <span class="pm-value amber">Supplier qualification</span>
+              </div>
+              <div class="pm-row">
+                <span class="pm-label">NdFeB example saving</span>
+                <span class="pm-value">~$24.6M/year net</span>
+              </div>
+              <div class="pm-row">
+                <span class="pm-label">Payback period</span>
+                <span class="pm-value">Year 1</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="path">
+          <div class="path-hdr pc">
+            <span class="path-ltr">PATH C</span>
+            <div class="path-name">Material Substitution</div>
+          </div>
+          <div class="path-body">
+            <div class="path-when">When to use</div>
+            <div class="path-condition">Specific material chemistry is the tariff trigger — alternative material exists</div>
+            <div class="path-desc">Total Materia identifies specification-equivalent material with different HS code and lower tariff exposure. ECC models the full financial trade-off: tariff saving vs. mass penalty, redesign cost, and lead time. Engineering decision is financially grounded, not speculative.</div>
+            <div class="path-metric">
+              <div class="pm-row">
+                <span class="pm-label">Applicability</span>
+                <span class="pm-value amber">Selected cases only</span>
+              </div>
+              <div class="pm-row">
+                <span class="pm-label">Longer payback</span>
+                <span class="pm-value amber">Redesign cost offset</span>
+              </div>
+              <div class="pm-row">
+                <span class="pm-label">Total Materia role</span>
+                <span class="pm-value">Grade equivalence</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ECC value table -->
+    <div>
+      <div class="section-lbl">ECC Platform Value — First-Year Financial Summary (Illustrative)</div>
+      <div class="value-table">
+        <div class="vt-hdr">
+          <div class="vth">Value Driver</div>
+          <div class="vth right">Conservative</div>
+          <div class="vth right">Post-ECC</div>
+          <div class="vth right">Resolution Value</div>
+        </div>
+
+        <div class="vt-row">
+          <div class="vtc">NdFeB tariff exposure — one BOM position (confirmed NdFeB example)</div>
+          <div class="vtc red right">$31.95M/yr</div>
+          <div class="vtc right" style="color:var(--teal);font-weight:700;">$0.9M/yr</div>
+          <div class="vtc green">$31.05M saved</div>
+        </div>
+        <div class="vt-row alt">
+          <div class="vtc">CF-28 response preparation time — typical without ECC</div>
+          <div class="vtc red right">4–8 weeks</div>
+          <div class="vtc right" style="color:var(--teal);font-weight:700;">48–72 hours</div>
+          <div class="vtc green">Legal cost avoided</div>
+        </div>
+        <div class="vt-row">
+          <div class="vtc">Prior disclosure eligibility — requires pre-CBP documentation</div>
+          <div class="vtc red right">Cannot file</div>
+          <div class="vtc right" style="color:var(--teal);font-weight:700;">Evidence ready</div>
+          <div class="vtc green">4× penalty protected</div>
+        </div>
+        <div class="vt-row alt">
+          <div class="vtc">Multi-stream assessment — 8–12 tariff-applicable material streams per vehicle</div>
+          <div class="vtc red right">Unknown</div>
+          <div class="vtc right" style="color:var(--teal);font-weight:700;">Quantified</div>
+          <div class="vtc green">Ranked by ROI</div>
+        </div>
+        <div class="vt-row total-row">
+          <div class="vtc white">First-year resolution value — attestation on highest-priority streams only</div>
+          <div class="vtc white right">—</div>
+          <div class="vtc white right">—</div>
+          <div class="vtc white right" style="color:#FFD966;font-size:11px;font-weight:700;">$30M–$150M+</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="disclaimer">
+      <strong>Methodology note:</strong> All tariff rates sourced from CSIS, USTR, and CBP schedules as at May 2026. Origin concentration figures are industry-level from DoE, USGS, and SNE Research — individual supply chain origin requires ECC material-level tracing to confirm. Financial resolution values are illustrative based on confirmed ECC analysis of NdFeB magnet chain and typical automotive BOM composition. Actual exposure for your vehicle programme will differ. ECC produces your specific number — not an industry estimate.
+    </div>
+
+    <!-- Closing -->
+    <div class="closing">
+      <div class="cl-text">
+        ECC does not produce an industry estimate. It produces <strong>your specific tariff exposure, per BOM position, per assembly, per vehicle line</strong> — ranked by resolution value so your procurement and legal teams work the highest-ROI actions first. The first-year resolution value consistently exceeds the cost of the full platform deployment by an order of magnitude.
+      </div>
+      <div class="cl-right">
+        See your exposure.<br>
+        Prove your origin.<br>
+        Defend your position.
+      </div>
+    </div>
+
+  </div>
+
+  <div class="ftr">
+    <div class="ftr-l">ECC / PMG Supply Chain Intelligence &nbsp;·&nbsp; Trade &amp; Tariff Risk Intelligence Platform</div>
+    <div class="ftr-c">ecc-pmg.com</div>
+    <div class="ftr-r">Page 2 of 2 &nbsp;·&nbsp; May 2026 &nbsp;·&nbsp; Illustrative model — actual figures from ECC BOM analysis</div>
+  </div>
+</div>
+
+</body>
+</html>
