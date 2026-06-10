@@ -75,7 +75,19 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,9,15,0.95);backdrop-filt
 <hr class="post-rule">
 <div class="diagram-wrap">
   <div class="diagram-label">EPS Supply Chain — Where TTR Really Lives</div>
-  <iframe src="https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/blog/assets/ford-mit/EPS_TTR_DualPath_Visual1.html" title="EPS TTR Dual Path — NdFeB vs Galfenol" loading="lazy" scrolling="no" style="width:100%;border:none;display:block;min-height:480px;"></iframe>
+  <iframe id="eps-visual-frame"
+  src="https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/blog/assets/ford-mit/EPS_TTR_DualPath_Visual1.html"
+  title="EPS TTR Dual Path — NdFeB vs Galfenol"
+  loading="lazy" scrolling="no"
+  style="width:100%;border:none;display:block;min-height:480px;transition:height .2s ease;"></iframe>
+<script>
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'iframeHeight') {
+      var frame = document.getElementById('eps-visual-frame');
+      if (frame) frame.style.height = (e.data.height + 24) + 'px';
+    }
+  });
+</script>
 </div>
 <p class="post-p"><em>Two paths within the same EPS assembly. The T1 declares 8–12 weeks. PMG computes 52+ weeks on the NdFeB path and 34+ weeks on the Galfenol path — both rooted in material-level constraints the T1 supplier cannot see.</em></p>
 <hr class="post-rule">
