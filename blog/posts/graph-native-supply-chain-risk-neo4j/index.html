@@ -421,77 +421,178 @@
       position: fixed;
       inset: 0;
       z-index: 9999;
-      background: rgba(0,0,0,.92);
+      background: rgba(0,0,0,.88);
       backdrop-filter: blur(6px);
       cursor: zoom-out;
-      overflow: auto;          /* scroll when image exceeds viewport */
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
     }
-    #lb-overlay.open { display: block; }
-    #lb-inner {
-      display: inline-block;   /* shrink-wraps the image for centering */
-      min-width: 100%;
-      min-height: 100%;
+    #lb-overlay.open { display: flex; }
+    #lb-overlay img {
+      max-width: min(1200px, 96vw);
+      max-height: 92vh;
+      border-radius: 8px;
+      box-shadow: 0 24px 80px rgba(0,0,0,.7);
+      cursor: default;
+    }
+    #lb-close {
+      position: fixed;
+      top: 18px;
+      right: 22px;
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #e6edf3;
+      font-size: 18px;
+      line-height: 1;
+      transition: background .15s;
+    }
+    #lb-close:hover { background: rgba(255,255,255,.2); }
+
+    /* ── Lightbox ────────────────────────────────────────────────────────── */
+    .img-wrap {
+      position: relative;
+      display: block;
+      margin: 24px 0 0;
+      cursor: zoom-in;
+    }
+    .img-wrap .graph-image { margin: 0; transition: opacity .15s; }
+    .img-wrap:hover .graph-image { opacity: .88; }
+    .img-wrap .expand-badge {
+      position: absolute;
+      top: 10px; right: 10px;
+      background: rgba(0,0,0,.65);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: #c9d1d9;
+      letter-spacing: .04em;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .15s;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .img-wrap:hover .expand-badge { opacity: 1; }
+    .expand-badge svg { width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2; }
+
+    /* overlay */
+    #lb-overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(0,0,0,.93);
+      backdrop-filter: blur(8px);
+    }
+    #lb-overlay.open { display: flex; flex-direction: column; }
+
+    /* scrollable image area */
+    #lb-scroll {
+      flex: 1;
+      overflow: auto;
       display: flex;
       align-items: flex-start;
       justify-content: center;
-      padding: 60px 24px 40px; /* top padding clears close button */
-      box-sizing: border-box;
-      cursor: default;
+      padding: 20px 24px 80px;
+      cursor: grab;
     }
-    #lb-overlay img {
-      /* Render at native pixel resolution — never upscale, never downscale */
-      width: auto;
-      height: auto;
-      max-width: none;         /* key: lift the width cap */
-      max-height: none;        /* key: lift the height cap */
-      border-radius: 6px;
-      box-shadow: 0 24px 80px rgba(0,0,0,.8);
-      cursor: default;
+    #lb-scroll:active { cursor: grabbing; }
+    #lb-img-wrap {
+      flex-shrink: 0;
+      display: inline-block;
+    }
+    #lb-img {
       display: block;
-      image-rendering: -webkit-optimize-contrast; /* crisp on retina */
+      /* width controlled via JS transform-origin scaling */
+      max-width: none;
+      max-height: none;
+      border-radius: 6px;
+      box-shadow: 0 16px 60px rgba(0,0,0,.8);
+      image-rendering: -webkit-optimize-contrast;
       image-rendering: crisp-edges;
     }
+
+    /* toolbar */
     #lb-toolbar {
-      position: fixed;
-      top: 14px;
-      right: 14px;
-      display: flex;
-      gap: 8px;
-      z-index: 10000;
-    }
-    .lb-btn {
-      background: rgba(30,30,30,.85);
-      border: 1px solid rgba(255,255,255,.2);
-      border-radius: 6px;
-      padding: 6px 12px;
-      cursor: pointer;
-      color: #e6edf3;
-      font-size: 12px;
-      font-family: var(--font-mono);
-      letter-spacing: .04em;
-      transition: background .15s;
+      flex-shrink: 0;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 10px;
+      padding: 10px 16px;
+      background: rgba(13,17,23,.95);
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+    .lb-btn {
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 6px;
+      padding: 5px 12px;
+      cursor: pointer;
+      color: #c9d1d9;
+      font-size: 12px;
+      font-family: var(--font-mono);
+      transition: background .15s;
+      display: flex; align-items: center; gap: 5px;
       white-space: nowrap;
     }
-    .lb-btn:hover { background: rgba(68,147,248,.25); border-color: rgba(68,147,248,.5); }
-    .lb-btn svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .lb-btn:hover { background: rgba(68,147,248,.2); border-color: rgba(68,147,248,.4); color:#e6edf3; }
+    .lb-btn svg { width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
+
+    #lb-slider-wrap {
+      display: flex; align-items: center; gap: 8px; flex: 1;
+    }
+    #lb-zoom-label {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: #8b949e;
+      min-width: 42px;
+      text-align: right;
+    }
+    #lb-slider {
+      flex: 1;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 4px;
+      border-radius: 2px;
+      background: rgba(255,255,255,.15);
+      outline: none;
+      cursor: pointer;
+    }
+    #lb-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: #4493f8;
+      border: 2px solid #1a1a2e;
+      cursor: pointer;
+    }
+    #lb-slider::-moz-range-thumb {
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: #4493f8;
+      border: 2px solid #1a1a2e;
+      cursor: pointer;
+    }
     #lb-hint {
-      position: fixed;
-      bottom: 16px;
-      left: 50%;
+      position: absolute;
+      bottom: 68px; left: 50%;
       transform: translateX(-50%);
       background: rgba(0,0,0,.7);
       border: 1px solid rgba(255,255,255,.1);
       border-radius: 20px;
       padding: 5px 16px;
-      font-size: 11px;
-      font-family: var(--font-mono);
-      color: #8b949e;
+      font-size: 11px; font-family: var(--font-mono); color: #8b949e;
       pointer-events: none;
-      opacity: 1;
-      transition: opacity .4s;
+      transition: opacity .5s;
+      white-space: nowrap;
     }
   </style>
 </head>
@@ -935,79 +1036,136 @@
   </main>
 
 
-  <!-- Lightbox overlay — native resolution with scroll -->
-  <div id="lb-overlay" onclick="lbClose()">
+
+  <!-- ── Lightbox ───────────────────────────────────────────────────── -->
+  <div id="lb-overlay">
+    <div id="lb-scroll" id="lb-scroll">
+      <div id="lb-img-wrap">
+        <img id="lb-img" src="" alt="">
+      </div>
+    </div>
     <div id="lb-toolbar">
-      <button class="lb-btn" onclick="lbFitView(event)" id="lb-fit-btn" title="Fit to window">
+      <button class="lb-btn" onclick="lbFit()" title="Fit whole image in window">
         <svg viewBox="0 0 24 24"><path d="M4 14H10V20M20 10H14V4M14 20H20V14M4 10H10V4"/></svg>Fit
       </button>
-      <button class="lb-btn" onclick="lbNative(event)" id="lb-native-btn" title="Full resolution">
-        <svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>Full res
+      <button class="lb-btn" onclick="lbSetZoom(100)" title="Native pixel size">
+        <svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>100%
       </button>
-      <button class="lb-btn" onclick="lbClose()" title="Close (Esc)">
+      <div id="lb-slider-wrap">
+        <span style="font-family:var(--font-mono);font-size:11px;color:#8b949e;">Zoom</span>
+        <input id="lb-slider" type="range" min="10" max="100" value="30"
+               oninput="lbSetZoom(this.value)" onclick="event.stopPropagation()">
+        <span id="lb-zoom-label">30%</span>
+      </div>
+      <button class="lb-btn" onclick="lbClose()">
         <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>Close
       </button>
     </div>
-    <div id="lb-inner" onclick="event.stopPropagation()">
-      <img id="lb-img" src="" alt="">
-    </div>
-    <div id="lb-hint">Scroll to pan &nbsp;·&nbsp; Fit / Full res buttons top-right &nbsp;·&nbsp; Esc to close</div>
+    <div id="lb-hint">Drag to pan &nbsp;·&nbsp; Slider to zoom &nbsp;·&nbsp; Esc to close</div>
   </div>
 
   <script>
-    var _lbNativeMode = false;
+  (function(){
+    var _nativeW = 0, _nativeH = 0;
 
-    function lbOpen(wrap) {
-      var img = wrap.querySelector('img');
-      var lbImg = document.getElementById('lb-img');
-      lbImg.src = img.src;
-      lbImg.alt = img.alt;
-      // Start in fit-to-window mode
-      _lbNativeMode = false;
-      lbImg.style.maxWidth  = '100%';
-      lbImg.style.maxHeight = '88vh';
-      lbImg.style.width     = 'auto';
-      lbImg.style.height    = 'auto';
-      document.getElementById('lb-overlay').classList.add('open');
-      document.getElementById('lb-overlay').scrollTop = 0;
-      // Fade out hint after 3s
-      setTimeout(function(){
-        var hint = document.getElementById('lb-hint');
-        if (hint) hint.style.opacity = '0';
-      }, 3000);
+    function viewW() { return document.getElementById('lb-scroll').clientWidth  - 48; }
+    function viewH() { return document.getElementById('lb-scroll').clientHeight - 40; }
+
+    function fitZoom() {
+      if (!_nativeW) return 30;
+      var zw = Math.floor(viewW() / _nativeW * 100);
+      var zh = Math.floor(viewH() / _nativeH * 100);
+      return Math.max(10, Math.min(zw, zh));
     }
 
-    function lbFitView(e) {
-      e.stopPropagation();
-      _lbNativeMode = false;
+    window.lbOpen = function(wrap) {
+      var src = wrap.querySelector('img');
       var lbImg = document.getElementById('lb-img');
-      lbImg.style.maxWidth  = '100%';
-      lbImg.style.maxHeight = '88vh';
-      lbImg.style.width     = 'auto';
-      lbImg.style.height    = 'auto';
-      document.getElementById('lb-overlay').scrollTop = 0;
+      // Load image to get native dimensions
+      var tmp = new Image();
+      tmp.onload = function() {
+        _nativeW = tmp.naturalWidth;
+        _nativeH = tmp.naturalHeight;
+        lbImg.src = src.src;
+        lbImg.alt = src.alt;
+        lbImg.style.width  = _nativeW + 'px';
+        lbImg.style.height = _nativeH + 'px';
+        var z = fitZoom();
+        applyZoom(z);
+        document.getElementById('lb-overlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+        // fade hint
+        setTimeout(function(){
+          var h = document.getElementById('lb-hint');
+          if(h) h.style.opacity='0';
+        }, 3500);
+      };
+      tmp.src = src.src;
+    };
+
+    window.lbFit = function() {
+      applyZoom(fitZoom());
+      document.getElementById('lb-scroll').scrollTop = 0;
+      document.getElementById('lb-scroll').scrollLeft = 0;
+    };
+
+    window.lbSetZoom = function(z) {
+      z = parseInt(z);
+      applyZoom(z);
+    };
+
+    function applyZoom(z) {
+      z = Math.max(10, Math.min(100, z));
+      var lbImg = document.getElementById('lb-img');
+      var w = Math.round(_nativeW * z / 100);
+      var h = Math.round(_nativeH * z / 100);
+      lbImg.style.width  = w + 'px';
+      lbImg.style.height = h + 'px';
+      document.getElementById('lb-slider').value = z;
+      document.getElementById('lb-zoom-label').textContent = z + '%';
     }
 
-    function lbNative(e) {
-      e.stopPropagation();
-      _lbNativeMode = true;
-      var lbImg = document.getElementById('lb-img');
-      lbImg.style.maxWidth  = 'none';
-      lbImg.style.maxHeight = 'none';
-      lbImg.style.width     = 'auto';
-      lbImg.style.height    = 'auto';
-      document.getElementById('lb-overlay').scrollTop = 0;
-    }
-
-    function lbClose() {
+    window.lbClose = function() {
       document.getElementById('lb-overlay').classList.remove('open');
-      var hint = document.getElementById('lb-hint');
-      if (hint) hint.style.opacity = '1';
-    }
+      document.getElementById('lb-img').src = '';
+      document.body.style.overflow = '';
+      var h = document.getElementById('lb-hint');
+      if(h) h.style.opacity='1';
+      _nativeW = 0; _nativeH = 0;
+    };
 
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') lbClose();
+    // Drag to pan
+    var drag = false, startX, startY, scrollL, scrollT;
+    var scroll = document.getElementById('lb-scroll');
+    scroll.addEventListener('mousedown', function(e){
+      if(e.target.tagName==='INPUT'||e.target.tagName==='BUTTON') return;
+      drag=true; startX=e.pageX; startY=e.pageY;
+      scrollL=scroll.scrollLeft; scrollT=scroll.scrollTop;
     });
+    document.addEventListener('mousemove', function(e){
+      if(!drag) return;
+      scroll.scrollLeft = scrollL-(e.pageX-startX);
+      scroll.scrollTop  = scrollT-(e.pageY-startY);
+    });
+    document.addEventListener('mouseup', function(){ drag=false; });
+
+    // Scroll wheel to zoom
+    scroll.addEventListener('wheel', function(e){
+      e.preventDefault();
+      var cur = parseInt(document.getElementById('lb-slider').value);
+      var delta = e.deltaY < 0 ? 5 : -5;
+      applyZoom(cur + delta);
+    }, {passive:false});
+
+    // Keyboard
+    document.addEventListener('keydown', function(e){
+      if(!document.getElementById('lb-overlay').classList.contains('open')) return;
+      if(e.key==='Escape') lbClose();
+      if(e.key==='+' || e.key==='=') { var c=parseInt(document.getElementById('lb-slider').value); applyZoom(c+10); }
+      if(e.key==='-') { var c=parseInt(document.getElementById('lb-slider').value); applyZoom(c-10); }
+      if(e.key==='0') lbFit();
+    });
+  })();
   </script>
 </body>
 </html>
