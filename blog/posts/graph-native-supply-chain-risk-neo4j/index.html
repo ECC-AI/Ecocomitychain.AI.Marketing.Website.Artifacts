@@ -379,6 +379,82 @@
       .stats-row { grid-template-columns: repeat(2, 1fr); }
       pre { padding: 16px; }
     }
+
+    /* ── Lightbox ────────────────────────────────────────────────────────── */
+    .img-wrap {
+      position: relative;
+      display: block;
+      margin: 24px 0 0;
+      cursor: zoom-in;
+    }
+    .img-wrap .graph-image {
+      margin: 0;
+      transition: opacity .15s;
+    }
+    .img-wrap:hover .graph-image { opacity: .88; }
+    .img-wrap .expand-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0,0,0,.65);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 6px;
+      padding: 5px 9px;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: #c9d1d9;
+      letter-spacing: .04em;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .15s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .img-wrap:hover .expand-badge { opacity: 1; }
+    .expand-badge svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; }
+
+    /* overlay */
+    #lb-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(0,0,0,.88);
+      backdrop-filter: blur(6px);
+      cursor: zoom-out;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    #lb-overlay.open { display: flex; }
+    #lb-overlay img {
+      max-width: min(1200px, 96vw);
+      max-height: 92vh;
+      border-radius: 8px;
+      box-shadow: 0 24px 80px rgba(0,0,0,.7);
+      cursor: default;
+    }
+    #lb-close {
+      position: fixed;
+      top: 18px;
+      right: 22px;
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #e6edf3;
+      font-size: 18px;
+      line-height: 1;
+      transition: background .15s;
+    }
+    #lb-close:hover { background: rgba(255,255,255,.2); }
   </style>
 </head>
 
@@ -518,9 +594,12 @@
         That is the difference between knowing "you use NMC 811" and knowing "your NMC 811 depends on Lithium Hydroxide Monohydrate with a 210-day TTR, sourced through a processing chain with 90%+ concentration in two countries."
       </p>
 
+      <div class="img-wrap" onclick="lbOpen(this)">
       <img src="https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/blog/assets/neo4j/A_bom_subtree.png"
            alt="Scenario A: Li-Ion Battery Pack BOM subtree — L1 to L4, showing 6 sub-assemblies and 8 cathode materials"
            class="graph-image" />
+      <span class="expand-badge"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4"/></svg>Expand</span>
+    </div>
       <p class="image-caption">
         Battery Pack (L1) → 6 SubAssemblies (L2) → Components (L3) → 8 Cathode Active Materials (L4).
         Every green L4 node has a full L5–L8 subtree beneath it, not shown here.
@@ -572,9 +651,12 @@
         The problem is that all three paths ultimately trace through the same raw material: Nickel Laterite Ore at L8. If that ore supply is disrupted — a mine closure, an export restriction, a geopolitical event — all 19 assemblies in the vehicle programme are affected simultaneously. The convergence is invisible at every level above L8. It is only detectable from the bottom of the graph, looking upward.
       </p>
 
+      <div class="img-wrap" onclick="lbOpen(this)">
       <img src="https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/blog/assets/neo4j/B_diamond_convergence.png"
            alt="Scenario B: Four assembly paths converging on Nickel Laterite Ore at L8 — diamond_assembly_count = 19"
            class="graph-image" />
+      <span class="expand-badge"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4"/></svg>Expand</span>
+    </div>
       <p class="image-caption">
         Four of 19 shortest paths shown. Each path enters through a different nickel compound at L4–L5,
         converging at L8. <code>diamond_assembly_count = 19</code>. <code>estimated_ttr_days = 120</code>.
@@ -632,9 +714,12 @@
         PMG extends that methodology downward. TTR is not declared by a supplier — it is computed from the material graph. The constraining TTR for any disruption scenario is the maximum across the full dependency path, and that maximum is almost always deep in the chain, not at the T1 supplier.
       </p>
 
+      <div class="img-wrap" onclick="lbOpen(this)">
       <img src="https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/blog/assets/neo4j/C_ttr_depth.png"
            alt="Scenario C: 8-level Lithium chain with TTR on each node and suppliers attached at L1, L2, L6, L8"
            class="graph-image" />
+      <span class="expand-badge"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4"/></svg>Expand</span>
+    </div>
       <p class="image-caption">
         Vertical L1→L8 Lithium chain. Suppliers attached at four different depths via typed
         <code>SUPPLIES_*</code> relationships. TTR escalates from 210d at L4 to 270d at L8.
@@ -811,5 +896,28 @@
 
   </main>
 
+
+  <!-- Lightbox overlay -->
+  <div id="lb-overlay" onclick="lbClose()">
+    <button id="lb-close" onclick="lbClose()" aria-label="Close">&times;</button>
+    <img id="lb-img" src="" alt="" onclick="event.stopPropagation()">
+  </div>
+
+  <script>
+    function lbOpen(wrap) {
+      var img = wrap.querySelector('img');
+      document.getElementById('lb-img').src = img.src;
+      document.getElementById('lb-img').alt = img.alt;
+      document.getElementById('lb-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function lbClose() {
+      document.getElementById('lb-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') lbClose();
+    });
+  </script>
 </body>
 </html>
