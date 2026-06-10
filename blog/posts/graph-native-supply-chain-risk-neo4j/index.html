@@ -498,16 +498,15 @@
     #lb-scroll {
       flex: 1;
       overflow: auto;
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
       padding: 20px 24px 80px;
       cursor: grab;
+      /* Centering done via lb-img-wrap margin:auto inside block context */
     }
     #lb-scroll:active { cursor: grabbing; }
     #lb-img-wrap {
-      flex-shrink: 0;
-      display: inline-block;
+      /* margin:auto centres in block context when content is narrower than scroll area */
+      display: block;
+      margin: 0 auto;
     }
     #lb-img {
       display: block;
@@ -1120,15 +1119,21 @@
       var lbImg = document.getElementById('lb-img');
       var wrap  = document.getElementById('lb-img-wrap');
       var scale = z / 100;
-      // Always render at native pixels, scale via transform — no interpolation blur
-      lbImg.style.width     = _nativeW + 'px';
-      lbImg.style.height    = _nativeH + 'px';
-      lbImg.style.transform = 'scale(' + scale + ')';
-      lbImg.style.transformOrigin = 'top center';
-      // Shrink the wrapper so the scroll container knows the scaled footprint
-      wrap.style.width  = Math.round(_nativeW  * scale) + 'px';
-      wrap.style.height = Math.round(_nativeH * scale) + 'px';
-      wrap.style.overflow = 'hidden';
+      var scaledW = Math.round(_nativeW * scale);
+      var scaledH = Math.round(_nativeH * scale);
+
+      // Image stays at native pixels — GPU scales cleanly, no bilinear blur
+      lbImg.style.width           = _nativeW + 'px';
+      lbImg.style.height          = _nativeH + 'px';
+      lbImg.style.transformOrigin = 'top left';
+      lbImg.style.transform       = 'scale(' + scale + ')';
+
+      // Wrapper takes the SCALED footprint — this is what the scroll container
+      // uses to determine scrollable area AND what margin:auto centres against
+      wrap.style.width    = scaledW + 'px';
+      wrap.style.height   = scaledH + 'px';
+      wrap.style.overflow = 'visible'; // image overflows during transform
+
       document.getElementById('lb-slider').value = z;
       document.getElementById('lb-zoom-label').textContent = z + '%';
     }
