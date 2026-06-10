@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="EcocomityChain built an 8-level material genealogy graph on Neo4j — 34,713 nodes, 52,856 relationships, 17 relationship types. Here is what the graph reveals about supply chain risk that a relational database cannot." />
+  <title>Graph-Native Supply Chain Risk — A Neo4j Perspective | EcocomityChain.AI</title>
+
+  <style>
+    /* ── Reset & base ───────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #0d1117;
+      --surface:     #161b22;
+      --border:      #21262d;
+      --text:        #c9d1d9;
+      --text-muted:  #8b949e;
+      --text-strong: #e6edf3;
+      --accent:      #4493f8;
+      --accent-dim:  #1f4068;
+      --tag-pi:      #388bfd;
+      --tag-bg:      #1c2a3a;
+      --code-bg:     #161b22;
+      --code-border: #30363d;
+      --green:       #3fb950;
+      --amber:       #d29922;
+      --red:         #f85149;
+
+      --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+      --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Helvetica, Arial, sans-serif;
+
+      --content-width: 760px;
+      --wide-width: 900px;
+    }
+
+    html { background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 16px; line-height: 1.7; }
+    body { min-height: 100vh; }
+
+    /* ── Layout ─────────────────────────────────────────────────────────── */
+    .site-header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .site-header a { color: var(--text-muted); text-decoration: none; font-size: 14px; }
+    .site-header a:hover { color: var(--accent); }
+    .site-header .sep { color: var(--border); }
+
+    .post-wrapper {
+      max-width: var(--content-width);
+      margin: 0 auto;
+      padding: 56px 24px 96px;
+    }
+
+    /* ── Meta bar ───────────────────────────────────────────────────────── */
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+    .tag {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      background: var(--tag-bg);
+      color: var(--tag-pi);
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+    .post-date { font-size: 13px; color: var(--text-muted); }
+    .collab-badge {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--green);
+      background: rgba(63, 185, 80, 0.1);
+      border: 1px solid rgba(63, 185, 80, 0.25);
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    /* ── Typography ─────────────────────────────────────────────────────── */
+    h1 {
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 700;
+      color: var(--text-strong);
+      line-height: 1.25;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+    .post-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 32px;
+    }
+
+    h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-strong);
+      margin: 52px 0 16px;
+      letter-spacing: -0.01em;
+    }
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-strong);
+      margin: 36px 0 12px;
+    }
+
+    p { margin-bottom: 18px; color: var(--text); }
+    p:last-child { margin-bottom: 0; }
+
+    strong { color: var(--text-strong); font-weight: 600; }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Pullquote ──────────────────────────────────────────────────────── */
+    blockquote {
+      border-left: 3px solid var(--accent);
+      background: var(--surface);
+      padding: 20px 24px;
+      margin: 32px 0;
+      border-radius: 0 6px 6px 0;
+      color: var(--text-strong);
+      font-size: 1.05rem;
+      line-height: 1.65;
+    }
+    blockquote p { color: var(--text-strong); margin-bottom: 0; }
+
+    /* ── Code ───────────────────────────────────────────────────────────── */
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.85em;
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #79c0ff;
+    }
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      border-radius: 8px;
+      padding: 24px;
+      overflow-x: auto;
+      margin: 28px 0;
+      position: relative;
+    }
+    pre code {
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: 0.82rem;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .code-label {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    /* Cypher keyword highlight */
+    .kw  { color: #ff7b72; }   /* MATCH RETURN WHERE */
+    .fn  { color: #d2a8ff; }   /* shortestPath, length */
+    .rel { color: #79c0ff; }   /* relationship types */
+    .str { color: #a5d6ff; }   /* strings */
+    .cmt { color: #8b949e; font-style: italic; }  /* comments */
+    .prop{ color: #ffa657; }   /* properties */
+    .num { color: #79c0ff; }   /* numbers */
+
+    /* ── Scenario sections ──────────────────────────────────────────────── */
+    .scenario {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 32px;
+      margin: 40px 0;
+      background: var(--surface);
+    }
+    .scenario-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .scenario h2 {
+      margin-top: 0;
+      margin-bottom: 6px;
+    }
+    .scenario .scenario-sub {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── Image ──────────────────────────────────────────────────────────── */
+    .graph-image {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin: 24px 0;
+      display: block;
+    }
+    .image-caption {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: -16px;
+      margin-bottom: 24px;
+      font-style: italic;
+    }
+
+    /* ── Stats row ──────────────────────────────────────────────────────── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+      margin: 32px 0;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 16px;
+      text-align: center;
+    }
+    .stat-card .stat-num {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text-strong);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+    .stat-card .stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-top: 4px;
+    }
+
+    /* ── Schema table ───────────────────────────────────────────────────── */
+    .schema-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      margin: 24px 0;
+    }
+    .schema-table th {
+      background: var(--surface);
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+    .schema-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .schema-table tr:last-child td { border-bottom: none; }
+    .level-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: var(--accent-dim);
+      color: var(--accent);
+      white-space: nowrap;
+    }
+    .level-l8 { background: rgba(248, 81, 73, 0.15); color: var(--red); }
+
+    /* TTR annotation */
+    .ttr-pill {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .ttr-low  { background: rgba(63, 185, 80, 0.12);  color: var(--green); }
+    .ttr-mid  { background: rgba(210, 153, 34, 0.15); color: var(--amber); }
+    .ttr-high { background: rgba(248, 81, 73, 0.12);  color: var(--red); }
+
+    /* ── Comparison table ───────────────────────────────────────────────── */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      margin: 24px 0;
+    }
+    .compare-table th {
+      padding: 10px 16px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      border-bottom: 2px solid var(--border);
+    }
+    .compare-table th:first-child { color: var(--text-muted); }
+    .compare-table th:last-child  { color: var(--accent); }
+    .compare-table td {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .compare-table tr:last-child td { border-bottom: none; }
+    .compare-table td:first-child { color: var(--text-muted); }
+    .compare-table td:last-child  { color: var(--text-strong); }
+
+    /* ── Key insight callout ────────────────────────────────────────────── */
+    .insight {
+      background: var(--accent-dim);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin: 28px 0;
+      color: var(--text-strong);
+      font-size: 0.95rem;
+      line-height: 1.65;
+    }
+    .insight strong { color: #79c0ff; }
+
+    /* ── Footer nav ─────────────────────────────────────────────────────── */
+    .post-footer {
+      margin-top: 64px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .post-footer a {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+    .post-footer a:hover { color: var(--accent); }
+    .cta-btn {
+      background: var(--accent);
+      color: #0d1117 !important;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none !important;
+    }
+    .cta-btn:hover { background: #6cb6ff !important; }
+
+    /* ── Responsive ─────────────────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .post-wrapper { padding: 32px 16px 64px; }
+      .scenario { padding: 20px; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      pre { padding: 16px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="site-header">
+    <a href="https://www.ecocomitychain.ai/">EcocomityChain.AI</a>
+    <span class="sep">/</span>
+    <a href="https://www.ecocomitychain.ai/blog">← All posts</a>
+  </header>
+
+  <main class="post-wrapper">
+
+    <!-- ── Meta bar ──────────────────────────────────────────────────────── -->
+    <div class="post-meta">
+      <span class="tag">Product Intelligence</span>
+      <span class="collab-badge">Neo4j Co-Marketing</span>
+      <span class="post-date">June 2026</span>
+    </div>
+
+    <!-- ── Title block ───────────────────────────────────────────────────── -->
+    <h1>Graph-Native Supply Chain Risk — A Neo4j Perspective</h1>
+    <p class="post-subtitle">
+      We built a material genealogy graph that traces every vehicle assembly from finished product to raw ore — eight levels deep, 34,713 nodes, 52,856 relationships. This is what the graph reveals that a relational database cannot.
+    </p>
+
+    <!-- ── Opening ───────────────────────────────────────────────────────── -->
+    <p>
+      Your supply chain risk tool knows who your suppliers are. But does it know what Lithium Hydroxide transforms into, six levels before it reaches your battery pack? Does it know that the same ore sitting at the bottom of 19 independent assembly chains is, in fact, a single point of failure for the entire vehicle programme?
+    </p>
+    <p>
+      We spent a year asking those questions, and they kept running into the same wall: the data model. Not the data volume, not the algorithms, not the compute — the data model. The moment you try to represent eight levels of material transformation, with typed relationships at every transition, supplier nodes attached at every depth, and TTR properties propagating upward through the chain, a relational schema becomes the enemy of the problem you are trying to solve.
+    </p>
+    <p>
+      This post is about what we built, why we chose Neo4j, and — through three concrete scenarios drawn from our live graph — what a connected material genealogy reveals that a flat model cannot.
+    </p>
+
+    <!-- ── Scale bar ─────────────────────────────────────────────────────── -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-num">34,713</div>
+        <div class="stat-label">Total nodes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">52,856</div>
+        <div class="stat-label">Relationships</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">8</div>
+        <div class="stat-label">BOM depth levels</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">17</div>
+        <div class="stat-label">Relationship types</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">554</div>
+        <div class="stat-label">Suppliers mapped</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">540d</div>
+        <div class="stat-label">Maximum TTR in graph</div>
+      </div>
+    </div>
+
+    <!-- ── Section: The structural problem ──────────────────────────────── -->
+    <h2>Why the data model is the problem</h2>
+
+    <p>
+      An 8-level material genealogy is a recursive, variable-depth structure with heterogeneous node types at every level. L1 is a vehicle assembly. L8 is a raw ore. Nothing in between is the same kind of thing. Cathode Active Material (L3) has chemical composition properties. Nickel Sulfate (L4) has synthesis route data. Nickel Ore Laterite (L8) has extraction geography and mine-level TTR.
+    </p>
+    <p>
+      To represent this in a relational database, you need either a self-referencing table with recursive CTEs — which requires knowing the depth in advance and collapses under heterogeneous node schemas — or a pre-computed path table that breaks the moment you add a new relationship type. We have seven distinct relationship types just for the material transformation chain:
+    </p>
+
+    <div class="code-label">Material transformation chain — 7 typed transitions</div>
+    <pre><code><span class="cmt">// Each step is a semantically distinct industrial process</span>
+<span class="rel">COMP_USES_MATERIAL</span>            <span class="cmt">// Component → ComponentMaterial (BOM specification)</span>
+<span class="rel">COMP_MAT_TRANSFORMS_TO_SEMI</span>   <span class="cmt">// ComponentMaterial → SemiFinishedMaterial (synthesis)</span>
+<span class="rel">SEMI_TRANSFORMS_TO_PRIMARY</span>    <span class="cmt">// SemiFinishedMaterial → PrimaryMaterial (refining)</span>
+<span class="rel">PRIMARY_TRANSFORMS_TO_PRECURSOR</span><span class="cmt">// PrimaryMaterial → PrecursorMaterial (precursor chemistry)</span>
+<span class="rel">PRECURSOR_TRANSFORMS_TO_RAW</span>   <span class="cmt">// PrecursorMaterial → RawMaterial (ore extraction)</span>
+<span class="rel">CONTAINS_SUBASSEMBLY</span>          <span class="cmt">// Assembly → SubAssembly (structural BOM)</span>
+<span class="rel">CONTAINS_COMPONENT</span>            <span class="cmt">// SubAssembly → Component (structural BOM)</span></code></pre>
+
+    <p>
+      In a relational model, seven join tables — or a polymorphic mess with a <code>type</code> column that loses all semantic meaning. In Neo4j, they are seven named relationship types that are first-class citizens of the query language. You can traverse selectively: "give me only paths through <code>TRANSFORMS_TO</code> relationships, not BOM structural edges." You can query edge-specific properties inline. And you can express "any of these seven relationship types" in a single MATCH clause — something SQL cannot do without a multi-step UNION.
+    </p>
+
+    <!-- ── Schema ─────────────────────────────────────────────────────────── -->
+    <h2>The schema: 10 node labels, three domains, one graph</h2>
+
+    <p>
+      The PMG graph connects three domains in one structure: the BOM hierarchy (L1 Assembly to L8 Raw Material), the supplier network (who supplies what, at which depth), and the risk properties of every node. Each domain has its own node labels; all three are queryable in a single traversal.
+    </p>
+
+    <table class="schema-table">
+      <thead>
+        <tr>
+          <th>Node label</th>
+          <th>BOM level</th>
+          <th>Representative node</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><code>Assembly</code></td>          <td><span class="level-badge">L1</span></td><td>Li-Ion Battery Pack (800V, 75 kWh, NMC 811)</td></tr>
+        <tr><td><code>SubAssembly</code></td>       <td><span class="level-badge">L2</span></td><td>Battery Module Assembly (6 modules)</td></tr>
+        <tr><td><code>Component</code></td>         <td><span class="level-badge">L3</span></td><td>Cathode Active Material (NMC 811)</td></tr>
+        <tr><td><code>ComponentMaterial</code></td> <td><span class="level-badge">L4</span></td><td>Lithium Hydroxide Monohydrate (Battery Grade)</td></tr>
+        <tr><td><code>SemiFinishedMaterial</code></td><td><span class="level-badge">L5</span></td><td>LiOH·H₂O powder (battery synthesis intermediate)</td></tr>
+        <tr><td><code>PrimaryMaterial</code></td>   <td><span class="level-badge">L6</span></td><td>Lithium carbonate (Li₂CO₃) 99.5%</td></tr>
+        <tr><td><code>PrecursorMaterial</code></td> <td><span class="level-badge">L7</span></td><td>Lithium concentrate (Li₂O 4.5%)</td></tr>
+        <tr><td><code>RawMaterial</code></td>       <td><span class="level-badge level-l8">L8</span></td><td>Lithium Ore (Spodumene) · Nickel Laterite Ore</td></tr>
+        <tr><td><code>Supplier</code></td>          <td>—</td><td>DENSO Corporation, ArcelorMittal México, 3M</td></tr>
+        <tr><td><code>SupplierLocation</code></td>  <td>—</td><td>Geographic presence node, connected via <code>LOCATED_AT</code></td></tr>
+      </tbody>
+    </table>
+
+    <p>
+      Every material node carries structural risk properties as first-class graph data: <code>estimated_ttr_days</code>, <code>is_diamond_node</code>, <code>diamond_assembly_count</code>, <code>manufacturing_complexity_index</code>, <code>single_source_likelihood</code>, and <code>concentration_country</code>. The graph is not just storage — it is the analytics substrate. Risk properties are computed by traversal and written back to nodes. The graph is both the data warehouse and the computation engine.
+    </p>
+
+    <p>
+      The three scenarios below are drawn from the live graph. Each one shows a class of analytical question that is structurally impossible to answer without graph traversal.
+    </p>
+
+    <!-- ── SCENARIO A ─────────────────────────────────────────────────────── -->
+    <div class="scenario">
+      <div class="scenario-label">Scenario A</div>
+      <h2>BOM Subtree — The depth argument</h2>
+      <p class="scenario-sub">One assembly fans out to 6 sub-assemblies, dozens of components, and 8 cathode materials. One MATCH clause. And this is only 4 of 8 levels.</p>
+
+      <p>
+        A traditional Bill of Materials is a tree that stops at L3 or L4 — it lists parts and sub-parts but does not trace material chemistry. "Cathode Active Material (NMC 811)" is one line in a BOM. In the PMG graph, it is a node connected to eight chemical inputs, each of which traces back through industrial synthesis routes to specific ores in specific geographies.
+      </p>
+      <p>
+        That is the difference between knowing "you use NMC 811" and knowing "your NMC 811 depends on Lithium Hydroxide Monohydrate with a 210-day TTR, sourced through a processing chain with 90%+ concentration in two countries."
+      </p>
+
+      <img src="https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/blog/assets/neo4j/A_bom_subtree.png"
+           alt="Scenario A: Li-Ion Battery Pack BOM subtree — L1 to L4, showing 6 sub-assemblies and 8 cathode materials"
+           class="graph-image" />
+      <p class="image-caption">
+        Battery Pack (L1) → 6 SubAssemblies (L2) → Components (L3) → 8 Cathode Active Materials (L4).
+        Every green L4 node has a full L5–L8 subtree beneath it, not shown here.
+      </p>
+
+      <p>
+        The query that produced this visualisation traverses four levels through three heterogeneous relationship types in one MATCH clause:
+      </p>
+
+      <div class="code-label">Cypher — BOM fan-out, L1 to L4</div>
+      <pre><code><span class="cmt">// Full BOM fan-out — Battery Pack to L4 materials</span>
+<span class="kw">MATCH</span> (a:<span class="fn">Assembly</span>)-[<span class="rel">:CONTAINS_SUBASSEMBLY</span>]-&gt;(l2:<span class="fn">SubAssembly</span>)
+<span class="kw">WHERE</span> a.name <span class="kw">CONTAINS</span> <span class="str">'Battery Pack'</span>
+<span class="kw">WITH</span> a, l2
+<span class="kw">MATCH</span> (l2)-[<span class="rel">:CONTAINS_COMPONENT</span>]-&gt;(l3:<span class="fn">Component</span>)
+<span class="kw">WHERE</span> l3.name <span class="kw">CONTAINS</span> <span class="str">'Cathode Active Material'</span>
+<span class="kw">WITH</span> a, l2, l3
+<span class="kw">MATCH</span> (l3)-[<span class="rel">:COMP_USES_MATERIAL</span>]-&gt;(l4:<span class="fn">ComponentMaterial</span>)
+<span class="kw">RETURN</span> a.name        <span class="kw">AS</span> assembly,
+       l2.name       <span class="kw">AS</span> sub_assembly,
+       l3.name       <span class="kw">AS</span> component,
+       l3.<span class="prop">estimated_ttr_days</span> <span class="kw">AS</span> component_ttr_days,
+       l4.name       <span class="kw">AS</span> material,
+       l4.<span class="prop">estimated_ttr_days</span> <span class="kw">AS</span> material_ttr_days
+<span class="kw">ORDER BY</span> l4.name</code></pre>
+
+      <p>
+        The eight L4 nodes surfaced by this query — Nickel Sulfate, Cobalt Sulfate, Lithium Hydroxide Monohydrate, Manganese Sulfate, and four others — each carry their own <code>estimated_ttr_days</code>. Lithium Hydroxide Monohydrate sits at <span class="ttr-high ttr-pill">210d</span>. Nickel Sulfate at <span class="ttr-low ttr-pill">60d</span>. These are not declared by the T1 supplier. They are computed from the material graph, tracing the actual synthesis and sourcing chain beneath each node.
+      </p>
+      <p>
+        When China announces export controls on lithium, a procurement team needs to know which of these eight cathode materials depends on Chinese processing. This query — or a variant of it with a <code>concentration_country</code> filter — tells them in milliseconds. Not after a cross-system join across a procurement platform, a materials database, and a BOM tool. In one traversal, on the live graph.
+      </p>
+
+      <div class="insight">
+        <strong>The SQL equivalent of this query</strong> is a recursive CTE across four tables with heterogeneous schemas, a UNION ALL at each step, and no native way to express "any of these three relationship types." The query plan does not scale past five or six levels. The Cypher above scales to eight without modification.
+      </div>
+    </div>
+
+    <!-- ── SCENARIO B ─────────────────────────────────────────────────────── -->
+    <div class="scenario">
+      <div class="scenario-label">Scenario B</div>
+      <h2>Diamond Convergence — The hidden single point of failure</h2>
+      <p class="scenario-sub">19 independent assemblies. One ore. The convergence is invisible at L3, L4, even L5. The graph detects it automatically at L8.</p>
+
+      <p>
+        In a flat supplier model, the Battery Pack has a nickel supplier. The Traction Motor has a different nickel supplier. The Braking System has a third. Three independent supply chains. Three independent risk assessments. Traditional risk tools treat them exactly this way — and they are structurally correct to do so, given the data they have.
+      </p>
+      <p>
+        The problem is that all three paths ultimately trace through the same raw material: Nickel Laterite Ore at L8. If that ore supply is disrupted — a mine closure, an export restriction, a geopolitical event — all 19 assemblies in the vehicle programme are affected simultaneously. The convergence is invisible at every level above L8. It is only detectable from the bottom of the graph, looking upward.
+      </p>
+
+      <img src="https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/blog/assets/neo4j/B_diamond_convergence.png"
+           alt="Scenario B: Four assembly paths converging on Nickel Laterite Ore at L8 — diamond_assembly_count = 19"
+           class="graph-image" />
+      <p class="image-caption">
+        Four of 19 shortest paths shown. Each path enters through a different nickel compound at L4–L5,
+        converging at L8. <code>diamond_assembly_count = 19</code>. <code>estimated_ttr_days = 120</code>.
+      </p>
+
+      <p>
+        This is what the PMG graph calls a diamond node: a material or supplier node where multiple independent assembly paths converge. The property <code>is_diamond_node = true</code> is not declared anywhere — it is computed by traversal and written back to the node. <code>diamond_assembly_count = 19</code> quantifies the blast radius. The query that detects it:
+      </p>
+
+      <div class="code-label">Cypher — Diamond detection, bottom-up traversal</div>
+      <pre><code><span class="cmt">// Find all assemblies that depend on Nickel Laterite Ore</span>
+<span class="kw">MATCH</span> (ore:<span class="fn">RawMaterial</span>)
+<span class="kw">WHERE</span> ore.name = <span class="str">'Nickel Laterite Ore'</span>
+  <span class="kw">AND</span> ore.<span class="prop">is_diamond_node</span> = <span class="num">true</span>
+<span class="kw">MATCH</span> path = <span class="fn">shortestPath</span>(
+  (a:<span class="fn">Assembly</span>)-[<span class="rel">:CONTAINS_SUBASSEMBLY|CONTAINS_COMPONENT|
+    COMP_USES_MATERIAL|COMP_MAT_TRANSFORMS_TO_SEMI|
+    SEMI_TRANSFORMS_TO_PRIMARY|PRIMARY_TRANSFORMS_TO_PRECURSOR|
+    PRECURSOR_TRANSFORMS_TO_RAW*1..8</span>]-&gt;(ore)
+)
+<span class="kw">WHERE</span> a.level = <span class="num">1</span>
+<span class="kw">RETURN</span> path,
+       ore.<span class="prop">diamond_assembly_count</span>  <span class="kw">AS</span> assemblies_affected,
+       ore.<span class="prop">estimated_ttr_days</span>      <span class="kw">AS</span> recovery_days,
+       a.name                      <span class="kw">AS</span> assembly_name
+<span class="kw">ORDER BY</span> a.name</code></pre>
+
+      <p>
+        That query returned 19 rows in under 200ms. The <code>*1..8</code> variable-length path pattern traversed all paths between length 1 and 8 through any combination of the listed relationship types — without knowing the path lengths in advance, without conditional logic for different depth assemblies. Native graph operation. The equivalent in SQL is not merely complex. It requires pre-computing all possible paths at load time in a denormalised lookup table, and rebuilding that table entirely whenever a BOM changes.
+      </p>
+
+      <p>
+        The four paths shown in the image — Battery Pack via Nickel Sulfate, Traction Motor via Nickel coating, Braking System via Nickel-Copper-Nickel Plating, HVAC Compressor via corrosion protection — pass through entirely different intermediate nodes at L4 through L6. The convergence is not visible at any of those levels. It only surfaces when you traverse to L8 and ask the graph: how many assemblies depend on this node?
+      </p>
+
+      <div class="insight">
+        <strong>In a flat BOM, these look like 19 independent supply chains.</strong> In the graph, they are one bottleneck. That is the difference between managing 19 risks and managing 1. The <code>diamond_assembly_count</code> property makes this immediately actionable: any node above a threshold triggers a review. Any node at 19 — the full vehicle programme — triggers immediate escalation.
+      </div>
+
+      <p>
+        Our live graph contains <strong>4,554+ diamond nodes</strong> — materials that feed multiple independent assemblies. The highest <code>diamond_assembly_count</code> in the graph is 19, for Nickel Laterite Ore. These nodes were detected automatically at graph load time by the same traversal pattern shown above. No analyst marked them. No spreadsheet maintained the list. The graph computed it.
+      </p>
+    </div>
+
+    <!-- ── SCENARIO C ─────────────────────────────────────────────────────── -->
+    <div class="scenario">
+      <div class="scenario-label">Scenario C</div>
+      <h2>TTR Depth — Where your risk actually lives</h2>
+      <p class="scenario-sub">DENSO Corporation supplies your Battery Pack. Six levels below DENSO, the graph shows a 270-day TTR that DENSO's declared lead time cannot capture.</p>
+
+      <p>
+        The Ford-MIT study (Simchi-Levi et al., 2015) introduced TTR — Time-to-Recover — as the right metric for supply chain risk, and proved that PI (Performance Impact) and TTR together identify hidden risk concentrations that spend-based monitoring misses. That framework was built on T1-observable data, because T1 was the data that existed. The authors were explicit about this ceiling in the paper itself.
+      </p>
+      <p>
+        PMG extends that methodology downward. TTR is not declared by a supplier — it is computed from the material graph. The constraining TTR for any disruption scenario is the maximum across the full dependency path, and that maximum is almost always deep in the chain, not at the T1 supplier.
+      </p>
+
+      <img src="https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/blog/assets/neo4j/C_ttr_depth.png"
+           alt="Scenario C: 8-level Lithium chain with TTR on each node and suppliers attached at L1, L2, L6, L8"
+           class="graph-image" />
+      <p class="image-caption">
+        Vertical L1→L8 Lithium chain. Suppliers attached at four different depths via typed
+        <code>SUPPLIES_*</code> relationships. TTR escalates from 210d at L4 to 270d at L8.
+      </p>
+
+      <p>
+        The TTR values across the Lithium chain in the live graph:
+      </p>
+
+      <table class="schema-table">
+        <thead>
+          <tr><th>Level</th><th>Node</th><th>Supplier</th><th>TTR</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="level-badge">L1</span></td>
+            <td>Li-Ion Battery Pack (800V, 75 kWh, NMC 811)</td>
+            <td>DENSO Corporation</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><span class="level-badge">L2</span></td>
+            <td>Battery Module Assembly (6 modules)</td>
+            <td>3M</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><span class="level-badge">L3</span></td>
+            <td>Cathode Active Material (NMC 811)</td>
+            <td>—</td>
+            <td><span class="ttr-high ttr-pill">240d</span></td>
+          </tr>
+          <tr>
+            <td><span class="level-badge">L4</span></td>
+            <td>Lithium Hydroxide Monohydrate (Battery Grade)</td>
+            <td>—</td>
+            <td><span class="ttr-high ttr-pill">210d</span></td>
+          </tr>
+          <tr>
+            <td><span class="level-badge">L5</span></td>
+            <td>LiOH·H₂O powder (synthesis intermediate)</td>
+            <td>—</td>
+            <td><span class="ttr-high ttr-pill">240d</span></td>
+          </tr>
+          <tr>
+            <td><span class="level-badge">L6</span></td>
+            <td>Lithium carbonate (Li₂CO₃) 99.5%</td>
+            <td>Silfab Solar Inc.</td>
+            <td><span class="ttr-high ttr-pill">240d</span></td>
+          </tr>
+          <tr>
+            <td><span class="level-badge">L7</span></td>
+            <td>Lithium concentrate (Li₂O 4.5%)</td>
+            <td>—</td>
+            <td><span class="ttr-high ttr-pill">240d</span></td>
+          </tr>
+          <tr>
+            <td><span class="level-badge level-l8">L8</span></td>
+            <td>Lithium Ore (Spodumene)</td>
+            <td>ArcelorMittal México</td>
+            <td><span class="ttr-high ttr-pill">270d</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>
+        DENSO Corporation quotes a lead time based on their own inventory, manufacturing capacity, and T1 procurement relationships. That estimate is operationally honest. What it cannot include is the physics of the material chain beneath them. Six levels below DENSO, Lithium Ore (Spodumene) carries a 270-day TTR — the time to qualify an alternative source, restart processing, rebuild inventory through every transformation stage back up to L1.
+      </p>
+
+      <p>
+        The query that builds this chain and overlays the supplier network:
+      </p>
+
+      <div class="code-label">Cypher — Full L1→L8 chain with TTR and supplier overlay</div>
+      <pre><code><span class="cmt">// Full Lithium chain — L1 Assembly to L8 Raw Material</span>
+<span class="kw">MATCH</span> (a:<span class="fn">Assembly</span>)-[<span class="rel">:CONTAINS_SUBASSEMBLY</span>]-&gt;(l2:<span class="fn">SubAssembly</span>)
+      -[<span class="rel">:CONTAINS_COMPONENT</span>]-&gt;(l3:<span class="fn">Component</span>)
+      -[<span class="rel">:COMP_USES_MATERIAL</span>]-&gt;(l4:<span class="fn">ComponentMaterial</span>)
+      -[<span class="rel">:COMP_MAT_TRANSFORMS_TO_SEMI</span>]-&gt;(l5:<span class="fn">SemiFinishedMaterial</span>)
+      -[<span class="rel">:SEMI_TRANSFORMS_TO_PRIMARY</span>]-&gt;(l6:<span class="fn">PrimaryMaterial</span>)
+      -[<span class="rel">:PRIMARY_TRANSFORMS_TO_PRECURSOR</span>]-&gt;(l7:<span class="fn">PrecursorMaterial</span>)
+      -[<span class="rel">:PRECURSOR_TRANSFORMS_TO_RAW</span>]-&gt;(l8:<span class="fn">RawMaterial</span>)
+<span class="kw">WHERE</span> a.name <span class="kw">CONTAINS</span> <span class="str">'Battery Pack'</span>
+  <span class="kw">AND</span> l4.name <span class="kw">CONTAINS</span> <span class="str">'Lithium Hydroxide'</span>
+<span class="kw">RETURN</span> a.name <span class="kw">AS</span> assembly,
+       l3.name <span class="kw">AS</span> component,       l3.<span class="prop">estimated_ttr_days</span> <span class="kw">AS</span> l3_ttr,
+       l4.name <span class="kw">AS</span> material,        l4.<span class="prop">estimated_ttr_days</span> <span class="kw">AS</span> l4_ttr,
+       l5.name <span class="kw">AS</span> semi_finished,   l5.<span class="prop">estimated_ttr_days</span> <span class="kw">AS</span> l5_ttr,
+       l6.name <span class="kw">AS</span> primary,         l6.<span class="prop">estimated_ttr_days</span> <span class="kw">AS</span> l6_ttr,
+       l7.name <span class="kw">AS</span> precursor,       l7.<span class="prop">estimated_ttr_days</span> <span class="kw">AS</span> l7_ttr,
+       l8.name <span class="kw">AS</span> raw_material,    l8.<span class="prop">estimated_ttr_days</span> <span class="kw">AS</span> l8_ttr</code></pre>
+
+      <p>
+        The supplier overlay is structurally important. In the PMG graph, suppliers attach to materials at every depth via typed <code>SUPPLIES_*</code> relationships. <code>SupplierLocation -[:SUPPLIES_RAW_MATERIAL]-> RawMaterial</code> is not the same edge as <code>SupplierLocation -[:SUPPLIES_L1]-> Assembly</code>. Each relationship type represents a different commercial and operational relationship with its own risk properties. This means you can ask: <em>which suppliers are exposed at L6 or deeper, where substitution takes more than 180 days?</em> — and get the answer in one traversal, without a cross-system join.
+      </p>
+
+      <div class="insight">
+        <strong>The gap between declared TTR and computed TTR can exceed 40 weeks.</strong> Not because suppliers misrepresent their capability — but because no T1 supplier has visibility into their own material chain at L6, L7, and L8. The graph closes that gap structurally. The TTR that matters for disruption planning is the maximum across the full dependency path. In this chain, that maximum is 270 days, nine levels below the assembly node that appears on a procurement dashboard.
+      </div>
+    </div>
+
+    <!-- ── Why Neo4j section ─────────────────────────────────────────────── -->
+    <h2>Why Neo4j — the technical argument in four points</h2>
+
+    <p>
+      These three scenarios converge on the same answer to a question we get regularly: why not a relational database? Here is the technical case, without the marketing gloss.
+    </p>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Capability requirement</th>
+          <th>Relational database</th>
+          <th>Neo4j</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Variable-length traversal (1..8 levels)</strong></td>
+          <td>Recursive CTE, requires known depth, no heterogeneous node types</td>
+          <td><code>*1..8</code> inline, variable depth, heterogeneous node types native</td>
+        </tr>
+        <tr>
+          <td><strong>Typed relationships (17 types)</strong></td>
+          <td>17 join tables or polymorphic type column losing semantic meaning</td>
+          <td>17 named relationship types, queryable selectively in one MATCH</td>
+        </tr>
+        <tr>
+          <td><strong>Bottom-up convergence detection</strong></td>
+          <td>Pre-computed path table, rebuilt on every BOM change</td>
+          <td><code>shortestPath</code> at query time against live graph, &lt;200ms</td>
+        </tr>
+        <tr>
+          <td><strong>Cross-domain traversal (BOM + supplier + risk)</strong></td>
+          <td>Multi-system join across BOM tool, procurement platform, risk DB</td>
+          <td>One traversal, one query, three domains in one connected graph</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      The fourth point deserves expansion. Our three most important analytical questions each span all three domains simultaneously:
+    </p>
+    <p>
+      <em>"Which assemblies are exposed to this ore disruption?"</em> — crosses material chemistry (L4–L8) and BOM structure (L1–L3). <em>"What is the real TTR for this T1 supplier's contribution?"</em> — crosses the supplier network and the material transformation chain. <em>"Which supplier should I contact first for DPP compliance?"</em> — crosses supplier relationships, material risk scores, and geographic concentration data.
+    </p>
+    <p>
+      All three are single Cypher traversals on one connected graph. In a traditional architecture, each requires a separate system query, cross-system joins, and manual aggregation — a pipeline that takes hours. On the live graph, these questions run in seconds.
+    </p>
+
+    <!-- ── Closing ─────────────────────────────────────────────────────────── -->
+    <h2>What the graph produces</h2>
+
+    <p>
+      The three scenarios above are analytical patterns — ways of interrogating a connected structure to surface risk that flat models hide. What the graph produces operationally is: a list of diamond nodes ranked by <code>diamond_assembly_count</code> and recovery complexity; a TTR profile for every assembly that reflects the deepest constraint in its material chain, not the T1-declared lead time; and a supplier-material map that tells a procurement team not just who supplies what, but at which depth in the material chain that supply relationship actually lives.
+    </p>
+    <p>
+      The prescriptive layer that sits on top of this graph — material substitution evaluation, sourcing viability simulation, cross-domain consequence analysis — runs on the same connected structure. When a disruption scenario is identified, the graph already contains the alternative paths, the supplier network around those paths, and the compliance implications of switching. The recommendation is evaluated against the live graph before it surfaces, not after.
+    </p>
+
+    <blockquote>
+      <p>Supply chain risk is fundamentally a graph problem. Not a table problem. Not a dashboard problem. A graph problem. The question "which of my assemblies is exposed to this disruption?" cannot be answered by querying who your suppliers are. It can only be answered by traversing what your materials are made of — all the way down to the ore.</p>
+    </blockquote>
+
+    <p>
+      The live graph referenced throughout this post is a modelled European BEV bill of materials — one vehicle programme, eight levels deep, 19 top-level assemblies, 554 suppliers across all tiers. It is proof of methodology, not a customer deployment. But the patterns it reveals — diamond convergence, TTR depth, supplier geography at depth — are structural properties of any modern manufactured product. They exist in your graph whether or not you have built the graph to see them.
+    </p>
+
+    <!-- ── Footer ─────────────────────────────────────────────────────────── -->
+    <div class="post-footer">
+      <a href="https://www.ecocomitychain.ai/blog">← Back to all posts</a>
+      <a href="https://www.ecocomitychain.ai/platform/proactive-resilience/#pilot" class="cta-btn">Request Pilot Access</a>
+    </div>
+
+  </main>
+
+</body>
+</html>
