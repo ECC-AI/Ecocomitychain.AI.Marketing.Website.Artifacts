@@ -628,5 +628,19 @@
   </div>
 
 </div>
+
+<script>
+  // Report rendered height to parent iframe
+  function reportHeight() {
+    var h = document.documentElement.scrollHeight || document.body.scrollHeight;
+    window.parent.postMessage({ type: 'iframeHeight', height: h }, '*');
+  }
+  // Fire on load and after any reflow
+  window.addEventListener('load', reportHeight);
+  window.addEventListener('resize', reportHeight);
+  // Also fire after a short delay to catch late renders
+  setTimeout(reportHeight, 300);
+  setTimeout(reportHeight, 800);
+</script>
 </body>
 </html>
