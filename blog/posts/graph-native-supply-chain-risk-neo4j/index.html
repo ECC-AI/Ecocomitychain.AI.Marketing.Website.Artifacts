@@ -380,218 +380,84 @@
       pre { padding: 16px; }
     }
 
-    /* ── Lightbox ────────────────────────────────────────────────────────── */
-    .img-wrap {
-      position: relative;
-      display: block;
-      margin: 24px 0 0;
-      cursor: zoom-in;
-    }
-    .img-wrap .graph-image {
-      margin: 0;
-      transition: opacity .15s;
-    }
-    .img-wrap:hover .graph-image { opacity: .88; }
-    .img-wrap .expand-badge {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(0,0,0,.65);
-      backdrop-filter: blur(4px);
-      border: 1px solid rgba(255,255,255,.15);
-      border-radius: 6px;
-      padding: 5px 9px;
-      font-size: 11px;
-      font-family: var(--font-mono);
-      color: #c9d1d9;
-      letter-spacing: .04em;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity .15s;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .img-wrap:hover .expand-badge { opacity: 1; }
-    .expand-badge svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; }
 
-    /* overlay */
-    #lb-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(0,0,0,.88);
-      backdrop-filter: blur(6px);
-      cursor: zoom-out;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-    #lb-overlay.open { display: flex; }
-    #lb-overlay img {
-      max-width: min(1200px, 96vw);
-      max-height: 92vh;
-      border-radius: 8px;
-      box-shadow: 0 24px 80px rgba(0,0,0,.7);
-      cursor: default;
-    }
-    #lb-close {
-      position: fixed;
-      top: 18px;
-      right: 22px;
-      background: rgba(255,255,255,.1);
-      border: 1px solid rgba(255,255,255,.2);
-      border-radius: 50%;
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: #e6edf3;
-      font-size: 18px;
-      line-height: 1;
-      transition: background .15s;
-    }
-    #lb-close:hover { background: rgba(255,255,255,.2); }
-
-    /* ── Lightbox ────────────────────────────────────────────────────────── */
+    /* ── Lightbox ─────────────────────────────────────────────────────── */
     .img-wrap {
-      position: relative;
-      display: block;
-      margin: 24px 0 0;
-      cursor: zoom-in;
+      position: relative; display: block; margin: 24px 0 0; cursor: zoom-in;
     }
     .img-wrap .graph-image { margin: 0; transition: opacity .15s; }
     .img-wrap:hover .graph-image { opacity: .88; }
-    .img-wrap .expand-badge {
-      position: absolute;
-      top: 10px; right: 10px;
-      background: rgba(0,0,0,.65);
-      backdrop-filter: blur(4px);
-      border: 1px solid rgba(255,255,255,.15);
-      border-radius: 6px;
-      padding: 5px 10px;
-      font-size: 11px;
-      font-family: var(--font-mono);
-      color: #c9d1d9;
-      letter-spacing: .04em;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity .15s;
+    .expand-badge {
+      position: absolute; top: 10px; right: 10px;
+      background: rgba(0,0,0,.65); backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,255,255,.15); border-radius: 6px;
+      padding: 5px 10px; font-size: 11px; font-family: var(--font-mono);
+      color: #c9d1d9; letter-spacing: .04em; pointer-events: none;
+      opacity: 0; transition: opacity .15s;
       display: flex; align-items: center; gap: 5px;
     }
     .img-wrap:hover .expand-badge { opacity: 1; }
     .expand-badge svg { width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2; }
 
-    /* overlay */
+    /* Full-screen overlay */
     #lb-overlay {
       display: none;
-      position: fixed; inset: 0; z-index: 9999;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      width: 100vw; height: 100vh;
+      z-index: 9999;
       background: rgba(0,0,0,.93);
       backdrop-filter: blur(8px);
+      flex-direction: column;
+      overflow: hidden;
     }
-    #lb-overlay.open { display: flex; flex-direction: column; }
+    #lb-overlay.open { display: flex; }
 
-    /* scrollable image area */
     #lb-scroll {
-      flex: 1;
+      flex: 1; min-height: 0;
       overflow: auto;
-      padding: 20px 24px 80px;
+      padding: 20px;
       cursor: grab;
-      /* Centering done via lb-img-wrap margin:auto inside block context */
+      /* centre the image when it's smaller than the scroll area */
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
     }
     #lb-scroll:active { cursor: grabbing; }
-    #lb-img-wrap {
-      /* margin:auto centres in block context when content is narrower than scroll area */
-      display: block;
-      margin: 0 auto;
-    }
+
+    /* The wrapper takes the SCALED footprint so centering works correctly */
+    #lb-img-wrap { flex-shrink: 0; position: relative; }
+
     #lb-img {
-      display: block;
-      /* width controlled via JS transform-origin scaling */
-      max-width: none;
-      max-height: none;
-      border-radius: 6px;
+      display: block; border-radius: 6px;
       box-shadow: 0 16px 60px rgba(0,0,0,.8);
-      /* Render at native resolution via transform:scale — browser handles downscale smoothly */
+      /* Always rendered at native size; zoom applied via JS width/height
+         using high-quality browser downscale (not transform) */
     }
 
-    /* toolbar */
+    /* Bottom toolbar */
     #lb-toolbar {
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      flex-shrink: 0; display: flex; align-items: center; gap: 10px;
       padding: 10px 16px;
-      background: rgba(13,17,23,.95);
+      background: rgba(13,17,23,.97);
       border-top: 1px solid rgba(255,255,255,.08);
     }
     .lb-btn {
-      background: rgba(255,255,255,.07);
-      border: 1px solid rgba(255,255,255,.15);
-      border-radius: 6px;
-      padding: 5px 12px;
-      cursor: pointer;
-      color: #c9d1d9;
-      font-size: 12px;
-      font-family: var(--font-mono);
-      transition: background .15s;
-      display: flex; align-items: center; gap: 5px;
+      background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.15);
+      border-radius: 6px; padding: 5px 12px; cursor: pointer; color: #c9d1d9;
+      font-size: 12px; font-family: var(--font-mono);
+      transition: background .15s; display: flex; align-items: center; gap: 5px;
       white-space: nowrap;
     }
     .lb-btn:hover { background: rgba(68,147,248,.2); border-color: rgba(68,147,248,.4); color:#e6edf3; }
     .lb-btn svg { width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
-
-    #lb-slider-wrap {
-      display: flex; align-items: center; gap: 8px; flex: 1;
-    }
-    #lb-zoom-label {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      color: #8b949e;
-      min-width: 42px;
-      text-align: right;
-    }
+    #lb-slider-wrap { display: flex; align-items: center; gap: 8px; flex: 1; }
+    #lb-zoom-label { font-family: var(--font-mono); font-size: 12px; color: #8b949e; min-width: 38px; text-align: right; }
     #lb-slider {
-      flex: 1;
-      -webkit-appearance: none;
-      appearance: none;
-      height: 4px;
-      border-radius: 2px;
-      background: rgba(255,255,255,.15);
-      outline: none;
-      cursor: pointer;
+      flex: 1; -webkit-appearance: none; appearance: none;
+      height: 4px; border-radius: 2px; background: rgba(255,255,255,.15); outline: none; cursor: pointer;
     }
-    #lb-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 16px; height: 16px;
-      border-radius: 50%;
-      background: #4493f8;
-      border: 2px solid #1a1a2e;
-      cursor: pointer;
-    }
-    #lb-slider::-moz-range-thumb {
-      width: 16px; height: 16px;
-      border-radius: 50%;
-      background: #4493f8;
-      border: 2px solid #1a1a2e;
-      cursor: pointer;
-    }
-    #lb-hint {
-      position: absolute;
-      bottom: 68px; left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0,0,0,.7);
-      border: 1px solid rgba(255,255,255,.1);
-      border-radius: 20px;
-      padding: 5px 16px;
-      font-size: 11px; font-family: var(--font-mono); color: #8b949e;
-      pointer-events: none;
-      transition: opacity .5s;
-      white-space: nowrap;
-    }
+    #lb-slider::-webkit-slider-thumb { -webkit-appearance: none; width:16px; height:16px; border-radius:50%; background:#4493f8; border:2px solid #0d1117; cursor:pointer; }
+    #lb-slider::-moz-range-thumb     { width:16px; height:16px; border-radius:50%; background:#4493f8; border:2px solid #0d1117; cursor:pointer; }
   </style>
 </head>
 
@@ -730,13 +596,12 @@
       <p>
         That is the difference between knowing "you use NMC 811" and knowing "your NMC 811 depends on Lithium Hydroxide Monohydrate with a 210-day TTR, sourced through a processing chain with 90%+ concentration in two countries."
       </p>
-
       <div class="img-wrap" onclick="lbOpen(this)">
-      <img src="https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/blog/assets/neo4j/A_bom_subtree.png"
+        <img src="https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/blog/assets/neo4j/A_bom_subtree.png"
            alt="Scenario A: Li-Ion Battery Pack BOM subtree — L1 to L4, showing 6 sub-assemblies and 8 cathode materials"
            class="graph-image" />
-      <span class="expand-badge"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4"/></svg>Expand</span>
-    </div>
+        <span class="expand-badge"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4"/></svg>Expand</span>
+      </div>
       <p class="image-caption">
         Battery Pack (L1) → 6 SubAssemblies (L2) → Components (L3) → 8 Cathode Active Materials (L4).
         Every green L4 node has a full L5–L8 subtree beneath it, not shown here.
@@ -787,13 +652,12 @@
       <p>
         The problem is that all three paths ultimately trace through the same raw material: Nickel Laterite Ore at L8. If that ore supply is disrupted — a mine closure, an export restriction, a geopolitical event — all 19 assemblies in the vehicle programme are affected simultaneously. The convergence is invisible at every level above L8. It is only detectable from the bottom of the graph, looking upward.
       </p>
-
       <div class="img-wrap" onclick="lbOpen(this)">
-      <img src="https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/blog/assets/neo4j/B_diamond_convergence.png"
+        <img src="https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/blog/assets/neo4j/B_diamond_convergence.png"
            alt="Scenario B: Four assembly paths converging on Nickel Laterite Ore at L8 — diamond_assembly_count = 19"
            class="graph-image" />
-      <span class="expand-badge"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4"/></svg>Expand</span>
-    </div>
+        <span class="expand-badge"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4"/></svg>Expand</span>
+      </div>
       <p class="image-caption">
         Four of 19 shortest paths shown. Each path enters through a different nickel compound at L4–L5,
         converging at L8. <code>diamond_assembly_count = 19</code>. <code>estimated_ttr_days = 120</code>.
@@ -850,13 +714,12 @@
       <p>
         PMG extends that methodology downward. TTR is not declared by a supplier — it is computed from the material graph. The constraining TTR for any disruption scenario is the maximum across the full dependency path, and that maximum is almost always deep in the chain, not at the T1 supplier.
       </p>
-
       <div class="img-wrap" onclick="lbOpen(this)">
-      <img src="https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/blog/assets/neo4j/C_ttr_depth.png"
+        <img src="https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/blog/assets/neo4j/C_ttr_depth.png"
            alt="Scenario C: 8-level Lithium chain with TTR on each node and suppliers attached at L1, L2, L6, L8"
            class="graph-image" />
-      <span class="expand-badge"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4"/></svg>Expand</span>
-    </div>
+        <span class="expand-badge"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4"/></svg>Expand</span>
+      </div>
       <p class="image-caption">
         Vertical L1→L8 Lithium chain. Suppliers attached at four different depths via typed
         <code>SUPPLIES_*</code> relationships. TTR escalates from 210d at L4 to 270d at L8.
@@ -1036,147 +899,123 @@
 
 
   <!-- ── Lightbox ───────────────────────────────────────────────────── -->
+
+  <!-- Lightbox -->
   <div id="lb-overlay">
-    <div id="lb-scroll" id="lb-scroll">
+    <div id="lb-scroll">
       <div id="lb-img-wrap">
         <img id="lb-img" src="" alt="">
       </div>
     </div>
     <div id="lb-toolbar">
-      <button class="lb-btn" onclick="lbFit()" title="Fit whole image in window">
+      <button class="lb-btn" onclick="lbFit()" title="Show whole image">
         <svg viewBox="0 0 24 24"><path d="M4 14H10V20M20 10H14V4M14 20H20V14M4 10H10V4"/></svg>Fit
       </button>
-      <button class="lb-btn" onclick="lbSetZoom(100)" title="Native pixel size">
+      <button class="lb-btn" onclick="lbSetZoom(100)">
         <svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>100%
       </button>
       <div id="lb-slider-wrap">
         <span style="font-family:var(--font-mono);font-size:11px;color:#8b949e;">Zoom</span>
-        <input id="lb-slider" type="range" min="10" max="100" value="30"
-               oninput="lbSetZoom(this.value)" onclick="event.stopPropagation()">
-        <span id="lb-zoom-label">30%</span>
+        <input id="lb-slider" type="range" min="10" max="100" value="25"
+               oninput="lbSetZoom(+this.value)" onclick="event.stopPropagation()">
+        <span id="lb-zoom-label">25%</span>
       </div>
       <button class="lb-btn" onclick="lbClose()">
         <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>Close
       </button>
     </div>
-    <div id="lb-hint">Drag to pan &nbsp;·&nbsp; Slider to zoom &nbsp;·&nbsp; Esc to close</div>
   </div>
 
   <script>
   (function(){
-    var _nativeW = 0, _nativeH = 0;
+    var NW = 0, NH = 0;
 
-    function viewW() { return document.getElementById('lb-scroll').clientWidth  - 48; }
-    function viewH() { return document.getElementById('lb-scroll').clientHeight - 40; }
+    function sw() { return document.getElementById('lb-scroll').clientWidth  - 40; }
+    function sh() { return document.getElementById('lb-scroll').clientHeight - 40; }
 
-    function fitZoom() {
-      if (!_nativeW) return 30;
-      var zw = Math.floor(viewW() / _nativeW * 100);
-      var zh = Math.floor(viewH() / _nativeH * 100);
-      return Math.max(10, Math.min(zw, zh));
+    function fitPct() {
+      if (!NW) return 25;
+      return Math.max(10, Math.min(100, Math.floor(Math.min(sw()/NW, sh()/NH) * 100)));
     }
 
-    window.lbOpen = function(wrap) {
-      var src = wrap.querySelector('img');
-      var lbImg = document.getElementById('lb-img');
-      // Load image to get native dimensions
+    function applyZoom(z) {
+      z = Math.max(10, Math.min(100, +z));
+      var img  = document.getElementById('lb-img');
+      var wrap = document.getElementById('lb-img-wrap');
+      var w = Math.round(NW * z / 100);
+      var h = Math.round(NH * z / 100);
+      /* Set rendered size directly — browser downscales with high-quality
+         Lanczos filter. No transform blur, no left-alignment issue. */
+      img.style.width  = w + 'px';
+      img.style.height = h + 'px';
+      wrap.style.width  = w + 'px';
+      wrap.style.height = h + 'px';
+      document.getElementById('lb-slider').value = z;
+      document.getElementById('lb-zoom-label').textContent = z + '%';
+    }
+
+    window.lbOpen = function(el) {
+      var src = el.querySelector('img');
       var tmp = new Image();
       tmp.onload = function() {
-        _nativeW = tmp.naturalWidth;
-        _nativeH = tmp.naturalHeight;
-        lbImg.src = tmp.src;
-        lbImg.alt = src.alt;
-        // Set native size first, then scale via transform
-        lbImg.style.width     = _nativeW + 'px';
-        lbImg.style.height    = _nativeH + 'px';
-        lbImg.style.transform = 'scale(1)';
-        var z = fitZoom();
-        applyZoom(z);
+        NW = tmp.naturalWidth; NH = tmp.naturalHeight;
+        var lbImg = document.getElementById('lb-img');
+        lbImg.src   = tmp.src;
+        lbImg.alt   = src.alt;
+        /* Pre-set to native size so browser caches the full-res decode */
+        lbImg.style.width  = NW + 'px';
+        lbImg.style.height = NH + 'px';
         document.getElementById('lb-overlay').classList.add('open');
         document.body.style.overflow = 'hidden';
-        // fade hint
-        setTimeout(function(){
-          var h = document.getElementById('lb-hint');
-          if(h) h.style.opacity='0';
-        }, 3500);
+        /* Apply fit zoom after overlay is visible (so clientWidth is correct) */
+        requestAnimationFrame(function() {
+          requestAnimationFrame(function() { applyZoom(fitPct()); });
+        });
       };
       tmp.src = src.src;
     };
 
-    window.lbFit = function() {
-      applyZoom(fitZoom());
-      document.getElementById('lb-scroll').scrollTop = 0;
-      document.getElementById('lb-scroll').scrollLeft = 0;
-    };
-
-    window.lbSetZoom = function(z) {
-      z = parseInt(z);
-      applyZoom(z);
-    };
-
-    function applyZoom(z) {
-      z = Math.max(10, Math.min(100, z));
-      var lbImg = document.getElementById('lb-img');
-      var wrap  = document.getElementById('lb-img-wrap');
-      var scale = z / 100;
-      var scaledW = Math.round(_nativeW * scale);
-      var scaledH = Math.round(_nativeH * scale);
-
-      // Image stays at native pixels — GPU scales cleanly, no bilinear blur
-      lbImg.style.width           = _nativeW + 'px';
-      lbImg.style.height          = _nativeH + 'px';
-      lbImg.style.transformOrigin = 'top left';
-      lbImg.style.transform       = 'scale(' + scale + ')';
-
-      // Wrapper takes the SCALED footprint — this is what the scroll container
-      // uses to determine scrollable area AND what margin:auto centres against
-      wrap.style.width    = scaledW + 'px';
-      wrap.style.height   = scaledH + 'px';
-      wrap.style.overflow = 'visible'; // image overflows during transform
-
-      document.getElementById('lb-slider').value = z;
-      document.getElementById('lb-zoom-label').textContent = z + '%';
-    }
+    window.lbFit     = function()  { applyZoom(fitPct()); };
+    window.lbSetZoom = function(z) { applyZoom(z); };
 
     window.lbClose = function() {
       document.getElementById('lb-overlay').classList.remove('open');
       document.getElementById('lb-img').src = '';
       document.body.style.overflow = '';
-      var h = document.getElementById('lb-hint');
-      if(h) h.style.opacity='1';
-      _nativeW = 0; _nativeH = 0;
+      NW = NH = 0;
     };
 
-    // Drag to pan
-    var drag = false, startX, startY, scrollL, scrollT;
-    var scroll = document.getElementById('lb-scroll');
-    scroll.addEventListener('mousedown', function(e){
+    /* Drag to pan */
+    var drag=false, ox, oy, sl, st;
+    var sc = document.getElementById('lb-scroll');
+    sc.addEventListener('mousedown', function(e){
       if(e.target.tagName==='INPUT'||e.target.tagName==='BUTTON') return;
-      drag=true; startX=e.pageX; startY=e.pageY;
-      scrollL=scroll.scrollLeft; scrollT=scroll.scrollTop;
+      drag=true; ox=e.pageX; oy=e.pageY; sl=sc.scrollLeft; st=sc.scrollTop;
     });
     document.addEventListener('mousemove', function(e){
       if(!drag) return;
-      scroll.scrollLeft = scrollL-(e.pageX-startX);
-      scroll.scrollTop  = scrollT-(e.pageY-startY);
+      sc.scrollLeft = sl-(e.pageX-ox);
+      sc.scrollTop  = st-(e.pageY-oy);
     });
     document.addEventListener('mouseup', function(){ drag=false; });
 
-    // Scroll wheel to zoom
-    scroll.addEventListener('wheel', function(e){
+    /* Wheel to zoom */
+    sc.addEventListener('wheel', function(e){
       e.preventDefault();
-      var cur = parseInt(document.getElementById('lb-slider').value);
-      var delta = e.deltaY < 0 ? 5 : -5;
-      applyZoom(cur + delta);
+      applyZoom(+document.getElementById('lb-slider').value + (e.deltaY<0?5:-5));
     }, {passive:false});
 
-    // Keyboard
+    /* Keys */
     document.addEventListener('keydown', function(e){
       if(!document.getElementById('lb-overlay').classList.contains('open')) return;
       if(e.key==='Escape') lbClose();
-      if(e.key==='+' || e.key==='=') { var c=parseInt(document.getElementById('lb-slider').value); applyZoom(c+10); }
-      if(e.key==='-') { var c=parseInt(document.getElementById('lb-slider').value); applyZoom(c-10); }
+      if(e.key==='+'||e.key==='=') applyZoom(+document.getElementById('lb-slider').value+10);
+      if(e.key==='-') applyZoom(+document.getElementById('lb-slider').value-10);
       if(e.key==='0') lbFit();
+    });
+
+    window.addEventListener('resize', function(){
+      if(document.getElementById('lb-overlay').classList.contains('open')) lbFit();
     });
   })();
   </script>
