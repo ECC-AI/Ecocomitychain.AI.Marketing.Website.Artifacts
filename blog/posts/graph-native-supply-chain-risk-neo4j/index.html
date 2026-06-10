@@ -421,40 +421,78 @@
       position: fixed;
       inset: 0;
       z-index: 9999;
-      background: rgba(0,0,0,.88);
+      background: rgba(0,0,0,.92);
       backdrop-filter: blur(6px);
       cursor: zoom-out;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
+      overflow: auto;          /* scroll when image exceeds viewport */
     }
-    #lb-overlay.open { display: flex; }
-    #lb-overlay img {
-      max-width: min(1200px, 96vw);
-      max-height: 92vh;
-      border-radius: 8px;
-      box-shadow: 0 24px 80px rgba(0,0,0,.7);
+    #lb-overlay.open { display: block; }
+    #lb-inner {
+      display: inline-block;   /* shrink-wraps the image for centering */
+      min-width: 100%;
+      min-height: 100%;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 60px 24px 40px; /* top padding clears close button */
+      box-sizing: border-box;
       cursor: default;
     }
-    #lb-close {
+    #lb-overlay img {
+      /* Render at native pixel resolution — never upscale, never downscale */
+      width: auto;
+      height: auto;
+      max-width: none;         /* key: lift the width cap */
+      max-height: none;        /* key: lift the height cap */
+      border-radius: 6px;
+      box-shadow: 0 24px 80px rgba(0,0,0,.8);
+      cursor: default;
+      display: block;
+      image-rendering: -webkit-optimize-contrast; /* crisp on retina */
+      image-rendering: crisp-edges;
+    }
+    #lb-toolbar {
       position: fixed;
-      top: 18px;
-      right: 22px;
-      background: rgba(255,255,255,.1);
-      border: 1px solid rgba(255,255,255,.2);
-      border-radius: 50%;
-      width: 36px;
-      height: 36px;
+      top: 14px;
+      right: 14px;
       display: flex;
-      align-items: center;
-      justify-content: center;
+      gap: 8px;
+      z-index: 10000;
+    }
+    .lb-btn {
+      background: rgba(30,30,30,.85);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 6px;
+      padding: 6px 12px;
       cursor: pointer;
       color: #e6edf3;
-      font-size: 18px;
-      line-height: 1;
+      font-size: 12px;
+      font-family: var(--font-mono);
+      letter-spacing: .04em;
       transition: background .15s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
     }
-    #lb-close:hover { background: rgba(255,255,255,.2); }
+    .lb-btn:hover { background: rgba(68,147,248,.25); border-color: rgba(68,147,248,.5); }
+    .lb-btn svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    #lb-hint {
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,.7);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 20px;
+      padding: 5px 16px;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: #8b949e;
+      pointer-events: none;
+      opacity: 1;
+      transition: opacity .4s;
+    }
   </style>
 </head>
 
@@ -897,24 +935,76 @@
   </main>
 
 
-  <!-- Lightbox overlay -->
+  <!-- Lightbox overlay — native resolution with scroll -->
   <div id="lb-overlay" onclick="lbClose()">
-    <button id="lb-close" onclick="lbClose()" aria-label="Close">&times;</button>
-    <img id="lb-img" src="" alt="" onclick="event.stopPropagation()">
+    <div id="lb-toolbar">
+      <button class="lb-btn" onclick="lbFitView(event)" id="lb-fit-btn" title="Fit to window">
+        <svg viewBox="0 0 24 24"><path d="M4 14H10V20M20 10H14V4M14 20H20V14M4 10H10V4"/></svg>Fit
+      </button>
+      <button class="lb-btn" onclick="lbNative(event)" id="lb-native-btn" title="Full resolution">
+        <svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>Full res
+      </button>
+      <button class="lb-btn" onclick="lbClose()" title="Close (Esc)">
+        <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>Close
+      </button>
+    </div>
+    <div id="lb-inner" onclick="event.stopPropagation()">
+      <img id="lb-img" src="" alt="">
+    </div>
+    <div id="lb-hint">Scroll to pan &nbsp;·&nbsp; Fit / Full res buttons top-right &nbsp;·&nbsp; Esc to close</div>
   </div>
 
   <script>
+    var _lbNativeMode = false;
+
     function lbOpen(wrap) {
       var img = wrap.querySelector('img');
-      document.getElementById('lb-img').src = img.src;
-      document.getElementById('lb-img').alt = img.alt;
+      var lbImg = document.getElementById('lb-img');
+      lbImg.src = img.src;
+      lbImg.alt = img.alt;
+      // Start in fit-to-window mode
+      _lbNativeMode = false;
+      lbImg.style.maxWidth  = '100%';
+      lbImg.style.maxHeight = '88vh';
+      lbImg.style.width     = 'auto';
+      lbImg.style.height    = 'auto';
       document.getElementById('lb-overlay').classList.add('open');
-      document.body.style.overflow = 'hidden';
+      document.getElementById('lb-overlay').scrollTop = 0;
+      // Fade out hint after 3s
+      setTimeout(function(){
+        var hint = document.getElementById('lb-hint');
+        if (hint) hint.style.opacity = '0';
+      }, 3000);
     }
+
+    function lbFitView(e) {
+      e.stopPropagation();
+      _lbNativeMode = false;
+      var lbImg = document.getElementById('lb-img');
+      lbImg.style.maxWidth  = '100%';
+      lbImg.style.maxHeight = '88vh';
+      lbImg.style.width     = 'auto';
+      lbImg.style.height    = 'auto';
+      document.getElementById('lb-overlay').scrollTop = 0;
+    }
+
+    function lbNative(e) {
+      e.stopPropagation();
+      _lbNativeMode = true;
+      var lbImg = document.getElementById('lb-img');
+      lbImg.style.maxWidth  = 'none';
+      lbImg.style.maxHeight = 'none';
+      lbImg.style.width     = 'auto';
+      lbImg.style.height    = 'auto';
+      document.getElementById('lb-overlay').scrollTop = 0;
+    }
+
     function lbClose() {
       document.getElementById('lb-overlay').classList.remove('open');
-      document.body.style.overflow = '';
+      var hint = document.getElementById('lb-hint');
+      if (hint) hint.style.opacity = '1';
     }
+
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') lbClose();
     });
