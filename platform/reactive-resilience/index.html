@@ -100,6 +100,7 @@ section.alt { background: var(--bg-raised); }
 .flow-step { display: flex; gap: 28px; }
 .flow-marker { display: flex; flex-direction: column; align-items: center; flex: none; }
 .flow-num { width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--blue); display: flex; align-items: center; justify-content: center; font-family: var(--display); font-weight: 800; font-size: 14px; color: var(--blue); background: var(--bg); }
+.flow-num svg { width: 22px; height: 22px; display: block; }
 .flow-line { flex: 1; width: 1px; background: var(--border-hi); margin: 6px 0; min-height: 24px; }
 .flow-content { padding-bottom: 52px; flex: 1; }
 .flow-step:last-child .flow-content { padding-bottom: 0; }
@@ -207,26 +208,25 @@ footer { border-top: 1px solid var(--border); padding: 28px 0; }
 <div class="hero">
   <div class="container">
     <p class="hero-eyebrow">Reactive Value Chain Resilience</p>
-    <h1 class="hero-headline">An alert tells you something happened.<br><em>It doesn't tell you what to do.</em></h1>
+    <h1 class="hero-headline">Most platforms stop at the alert.<br><em>ECC starts solving.</em></h1>
     <p class="hero-body">
-      Most platforms stop there — and what follows is the same playbook used
-      for the last disruption, and the one before that:
-      <strong>build inventory, dual-source, regionalize.</strong> ECC's
-      reactive layer generates the full set of response options — ranked by
-      cost, risk, and delivery impact, grounded in 1,000+ documented
-      disruption cases — including options your team would not have thought
-      to ask for. Checking those options against your real constraints is
-      table stakes. <strong>Generating the full ranked set in the first place,
-      without waiting for someone to ask the right question, is the part
-      almost nothing else does.</strong>
+      What follows an alert is usually the same playbook used for the last
+      disruption, and the one before that: build inventory, dual-source,
+      regionalize. <strong>ECC's reactive layer runs a live optimisation
+      solve — against your real capacity and constraints — while the
+      disruption is still unfolding</strong>, and turns the result into a
+      full set of ranked options grounded in 1,000+ documented disruption
+      cases, rather than an answer to the one question someone thought to
+      ask. Few platforms run this kind of solve live, during an active
+      disruption — and fewer still as a deployed product rather than a
+      research prototype.
     </p>
     <p class="hero-body" style="font-size:15px;">
-      When a verified disruption signal arrives, ECC moves through six stages —
-      detect, enrich, match, solve, execute, learn — fusing real-time
-      intelligence with your operational graph and a research-backed knowledge
-      base of documented disruption cases. A Resilience Copilot travels with
-      your team through every stage, present from the same signal your team
-      sees, through to the plan your team locks.
+      ECC moves through six stages — detect, enrich, match, solve, execute,
+      learn — fusing real-time intelligence with your operational graph and
+      this knowledge base. A Resilience Copilot travels with your team
+      through every stage, present from the same signal your team sees,
+      through to the plan your team locks.
     </p>
 
     <div class="hero-stat">
@@ -281,11 +281,11 @@ footer { border-top: 1px solid var(--border); padding: 28px 0; }
       <!-- STAGE 1 — DETECT -->
       <div class="flow-step">
         <div class="flow-marker">
-          <div class="flow-num">01</div>
+          <div class="flow-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="1.6" fill="currentColor" stroke="none"/><path d="M6 18a6 6 0 0 1 6-6"/><path d="M6 18a10.5 10.5 0 0 1 10.5-10.5"/><path d="M6 18a15 15 0 0 1 15-15" opacity="0.4"/></svg></div>
           <div class="flow-line"></div>
         </div>
         <div class="flow-content">
-          <p class="flow-stage-tag">Detect</p>
+          <p class="flow-stage-tag">01 — Detect</p>
           <h3 class="flow-title">A verified signal arrives — not another item in a queue</h3>
           <p class="flow-body">
             ECC's reactive layer is fed by a partner intelligence network that monitors
@@ -310,11 +310,11 @@ footer { border-top: 1px solid var(--border); padding: 28px 0; }
       <!-- STAGE 2 — ENRICH -->
       <div class="flow-step">
         <div class="flow-marker">
-          <div class="flow-num">02</div>
+          <div class="flow-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="12" x2="4" y2="6"/><line x1="12" y1="12" x2="20" y2="6"/><line x1="12" y1="12" x2="4" y2="18"/><line x1="12" y1="12" x2="20" y2="18"/><circle cx="12" cy="12" r="2.2"/><circle cx="4" cy="6" r="1.8" fill="#07090f"/><circle cx="20" cy="6" r="1.8" fill="#07090f"/><circle cx="4" cy="18" r="1.8" fill="#07090f"/><circle cx="20" cy="18" r="1.8" fill="#07090f"/></svg></div>
           <div class="flow-line"></div>
         </div>
         <div class="flow-content">
-          <p class="flow-stage-tag">Enrich</p>
+          <p class="flow-stage-tag">02 — Enrich</p>
           <h3 class="flow-title">What does this actually touch — and what does it cost?</h3>
           <p class="flow-body">
             The Operations Graph — a partial digital twin of your operational network —
@@ -340,11 +340,11 @@ footer { border-top: 1px solid var(--border); padding: 28px 0; }
       <!-- STAGE 3 — MATCH -->
       <div class="flow-step">
         <div class="flow-marker">
-          <div class="flow-num">03</div>
+          <div class="flow-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.2" y1="15.2" x2="20" y2="20"/><line x1="8" y1="8.5" x2="12.5" y2="8" stroke-width="1.1"/><line x1="8" y1="8.5" x2="10" y2="13" stroke-width="1.1"/><line x1="12.5" y1="8" x2="10" y2="13" stroke-width="1.1"/><circle cx="8" cy="8.5" r="0.9" fill="currentColor" stroke="none"/><circle cx="12.5" cy="8" r="0.9" fill="currentColor" stroke="none"/><circle cx="10" cy="13" r="0.9" fill="currentColor" stroke="none"/></svg></div>
           <div class="flow-line"></div>
         </div>
         <div class="flow-content">
-          <p class="flow-stage-tag">Match</p>
+          <p class="flow-stage-tag">03 — Match</p>
           <h3 class="flow-title">The options your team wouldn't have thought to ask for</h3>
           <p class="flow-body">
             This is where <strong>CACM</strong> — Constraint-Aware Context
@@ -373,11 +373,11 @@ footer { border-top: 1px solid var(--border); padding: 28px 0; }
       <!-- STAGE 4 — SOLVE -->
       <div class="flow-step">
         <div class="flow-marker">
-          <div class="flow-num">04</div>
+          <div class="flow-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 11 10.5 6" stroke-dasharray="2 2" opacity="0.35"/><path d="M13.5 6 18.5 11" stroke-dasharray="2 2" opacity="0.35"/><path d="M5.5 13 10.5 18" stroke-width="2.2"/><path d="M13.5 18 18.5 13" stroke-width="2.2"/><circle cx="4" cy="12" r="1.8" fill="#07090f"/><circle cx="12" cy="5" r="1.8" fill="#07090f"/><circle cx="12" cy="19" r="1.8" fill="#07090f"/><circle cx="20" cy="12" r="1.8" fill="#07090f"/></svg></div>
           <div class="flow-line"></div>
         </div>
         <div class="flow-content">
-          <p class="flow-stage-tag">Solve</p>
+          <p class="flow-stage-tag">04 — Solve</p>
           <h3 class="flow-title">Solving isn't one answer. It's a plan across the whole recovery window.</h3>
           <p class="flow-body">
             The ranked options from Match become the inputs to a
@@ -413,11 +413,11 @@ footer { border-top: 1px solid var(--border); padding: 28px 0; }
       <!-- STAGE 5 — EXECUTE -->
       <div class="flow-step">
         <div class="flow-marker">
-          <div class="flow-num">05</div>
+          <div class="flow-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M9 3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1H9z" fill="currentColor" stroke="none"/><path d="M8.5 12.5 10.5 14.5 15 10" stroke-width="1.8"/></svg></div>
           <div class="flow-line"></div>
         </div>
         <div class="flow-content">
-          <p class="flow-stage-tag">Execute</p>
+          <p class="flow-stage-tag">05 — Execute</p>
           <h3 class="flow-title">By design, the platform recommends. Your team decides.</h3>
           <p class="flow-body">
             ECC's flow is intentionally human-in-the-loop. Every plan from
@@ -447,10 +447,10 @@ footer { border-top: 1px solid var(--border); padding: 28px 0; }
       <!-- STAGE 6 — LEARN -->
       <div class="flow-step">
         <div class="flow-marker">
-          <div class="flow-num">06</div>
+          <div class="flow-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 13.8-5.6"/><path d="M17.8 2.4v4h-4" stroke-linejoin="round"/><path d="M20 12a8 8 0 0 1-13.8 5.6"/><path d="M6.2 21.6v-4h4" stroke-linejoin="round"/></svg></div>
         </div>
         <div class="flow-content">
-          <p class="flow-stage-tag">Learn</p>
+          <p class="flow-stage-tag">06 — Learn</p>
           <h3 class="flow-title">Every disruption processed makes the next one faster to resolve</h3>
           <p class="flow-body">
             The plan that gets locked — and, over time, the outcome of
