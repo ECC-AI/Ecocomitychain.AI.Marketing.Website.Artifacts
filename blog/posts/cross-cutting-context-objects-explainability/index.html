@@ -61,6 +61,12 @@ p code,li code{background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:3
 .series-title-item{font-size:14px;color:var(--t2);line-height:1.4;}
 .series-item.active .series-title-item{color:var(--t1);}
 .series-item.upcoming .series-title-item{color:var(--t3);}
+.series-item.done{border-color:var(--border);}
+.series-item.done .series-num{color:var(--blue);}
+.series-item.done .series-title-item{color:var(--t2);}
+.series-divider{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);margin:28px 0 12px;padding-top:24px;border-top:1px solid var(--border);}
+.series-item.companion{border-style:dashed;}
+.companion-num{font-family:'Space Mono',monospace;font-size:10px;color:var(--blue);border:1px solid var(--blue);border-radius:3px;padding:1px 5px;}
 </style>
 </head>
 <body>
@@ -75,7 +81,7 @@ p code,li code{background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:3
     <span class="post-cat">Engineering Excellence</span>
     <span class="post-date">June 2026</span>
   </div>
-  <div class="series-tag">The Signal and the Proof &nbsp;·&nbsp; Post 01 of 04</div>
+  <div class="series-tag">The Signal and the Proof &nbsp;·&nbsp; Post 01 of 05</div>
   <h1 class="post-title">Cross-Cutting Context Objects: Threading Structured Evidence Through a Multi-Engine Pipeline</h1>
   <p class="post-excerpt">Explainability is infrastructure, not a feature. How we built a cross-cutting context object that accumulates structured reasoning across independent scoring engines — and why post-hoc reconstruction is not enough.</p>
 
@@ -226,25 +232,34 @@ p code,li code{background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:3
   <blockquote><p>Explainability is infrastructure. Build it that way.</p></blockquote>
 
 
-  <nav class="series-nav">
-    <p class="series-label">The Signal and the Proof &middot; Four-Post Series</p>
+    <nav class="series-nav">
+    <p class="series-label">The Signal and the Proof &middot; Five-Post Series</p>
     <div class="series-posts">
-      <a class="series-item active" href="/blog/posts/cross-cutting-context-objects-explainability/">
-        <span class="series-num">01</span>
-        <span class="series-title-item">Cross-Cutting Context Objects: Threading Structured Evidence Through a Multi-Engine Pipeline <em style="font-size:12px;color:var(--amber);">&mdash; You are here</em></span>
-      </a>
-      <a class="series-item upcoming" href="/blog/posts/supply-chain-ai-making-decisions-can-it-say-why/">
-        <span class="series-num">02</span>
-        <span class="series-title-item">Supply Chain AI Is Making Decisions. Can It Say Why?</span>
-      </a>
-      <a class="series-item upcoming" href="#">
-        <span class="series-num">03</span>
-        <span class="series-title-item">The Architecture Your Auditors Will Ask About</span>
-      </a>
-      <a class="series-item upcoming" href="#">
-        <span class="series-num">04</span>
-        <span class="series-title-item">Why We Built It This Way: The Neurosymbolic Case for Supply Chain Intelligence</span>
-      </a>
+    <a class="series-item active" href="/blog/posts/cross-cutting-context-objects-explainability/">
+      <span class="series-num">01</span>
+      <span class="series-title-item">Cross-Cutting Context Objects: Threading Structured Evidence Through a Multi-Engine Pipeline <em style="font-size:12px;color:var(--amber);">&mdash; You are here</em></span>
+    </a>
+    <a class="series-item upcoming" href="/blog/posts/supply-chain-ai-making-decisions-can-it-say-why/">
+      <span class="series-num">02</span>
+      <span class="series-title-item">Supply Chain AI Is Making Decisions. Can It Say Why?</span>
+    </a>
+    <a class="series-item upcoming" href="/blog/posts/more-ai-power-more-explainability-not-less/">
+      <span class="series-num">03</span>
+      <span class="series-title-item">More AI Power Should Mean More Explainability, Not Less</span>
+    </a>
+    <a class="series-item upcoming" href="#">
+      <span class="series-num">04</span>
+      <span class="series-title-item">The Architecture Your Auditors Will Ask About</span>
+    </a>
+    <a class="series-item upcoming" href="#">
+      <span class="series-num">05</span>
+      <span class="series-title-item">Why We Built It This Way: The Neurosymbolic Case for Supply Chain Intelligence</span>
+    </a>
+    <div class="series-divider">Also from this series &mdash; technical deep dive</div>
+    <a class="series-item companion upcoming" href="#">
+      <span class="series-num companion-num">TC</span>
+      <span class="series-title-item">A Reference Architecture for Two-Level Explainability in Graph-Based Supply Chain Risk AI <em style="font-size:11px;color:var(--t3);">&mdash; Technical Companion</em></span>
+    </a>
     </div>
   </nav>
 
