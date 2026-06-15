@@ -68,7 +68,11 @@ nav { border-bottom: 1px solid var(--border); padding: 20px 0; position: sticky;
 .hero-headline em { font-style: normal; color: var(--blue); }
 .hero-body { font-size: 17px; color: var(--t2); line-height: 1.7; max-width: 640px; margin-bottom: 28px; }
 .hero-body strong { color: var(--t1); font-weight: 500; }
-.hero-stat { display: inline-flex; align-items: stretch; border: 1px solid var(--border-hi); border-radius: 8px; overflow: hidden; margin-bottom: 44px; }
+.hero-stat { display: inline-flex; align-items: stretch; border: 1px solid var(--border-hi); border-radius: 8px; overflow: hidden; margin-bottom: 0; }
+.hero-substats { display: flex; gap: 40px; flex-wrap: wrap; margin: 24px 0 44px; padding-top: 24px; border-top: 1px solid var(--border); max-width: 720px; }
+.hero-substat { display: flex; flex-direction: column; gap: 4px; }
+.hero-substat-num { font-family: var(--display); font-size: 22px; font-weight: 800; color: var(--blue); letter-spacing: -.02em; }
+.hero-substat-lbl { font-size: 12px; color: var(--t3); line-height: 1.4; max-width: 200px; }
 .hero-stat-panel { padding: 18px 26px; display: flex; flex-direction: column; gap: 4px; }
 .hero-stat-panel:first-child { background: rgba(224,80,80,0.08); border-right: 1px solid var(--border); }
 .hero-stat-panel:last-child { background: var(--green-dim); }
@@ -203,20 +207,26 @@ footer { border-top: 1px solid var(--border); padding: 28px 0; }
 <div class="hero">
   <div class="container">
     <p class="hero-eyebrow">Reactive Value Chain Resilience</p>
-    <h1 class="hero-headline">Response starts<br><em>where alerts stop.</em></h1>
+    <h1 class="hero-headline">An alert tells you something happened.<br><em>It doesn't tell you what to do.</em></h1>
     <p class="hero-body">
-      Most platforms tell you a disruption happened, and which suppliers are involved.
-      <strong>Few tell you what to do about it — ranked, costed, and feasible under your
-      actual constraints — before your team has finished convening.</strong> That is
-      where ECC's reactive layer starts.
+      Most platforms stop there — and what follows is the same playbook used
+      for the last disruption, and the one before that:
+      <strong>build inventory, dual-source, regionalize.</strong> ECC's
+      reactive layer generates the full set of response options — ranked by
+      cost, risk, and delivery impact, grounded in 1,000+ documented
+      disruption cases — including options your team would not have thought
+      to ask for. Checking those options against your real constraints is
+      table stakes. <strong>Generating the full ranked set in the first place,
+      without waiting for someone to ask the right question, is the part
+      almost nothing else does.</strong>
     </p>
     <p class="hero-body" style="font-size:15px;">
-      When a verified disruption signal arrives, ECC moves through five stages —
-      detect, enrich, decide, execute, learn — fusing real-time intelligence with your
-      operational graph and a research-backed knowledge base of documented disruption
-      cases. A Resilience Copilot travels with your team through every stage, so the
-      first conversation in the war room starts at "do we agree with this plan," not
-      "what are we even looking at."
+      When a verified disruption signal arrives, ECC moves through six stages —
+      detect, enrich, match, solve, execute, learn — fusing real-time
+      intelligence with your operational graph and a research-backed knowledge
+      base of documented disruption cases. A Resilience Copilot travels with
+      your team through every stage, present from the same signal your team
+      sees, through to the plan your team locks.
     </p>
 
     <div class="hero-stat">
@@ -230,6 +240,21 @@ footer { border-top: 1px solid var(--border); padding: 28px 0; }
         <span class="hero-stat-label">ECC Reactive Layer</span>
         <span class="hero-stat-number">Minutes</span>
         <span class="hero-stat-desc">from a verified signal to a ranked, constraint-aware recovery plan.</span>
+      </div>
+    </div>
+
+    <div class="hero-substats">
+      <div class="hero-substat">
+        <span class="hero-substat-num">30–50%</span>
+        <span class="hero-substat-lbl">of annual EBITDA lost in disruptions lasting over 30 days</span>
+      </div>
+      <div class="hero-substat">
+        <span class="hero-substat-num">93%</span>
+        <span class="hero-substat-lbl">of companies apply the same three response levers, regardless of disruption type</span>
+      </div>
+      <div class="hero-substat">
+        <span class="hero-substat-num">3–5 mo</span>
+        <span class="hero-substat-lbl">average recovery time without a structured response</span>
       </div>
     </div>
 
@@ -312,75 +337,128 @@ footer { border-top: 1px solid var(--border); padding: 28px 0; }
       </div>
 
       <!-- STAGE 3 — DECIDE -->
+      <!-- STAGE 3 — MATCH -->
       <div class="flow-step">
         <div class="flow-marker">
           <div class="flow-num">03</div>
           <div class="flow-line"></div>
         </div>
         <div class="flow-content">
-          <p class="flow-stage-tag">Decide</p>
-          <h3 class="flow-title">Ranked, constraint-aware options — not the same three levers again</h3>
+          <p class="flow-stage-tag">Match</p>
+          <h3 class="flow-title">The options your team wouldn't have thought to ask for</h3>
           <p class="flow-body">
-            This is where <strong>CACM</strong> — Constraint-Aware Context Matching —
-            runs against the Resilience Intelligence Fabric: a research-backed graph of
-            <strong>1,000+ documented disruption cases and 150+ mitigation measures
-            across 20+ disruption domains</strong>, drawn from 25 years of supply chain
-            disruption research. CACM does not retrieve a generic playbook. It matches
-            your specific scenario — against what is actually feasible under your
-            current constraints — to the evidence of what has worked in comparable
-            situations before. From there, a <strong>cuOpt-enabled solver</strong> takes
-            the surfaced strategic options and solves the underlying capacity problem —
-            supply capacity and production capacity together — into a plan your planners
-            can work from immediately.
+            This is where <strong>CACM</strong> — Constraint-Aware Context
+            Matching — runs against the Resilience Intelligence Fabric: a
+            research-backed graph of <strong>1,000+ documented disruption
+            cases and 150+ mitigation measures across 20+ disruption
+            domains</strong>, drawn from 25 years of supply chain disruption
+            research. CACM does not retrieve a generic playbook. It matches
+            your specific scenario to the evidence of what has worked in
+            comparable situations before — and surfaces the
+            <strong>full set of strategic options</strong>, checked against
+            your real constraints, rather than answering a single question
+            someone thought to ask. The output is a ranked set of options,
+            each tied to its supporting evidence — the raw material for the
+            next stage.
           </p>
           <div class="flow-tags">
             <span class="flow-tag">CACM — constraint-aware matching</span>
             <span class="flow-tag">RIF: 1,000+ cases · 150+ measures · 20+ domains</span>
-            <span class="flow-tag">cuOpt-enabled solve</span>
+            <span class="flow-tag">Full option set, ranked</span>
             <span class="flow-tag">ICA pathways</span>
           </div>
         </div>
       </div>
 
-      <!-- STAGE 4 — EXECUTE -->
+      <!-- STAGE 4 — SOLVE -->
       <div class="flow-step">
         <div class="flow-marker">
           <div class="flow-num">04</div>
           <div class="flow-line"></div>
         </div>
         <div class="flow-content">
-          <p class="flow-stage-tag">Execute</p>
-          <h3 class="flow-title">Today: a plan your team reviews and locks. Next: a plan the platform can carry forward.</h3>
+          <p class="flow-stage-tag">Solve</p>
+          <h3 class="flow-title">Solving isn't one answer. It's a plan across the whole recovery window.</h3>
           <p class="flow-body">
-            Every strategic measure CACM surfaces is explained in full — the rationale,
-            the trade-offs, and the constraints that ruled out the alternatives — and
-            handed to your team to lock and execute. The next phase of this flow connects
-            these explained measures to execution directly: a <strong>Resilience
-            Thinking Agent</strong> that can carry an approved action into the relevant
-            system, within defined guardrails. This is the direction the architecture is
-            built toward — not a capability in the live platform today.
+            The ranked options from Match become the inputs to a
+            <strong>cuOpt-enabled solver</strong>, which solves the underlying
+            capacity problem — supply capacity and production capacity —
+            together, as a single optimisation. This is also where
+            <strong>temporal co-optimisation</strong> happens: rather than
+            treating the disruption onset, the gap it leaves, and the return
+            to normal supply as three separate decisions made by three
+            different teams at three different times, ECC solves the entire
+            disrupted-to-recovered window as one multi-period problem. The
+            output is a set of plans across that trade-off space — cost,
+            risk, and time-to-recover — not a single recommendation.
+          </p>
+          <p class="flow-body" style="margin-top:14px;">
+            <strong>One extension is on the roadmap, not in the live platform
+            today:</strong> continuously re-solving as the situation changes
+            during the disruption — a supplier capacity update, a new
+            constraint, a shift in the event itself. Today, ECC solves once
+            per disruption signal, against the most current data available at
+            that point. Re-solving across the life of a disruption is a
+            natural extension of this same architecture.
           </p>
           <div class="flow-tags">
+            <span class="flow-tag">cuOpt-enabled solve</span>
+            <span class="flow-tag">Temporal co-optimisation</span>
+            <span class="flow-tag">Plan set across cost / risk / TTR</span>
+            <span class="flow-tag roadmap">Continuous re-solve — roadmap</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- STAGE 5 — EXECUTE -->
+      <div class="flow-step">
+        <div class="flow-marker">
+          <div class="flow-num">05</div>
+          <div class="flow-line"></div>
+        </div>
+        <div class="flow-content">
+          <p class="flow-stage-tag">Execute</p>
+          <h3 class="flow-title">By design, the platform recommends. Your team decides.</h3>
+          <p class="flow-body">
+            ECC's flow is intentionally human-in-the-loop. Every plan from
+            Solve — including the full reasoning behind it — is handed to
+            your team to review, adjust, and lock.
+            <strong>This is not a gap waiting to be automated away.</strong>
+            Research on disruption response consistently finds that trust in
+            algorithmic recommendations falls exactly when the stakes are
+            highest — and the more experienced the decision-maker, the more
+            they want to override the system during a real crisis. Keeping
+            the decision point explicit, and making every recommendation
+            explainable enough to defend in that decision, is how ECC is
+            designed to be used during the disruptions that matter most. A
+            Resilience Thinking Agent that can carry an approved action into
+            the relevant system, within defined guardrails, is the natural
+            next step for execution — the human decision point stays, by
+            design, either way.
+          </p>
+          <div class="flow-tags">
+            <span class="flow-tag">Human-in-the-loop, by design</span>
             <span class="flow-tag">Explainable today</span>
             <span class="flow-tag roadmap">Thinking Agent — roadmap</span>
           </div>
         </div>
       </div>
 
-      <!-- STAGE 5 — LEARN -->
+      <!-- STAGE 6 — LEARN -->
       <div class="flow-step">
         <div class="flow-marker">
-          <div class="flow-num">05</div>
+          <div class="flow-num">06</div>
         </div>
         <div class="flow-content">
           <p class="flow-stage-tag">Learn</p>
           <h3 class="flow-title">Every disruption processed makes the next one faster to resolve</h3>
           <p class="flow-body">
-            The plan that gets locked — and, over time, the outcome of executing it —
-            feeds back into the Resilience Intelligence Fabric. The knowledge base
-            doesn't just store the case. It refines the constraint envelopes and evidence
-            that CACM matches against next time. <strong>The platform doesn't reset
-            between disruptions. It compounds.</strong>
+            The plan that gets locked — and, over time, the outcome of
+            executing it — feeds back into the Resilience Intelligence Fabric.
+            The knowledge base doesn't just store the case. It refines the
+            constraint envelopes and evidence that CACM matches against next
+            time. <strong>The platform doesn't reset between disruptions. It
+            compounds.</strong>
           </p>
           <div class="flow-tags">
             <span class="flow-tag">Compounding knowledge base</span>
@@ -421,9 +499,9 @@ footer { border-top: 1px solid var(--border); padding: 28px 0; }
     <p class="section-tag">Throughout Every Stage</p>
     <h2 class="section-headline">The Resilience Copilot travels with you</h2>
     <p class="section-sub">
-      Not a separate chatbot bolted onto the platform. A conversational layer present at
-      every stage of the flow above — grounded in the same operational graph, the same
-      constraints, and the same evidence CACM used to rank the options.
+      Not a separate chatbot bolted onto the platform. A conversational layer
+      present at every stage of the flow above — from the same signal that
+      triggers Detect, through to the plan your team locks in Execute.
     </p>
 
     <div class="copilot-grid">
@@ -432,53 +510,50 @@ footer { border-top: 1px solid var(--border); padding: 28px 0; }
           <div class="copilot-point">
             <div class="copilot-point-icon">01</div>
             <p class="copilot-point-text">
-              <strong>Why this option, and not the alternative that looks cheaper on
-              paper?</strong> The Copilot answers in plain language, tied to the exact
-              constraint or evidence record that produced the ranking — not a separate,
-              disconnected summary.
+              <strong>The Copilot's context starts where yours does — at the
+              disruption signal itself.</strong> It has access to the same
+              partner intelligence data your team sees in Detect, including
+              the explainability behind each alert: why this was flagged,
+              what evidence supports it, what has changed. Explainability
+              isn't a feature added to the output afterwards — it's part of
+              the data the Copilot works with from the first signal onward.
             </p>
           </div>
           <div class="copilot-point">
             <div class="copilot-point-icon">02</div>
             <p class="copilot-point-text">
-              <strong>What changes if a constraint shifts?</strong> Ask what happens if a
-              supplier's lead time moves by two weeks, or why a particular alternate was
-              excluded, and the Copilot answers from the same model CACM used to decide —
-              not a re-summary written after the fact.
+              <strong>Beyond explaining what happened, the Copilot answers
+              what-if and trade-off questions directly against the set of
+              plans Solve produced</strong> — "what changes if this supplier's
+              lead time shifts by two weeks," "why was this option ranked
+              below that one." Answering those questions against live
+              optimisation output, not a static write-up, took a substantial
+              engineering investment — and it's what makes the Copilot useful
+              in the room where the plan actually gets decided.
             </p>
           </div>
           <div class="copilot-point">
             <div class="copilot-point-icon">03</div>
             <p class="copilot-point-text">
-              <strong>Trust under pressure.</strong> Research on disruption response
-              consistently finds that trust in algorithmic recommendations falls exactly
-              when the stakes are highest — and the more experienced the decision-maker,
-              the more they want to override the system during a real crisis. ECC's
-              answer to that is not a confidence score. It is a rationale your team can
-              stand behind in a boardroom, traceable to the specific evidence and
-              constraint that produced it.
-            </p>
-          </div>
-          <div class="copilot-point">
-            <div class="copilot-point-icon">04</div>
-            <p class="copilot-point-text">
-              <strong>The Copilot doesn't replace your planners' judgment.</strong> It
-              removes the time spent reconstructing context — so the conversation in the
-              war room starts at "do we agree with this plan," not "what are we even
-              looking at."
+              <strong>The decision stays with your team — the Copilot's job
+              is to make it faster and better-informed, not to make it for
+              you.</strong> It removes the time spent reconstructing context,
+              so the conversation in the war room starts at "do we agree with
+              this plan," not "what are we even looking at."
             </p>
           </div>
         </div>
       </div>
 
       <div class="visual-panel" style="margin-top:0;">
-        <div class="visual-panel-label">Figure — Copilot Across the Disruption Lifecycle</div>
+        <div class="visual-panel-label">Figure — Copilot Breadth &amp; Depth Across the Disruption Timeline</div>
         <div class="visual-panel-body">
           <div class="visual-placeholder">
             Visual in development.<br>
-            A walkthrough of the Copilot accompanying a single disruption from detect
-            through learn — including the questions a planner can ask at each stage —
-            will be added once the base page is live.
+            A timeline diagram mapping the Copilot's breadth (which stages
+            it's active in) and depth (explanation, what-if, trade-off
+            comparison) against the six stages above — from the first signal
+            to the locked plan. Will be added once the base page is live.
           </div>
         </div>
       </div>
