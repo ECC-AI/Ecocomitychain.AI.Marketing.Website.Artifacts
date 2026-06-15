@@ -104,7 +104,7 @@ section.alt { background: var(--bg-raised); }
 .flow-line { flex: 1; width: 1px; background: var(--border-hi); margin: 6px 0; min-height: 24px; }
 .flow-content { padding-bottom: 52px; flex: 1; }
 .flow-step:last-child .flow-content { padding-bottom: 0; }
-.flow-stage-tag { font-family: var(--mono); font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--t3); margin-bottom: 8px; margin-top: 6px; }
+.flow-stage-tag { font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--t2); margin-bottom: 8px; margin-top: 6px; }
 .flow-title { font-family: var(--display); font-size: 19px; font-weight: 700; color: var(--t1); margin-bottom: 12px; line-height: 1.3; }
 .flow-body { font-size: 14px; color: var(--t2); line-height: 1.7; max-width: 700px; }
 .flow-body strong { color: var(--t1); font-weight: 500; }
@@ -126,12 +126,19 @@ section.alt { background: var(--bg-raised); }
 .copilot-teaser a:hover { background: rgba(58,160,216,0.1); }
 
 /* COPILOT SECTION */
-.copilot-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: start; }
 .copilot-points { display: flex; flex-direction: column; gap: 22px; margin-top: 28px; }
 .copilot-point { display: flex; gap: 14px; }
 .copilot-point-icon { width: 28px; height: 28px; border-radius: 6px; background: var(--blue-dim); border: 1px solid rgba(58,160,216,0.2); display: flex; align-items: center; justify-content: center; flex: none; font-family: var(--mono); font-size: 11px; color: var(--blue); }
 .copilot-point-text { font-size: 14px; color: var(--t2); line-height: 1.65; }
 .copilot-point-text strong { color: var(--t1); font-weight: 500; }
+
+/* COPILOT STAGE NOTES */
+.copilot-stage-notes { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-top: 18px; }
+.copilot-stage-note { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 12px 13px; }
+.copilot-stage-note-label { font-family: var(--mono); font-size: 9px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: var(--blue); margin-bottom: 6px; }
+.copilot-stage-note.peak { border-color: rgba(50,210,130,0.3); }
+.copilot-stage-note.peak .copilot-stage-note-label { color: var(--green); }
+.copilot-stage-note-text { font-size: 11.5px; color: var(--t2); line-height: 1.5; }
 
 /* TEMPORAL CO-OPTIMISATION */
 .tco-periods { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 32px; }
@@ -160,8 +167,11 @@ footer { border-top: 1px solid var(--border); padding: 28px 0; }
   .nav-links { display: none; }
   .flow-step { gap: 16px; }
   .flow-num { width: 36px; height: 36px; font-size: 12px; }
-  .copilot-grid { grid-template-columns: 1fr; gap: 32px; }
   .tco-periods { grid-template-columns: 1fr; }
+  .copilot-stage-notes { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 560px) {
+  .copilot-stage-notes { grid-template-columns: repeat(2, 1fr); }
   .hero-stat { flex-direction: column; }
   .hero-stat-panel:first-child { border-right: none; border-bottom: 1px solid var(--border); }
 }
@@ -488,11 +498,8 @@ footer { border-top: 1px solid var(--border); padding: 28px 0; }
     <!-- FLOW DIAGRAM PLACEHOLDER -->
     <div class="visual-panel">
       <div class="visual-panel-label">Figure — The Reactive Resilience Flow</div>
-      <div class="visual-panel-body">
-        <div class="visual-placeholder">
-          Flow diagram in development.<br>
-          Screen captures from the live platform will be added in a subsequent iteration.
-        </div>
+      <div class="visual-panel-body" style="display:block;padding:28px 24px 12px;">
+        <svg id="flow-recap" viewBox="0 0 1040 230" xmlns="http://www.w3.org/2000/svg" style="width:100%;overflow:visible;"><defs><marker id="flowarrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L8 5L1 9" fill="none" stroke="#3aa0d8" stroke-width="1.5" stroke-linecap="round"/></marker></defs><line x1="84" y1="56" x2="220" y2="56" stroke="rgba(58,160,216,0.35)" stroke-width="1.5" marker-end="url(#flowarrow)"/><line x1="268" y1="56" x2="404" y2="56" stroke="rgba(58,160,216,0.35)" stroke-width="1.5" marker-end="url(#flowarrow)"/><line x1="452" y1="56" x2="588" y2="56" stroke="rgba(58,160,216,0.35)" stroke-width="1.5" marker-end="url(#flowarrow)"/><line x1="636" y1="56" x2="772" y2="56" stroke="rgba(58,160,216,0.35)" stroke-width="1.5" marker-end="url(#flowarrow)"/><line x1="820" y1="56" x2="956" y2="56" stroke="rgba(58,160,216,0.35)" stroke-width="1.5" marker-end="url(#flowarrow)"/><circle cx="60" cy="56" r="22" fill="#07090f" stroke="#3aa0d8" stroke-width="2"/><g transform="translate(48,44)" style="color:#3aa0d8" stroke="#3aa0d8" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="1.6" fill="currentColor" stroke="none"/><path d="M6 18a6 6 0 0 1 6-6"/><path d="M6 18a10.5 10.5 0 0 1 10.5-10.5"/><path d="M6 18a15 15 0 0 1 15-15" opacity="0.4"/></g><text x="60" y="100" text-anchor="middle" font-family="Space Mono" font-size="10" font-weight="700" fill="#8898b8" letter-spacing="1">01 — DETECT</text><circle cx="244" cy="56" r="22" fill="#07090f" stroke="#3aa0d8" stroke-width="2"/><g transform="translate(232,44)" style="color:#3aa0d8" stroke="#3aa0d8" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="12" x2="4" y2="6"/><line x1="12" y1="12" x2="20" y2="6"/><line x1="12" y1="12" x2="4" y2="18"/><line x1="12" y1="12" x2="20" y2="18"/><circle cx="12" cy="12" r="2.2"/><circle cx="4" cy="6" r="1.8" fill="#07090f"/><circle cx="20" cy="6" r="1.8" fill="#07090f"/><circle cx="4" cy="18" r="1.8" fill="#07090f"/><circle cx="20" cy="18" r="1.8" fill="#07090f"/></g><text x="244" y="100" text-anchor="middle" font-family="Space Mono" font-size="10" font-weight="700" fill="#8898b8" letter-spacing="1">02 — ENRICH</text><circle cx="428" cy="56" r="22" fill="#07090f" stroke="#3aa0d8" stroke-width="2"/><g transform="translate(416,44)" style="color:#3aa0d8" stroke="#3aa0d8" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.2" y1="15.2" x2="20" y2="20"/><line x1="8" y1="8.5" x2="12.5" y2="8" stroke-width="1.1"/><line x1="8" y1="8.5" x2="10" y2="13" stroke-width="1.1"/><line x1="12.5" y1="8" x2="10" y2="13" stroke-width="1.1"/><circle cx="8" cy="8.5" r="0.9" fill="currentColor" stroke="none"/><circle cx="12.5" cy="8" r="0.9" fill="currentColor" stroke="none"/><circle cx="10" cy="13" r="0.9" fill="currentColor" stroke="none"/></g><text x="428" y="100" text-anchor="middle" font-family="Space Mono" font-size="10" font-weight="700" fill="#8898b8" letter-spacing="1">03 — MATCH</text><circle cx="612" cy="56" r="22" fill="#07090f" stroke="#3aa0d8" stroke-width="2"/><g transform="translate(600,44)" style="color:#3aa0d8" stroke="#3aa0d8" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 11 10.5 6" stroke-dasharray="2 2" opacity="0.35"/><path d="M13.5 6 18.5 11" stroke-dasharray="2 2" opacity="0.35"/><path d="M5.5 13 10.5 18" stroke-width="2.2"/><path d="M13.5 18 18.5 13" stroke-width="2.2"/><circle cx="4" cy="12" r="1.8" fill="#07090f"/><circle cx="12" cy="5" r="1.8" fill="#07090f"/><circle cx="12" cy="19" r="1.8" fill="#07090f"/><circle cx="20" cy="12" r="1.8" fill="#07090f"/></g><text x="612" y="100" text-anchor="middle" font-family="Space Mono" font-size="10" font-weight="700" fill="#8898b8" letter-spacing="1">04 — SOLVE</text><circle cx="796" cy="56" r="22" fill="#07090f" stroke="#32d282" stroke-width="2"/><g transform="translate(784,44)" style="color:#32d282" stroke="#32d282" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M9 3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1H9z" fill="currentColor" stroke="none"/><path d="M8.5 12.5 10.5 14.5 15 10" stroke-width="1.8"/></g><text x="796" y="100" text-anchor="middle" font-family="Space Mono" font-size="10" font-weight="700" fill="#8898b8" letter-spacing="1">05 — EXECUTE</text><circle cx="980" cy="56" r="22" fill="#07090f" stroke="#3aa0d8" stroke-width="2"/><g transform="translate(968,44)" style="color:#3aa0d8" stroke="#3aa0d8" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 13.8-5.6"/><path d="M17.8 2.4v4h-4" stroke-linejoin="round"/><path d="M20 12a8 8 0 0 1-13.8 5.6"/><path d="M6.2 21.6v-4h4" stroke-linejoin="round"/></g><text x="980" y="100" text-anchor="middle" font-family="Space Mono" font-size="10" font-weight="700" fill="#8898b8" letter-spacing="1">06 — LEARN</text><rect x="30" y="142" width="980" height="44" rx="8" fill="rgba(58,160,216,0.05)" stroke="rgba(58,160,216,0.2)" stroke-dasharray="4,3"/><text x="520" y="169" text-anchor="middle" font-family="Space Mono" font-size="10" letter-spacing="2" fill="#3aa0d8">RESILIENCE COPILOT — PRESENT AT EVERY STAGE</text><line x1="796" y1="78" x2="796" y2="142" stroke="#32d282" stroke-width="1" stroke-dasharray="3,2"/><text x="796" y="212" text-anchor="middle" font-family="Space Mono" font-size="9" letter-spacing="1.5" fill="#32d282">HUMAN DECISION POINT</text></svg>
       </div>
     </div>
 
@@ -520,9 +527,7 @@ footer { border-top: 1px solid var(--border); padding: 28px 0; }
       triggers Detect, through to the plan your team locks in Execute.
     </p>
 
-    <div class="copilot-grid">
-      <div>
-        <div class="copilot-points">
+    <div class="copilot-points">
           <div class="copilot-point">
             <div class="copilot-point-icon">01</div>
             <p class="copilot-point-text">
@@ -558,22 +563,40 @@ footer { border-top: 1px solid var(--border); padding: 28px 0; }
               this plan," not "what are we even looking at."
             </p>
           </div>
-        </div>
-      </div>
+    </div>
 
-      <div class="visual-panel" style="margin-top:0;">
+    <div class="visual-panel" style="margin-top:32px;">
         <div class="visual-panel-label">Figure — Copilot Breadth &amp; Depth Across the Disruption Timeline</div>
-        <div class="visual-panel-body">
-          <div class="visual-placeholder">
-            Visual in development.<br>
-            A timeline diagram mapping the Copilot's breadth (which stages
-            it's active in) and depth (explanation, what-if, trade-off
-            comparison) against the six stages above — from the first signal
-            to the locked plan. Will be added once the base page is live.
+        <div class="visual-panel-body" style="display:block;padding:28px 24px 20px;">
+          <svg id="copilot-depth" viewBox="0 0 1040 205" xmlns="http://www.w3.org/2000/svg" style="width:100%;overflow:visible;"><line x1="60" y1="40" x2="980" y2="40" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="4,4"/><text x="50" y="43" text-anchor="end" font-family="Space Mono" font-size="8" fill="#4a5570" letter-spacing="1">DEEP</text><line x1="60" y1="105" x2="980" y2="105" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="4,4"/><text x="50" y="108" text-anchor="end" font-family="Space Mono" font-size="8" fill="#4a5570" letter-spacing="1">MODERATE</text><line x1="60" y1="170" x2="980" y2="170" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="4,4"/><text x="50" y="173" text-anchor="end" font-family="Space Mono" font-size="8" fill="#4a5570" letter-spacing="1">LIGHT</text><path d="M60,124.5 L244,105.0 L428,85.5 L612,40.0 L796,72.5 L980,131.0 L980,170 L60,170 Z" fill="rgba(58,160,216,0.08)"/><path d="M60,124.5 L244,105.0 L428,85.5 L612,40.0 L796,72.5 L980,131.0" fill="none" stroke="#3aa0d8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="60" cy="124.5" r="3.5" fill="#3aa0d8"/><text x="60" y="190" text-anchor="middle" font-family="Space Mono" font-size="10" font-weight="700" fill="#8898b8" letter-spacing="1">01 — DETECT</text><circle cx="244" cy="105.0" r="3.5" fill="#3aa0d8"/><text x="244" y="190" text-anchor="middle" font-family="Space Mono" font-size="10" font-weight="700" fill="#8898b8" letter-spacing="1">02 — ENRICH</text><circle cx="428" cy="85.5" r="3.5" fill="#3aa0d8"/><text x="428" y="190" text-anchor="middle" font-family="Space Mono" font-size="10" font-weight="700" fill="#8898b8" letter-spacing="1">03 — MATCH</text><circle cx="612" cy="40.0" r="5" fill="#32d282"/><circle cx="612" cy="40.0" r="9" fill="none" stroke="#32d282" stroke-width="1" stroke-dasharray="2,2"/><text x="612" y="190" text-anchor="middle" font-family="Space Mono" font-size="10" font-weight="700" fill="#8898b8" letter-spacing="1">04 — SOLVE</text><circle cx="796" cy="72.5" r="3.5" fill="#3aa0d8"/><text x="796" y="190" text-anchor="middle" font-family="Space Mono" font-size="10" font-weight="700" fill="#8898b8" letter-spacing="1">05 — EXECUTE</text><circle cx="980" cy="131.0" r="3.5" fill="#3aa0d8"/><text x="980" y="190" text-anchor="middle" font-family="Space Mono" font-size="10" font-weight="700" fill="#8898b8" letter-spacing="1">06 — LEARN</text><line x1="60" y1="170" x2="980" y2="170" stroke="rgba(255,255,255,0.1)" stroke-width="1"/><text x="520" y="16" text-anchor="middle" font-family="Space Mono" font-size="9" letter-spacing="2" fill="#3aa0d8">COPILOT ENGAGEMENT DEPTH, BY STAGE</text></svg>
+          <div class="copilot-stage-notes">
+          <div class="copilot-stage-note">
+            <div class="copilot-stage-note-label">01 — Detect</div>
+            <div class="copilot-stage-note-text">Explains why this signal was flagged and what evidence supports it.</div>
+          </div>
+          <div class="copilot-stage-note">
+            <div class="copilot-stage-note-label">02 — Enrich</div>
+            <div class="copilot-stage-note-text">Walks through the ripple-effect path — which entities are affected, and why.</div>
+          </div>
+          <div class="copilot-stage-note">
+            <div class="copilot-stage-note-label">03 — Match</div>
+            <div class="copilot-stage-note-text">Explains why each option is ranked where it is, tied to specific evidence.</div>
+          </div>
+          <div class="copilot-stage-note peak">
+            <div class="copilot-stage-note-label">04 — Solve</div>
+            <div class="copilot-stage-note-text">Answers what-if and trade-off questions directly against the plan set — the deepest point of engagement.</div>
+          </div>
+          <div class="copilot-stage-note">
+            <div class="copilot-stage-note-label">05 — Execute</div>
+            <div class="copilot-stage-note-text">Surfaces the rationale your team needs to lock the plan with confidence.</div>
+          </div>
+          <div class="copilot-stage-note">
+            <div class="copilot-stage-note-label">06 — Learn</div>
+            <div class="copilot-stage-note-text">Explains what changed in the knowledge base as a result of this case.</div>
+          </div>
           </div>
         </div>
       </div>
-    </div>
   </div>
 </section>
 
@@ -649,10 +672,14 @@ footer { border-top: 1px solid var(--border); padding: 28px 0; }
         <p class="tco-period-label">Period 2 — Vacuum Window</p>
         <p class="tco-period-text">
           <strong>Alternate suppliers are temporally scheduled</strong> — each
-          with different qualification status, lead times, and cost profiles.
-          Their contribution is optimised across the window as the primary
-          supplier's recovery progresses. Not a single sourcing decision. A
-          schedule.
+          with different qualification status, lead times, cost profiles, and
+          compliance posture. This is where the conflicting objectives surface
+          directly: the cheapest alternate is rarely the fastest to qualify,
+          and the fastest is rarely the lowest-risk. <strong>ECC's solver works
+          cost, risk, and time-to-recover simultaneously</strong> — not
+          collapsed into one number, but as the trade-off space the plan is
+          chosen from. Not a single sourcing decision. A schedule, optimised
+          across all three.
         </p>
       </div>
       <div class="tco-period-card period-3">
