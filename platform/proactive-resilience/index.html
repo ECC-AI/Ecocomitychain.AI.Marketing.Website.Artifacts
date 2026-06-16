@@ -219,6 +219,19 @@ footer { border-top: 1px solid var(--border); padding: 28px 0; }
   .download-band { flex-direction: column; }
   .nav-links { display: none; }
 }
+.nav-dropdown { position: relative; }
+.nav-dropdown > a { display: flex; align-items: center; gap: 5px; }
+.nav-dropdown > a::after { content: ''; width: 5px; height: 5px; border-right: 1px solid var(--t3); border-bottom: 1px solid var(--t3); transform: rotate(45deg) translateY(-2px); transition: transform .18s; }
+.nav-dropdown:hover > a::after { transform: rotate(225deg) translateY(-2px); }
+.dropdown-menu { position: absolute; top: calc(100% + 16px); left: 0; background: var(--bg-c); border: 1px solid var(--border); border-radius: 8px; min-width: 240px; padding: 8px; opacity: 0; pointer-events: none; transform: translateY(-6px); transition: opacity .18s, transform .18s; }
+.nav-dropdown:hover .dropdown-menu { opacity: 1; pointer-events: all; transform: translateY(0); }
+.dropdown-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-radius: 5px; text-decoration: none; transition: background .15s; }
+.dropdown-item:hover { background: rgba(255,255,255,0.04); }
+.dropdown-item-label { font-size: 13px; color: var(--t1); font-weight: 500; }
+.dropdown-item-sub { font-size: 11px; color: var(--t3); margin-top: 2px; }
+.dropdown-badge { font-family: "Space Mono", monospace; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; padding: 2px 7px; border-radius: 3px; }
+.badge-live { color: var(--green); background: rgba(50,210,130,0.08); border: 1px solid rgba(50,210,130,0.2); }
+.badge-soon { color: var(--t3); background: rgba(255,255,255,0.04); border: 1px solid var(--border); }
 </style>
 </head>
 <body>
@@ -232,8 +245,15 @@ footer { border-top: 1px solid var(--border); padding: 28px 0; }
         <div class="dropdown-menu">
           <a class="dropdown-item" href="/platform/proactive-resilience">
             <div>
-              <div class="dropdown-item-label">Value Chain Resilience</div>
-              <div class="dropdown-item-sub">Proactive + Reactive intelligence</div>
+              <div class="dropdown-item-label">Proactive Resilience</div>
+              <div class="dropdown-item-sub">See risk before it becomes a disruption</div>
+            </div>
+            <span class="dropdown-badge badge-live">Live</span>
+          </a>
+          <a class="dropdown-item" href="/platform/reactive-resilience">
+            <div>
+              <div class="dropdown-item-label">Reactive Resilience</div>
+              <div class="dropdown-item-sub">Respond with constraint-aware plans</div>
             </div>
             <span class="dropdown-badge badge-live">Live</span>
           </a>

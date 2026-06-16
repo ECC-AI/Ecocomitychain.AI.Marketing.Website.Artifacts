@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reactive Value Chain Resilience — EcocomityChain.AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #07090f;
+  --bg-raised: #0c1018; --bg-r: #0c1018;
+  --bg-card:   #101622; --bg-c: #101622;
+  --border:    rgba(255,255,255,0.07);
+  --border-hi: rgba(255,255,255,0.14); --bhi: rgba(255,255,255,0.14);
+  --amber:     #eca030;
+  --amber-dim: rgba(236,160,48,0.10); --adim: rgba(236,160,48,0.10);
+  --blue:      #3aa0d8;
+  --blue-dim:  rgba(58,160,216,0.10); --bdim: rgba(58,160,216,0.10);
+  --green:     #32d282;
+  --green-dim: rgba(50,210,130,0.10); --gdim: rgba(50,210,130,0.08);
+  --t1: #dde2f0; --t2: #8898b8; --t3: #4a5570;
+  --mono: "Space Mono", monospace;
+  --body: "Space Grotesk", sans-serif;
+  --display: "Syne", sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--t1); font-family: var(--body); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+.container { max-width: 1140px; margin: 0 auto; padding: 0 32px; }
+
+/* NAV */
+nav { border-bottom: 1px solid var(--border); padding: 20px 0; position: sticky; top: 0; z-index: 200; background: rgba(7,9,15,0.94); backdrop-filter: blur(14px); }
+.nav-inner { max-width: 1140px; margin: 0 auto; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.nav-logo { font-family: var(--display); font-size: 15px; font-weight: 700; letter-spacing: .06em; color: var(--t1); text-decoration: none; flex-shrink: 0; }
+.nav-logo span { color: var(--amber); }
+.nav-links { display: flex; gap: 28px; align-items: center; }
+.nav-links a { font-size: 13px; color: var(--t2); text-decoration: none; letter-spacing: .03em; transition: color .18s; }
+.nav-links a:hover { color: var(--t1); }
+.nav-dropdown { position: relative; }
+.nav-dropdown > a { display: flex; align-items: center; gap: 5px; }
+.nav-dropdown > a::after { content: ''; width: 5px; height: 5px; border-right: 1px solid var(--t3); border-bottom: 1px solid var(--t3); transform: rotate(45deg) translateY(-2px); transition: transform .18s; }
+.nav-dropdown:hover > a::after { transform: rotate(225deg) translateY(-2px); }
+.dropdown-menu { position: absolute; top: calc(100% + 16px); left: 0; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; min-width: 230px; padding: 8px; opacity: 0; pointer-events: none; transform: translateY(-6px); transition: opacity .18s, transform .18s; }
+.nav-dropdown:hover .dropdown-menu { opacity: 1; pointer-events: all; transform: translateY(0); }
+.dropdown-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-radius: 5px; text-decoration: none; transition: background .15s; }
+.dropdown-item:hover { background: rgba(255,255,255,0.04); }
+.dropdown-item-label { font-size: 13px; color: var(--t1); font-weight: 500; }
+.dropdown-item-sub { font-size: 11px; color: var(--t3); margin-top: 2px; }
+.dropdown-badge { font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; padding: 2px 7px; border-radius: 3px; }
+.badge-live { color: var(--green); background: var(--green-dim); border: 1px solid rgba(50,210,130,0.2); }
+.badge-soon { color: var(--t3); background: rgba(255,255,255,0.04); border: 1px solid var(--border); }
+.nav-cta { font-size: 13px; font-weight: 600; background: var(--amber); color: #07090f; padding: 9px 20px; border-radius: 4px; text-decoration: none; transition: opacity .18s; flex-shrink: 0; }
+.nav-cta:hover { opacity: .85; }
+
+/* BREADCRUMB */
+.breadcrumb { padding: 16px 0; border-bottom: 1px solid var(--border); }
+.breadcrumb span { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; color: var(--t3); text-transform: uppercase; }
+.breadcrumb span.current { color: var(--t2); }
+.breadcrumb span.sep { margin: 0 10px; }
+
+/* HERO */
+.hero { padding: 96px 0 80px; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; top: -180px; right: -180px; width: 560px; height: 560px; background: radial-gradient(circle, rgba(58,160,216,0.07) 0%, transparent 70%); pointer-events: none; }
+.hero-eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--blue); margin-bottom: 22px; }
+.hero-headline { font-family: var(--display); font-size: clamp(36px, 5vw, 60px); font-weight: 800; line-height: 1.08; letter-spacing: -.02em; color: var(--t1); margin-bottom: 28px; max-width: 720px; }
+.hero-headline em { font-style: normal; color: var(--blue); }
+.hero-body { font-size: 17px; color: var(--t2); line-height: 1.7; max-width: 640px; margin-bottom: 28px; }
+.hero-body strong { color: var(--t1); font-weight: 500; }
+.hero-stat { display: inline-flex; align-items: stretch; border: 1px solid var(--border-hi); border-radius: 8px; overflow: hidden; margin-bottom: 0; }
+.hero-substats { display: flex; gap: 40px; flex-wrap: wrap; margin: 24px 0 44px; padding-top: 24px; border-top: 1px solid var(--border); max-width: 720px; }
+.hero-substat { display: flex; flex-direction: column; gap: 4px; }
+.hero-substat-num { font-family: var(--display); font-size: 22px; font-weight: 800; color: var(--blue); letter-spacing: -.02em; }
+.hero-substat-lbl { font-size: 12px; color: var(--t3); line-height: 1.4; max-width: 200px; }
+.hero-stat-panel { padding: 18px 26px; display: flex; flex-direction: column; gap: 4px; }
+.hero-stat-panel:first-child { background: rgba(224,80,80,0.08); border-right: 1px solid var(--border); }
+.hero-stat-panel:last-child { background: var(--green-dim); }
+.hero-stat-label { font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--t3); }
+.hero-stat-number { font-family: var(--display); font-size: 30px; font-weight: 800; letter-spacing: -.03em; }
+.hero-stat-panel:first-child .hero-stat-number { color: #e05050; }
+.hero-stat-panel:last-child  .hero-stat-number { color: var(--green); }
+.hero-stat-desc { font-size: 12px; color: var(--t3); line-height: 1.4; max-width: 200px; }
+.hero-stat-arrow { padding: 0 16px; display: flex; align-items: center; color: var(--t3); font-size: 20px; }
+.hero-actions { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+.btn-primary { font-size: 14px; font-weight: 600; background: var(--blue); color: #07090f; padding: 13px 28px; border-radius: 4px; text-decoration: none; transition: opacity .2s; }
+.btn-primary:hover { opacity: .88; }
+.btn-secondary { font-size: 14px; font-weight: 500; border: 1px solid var(--border-hi); color: var(--t2); padding: 13px 28px; border-radius: 4px; text-decoration: none; transition: border-color .2s, color .2s; }
+.btn-secondary:hover { border-color: rgba(255,255,255,0.28); color: var(--t1); }
+
+/* SECTION COMMONS */
+section { padding: 84px 0; }
+section.alt { background: var(--bg-raised); }
+.section-tag { font-family: var(--mono); font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--blue); margin-bottom: 14px; }
+.section-headline { font-family: var(--display); font-size: clamp(26px, 3vw, 36px); font-weight: 700; line-height: 1.14; letter-spacing: -.02em; color: var(--t1); margin-bottom: 14px; }
+.section-sub { font-size: 15px; color: var(--t2); line-height: 1.65; max-width: 620px; margin-bottom: 48px; }
+
+/* FLOW STEPS */
+.flow-steps { display: flex; flex-direction: column; }
+.flow-step { display: flex; gap: 28px; }
+.flow-marker { display: flex; flex-direction: column; align-items: center; flex: none; }
+.flow-num { width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--blue); display: flex; align-items: center; justify-content: center; font-family: var(--display); font-weight: 800; font-size: 14px; color: var(--blue); background: var(--bg); }
+.flow-num svg { width: 22px; height: 22px; display: block; }
+.flow-line { flex: 1; width: 1px; background: var(--border-hi); margin: 6px 0; min-height: 24px; }
+.flow-content { padding-bottom: 52px; flex: 1; }
+.flow-step:last-child .flow-content { padding-bottom: 0; }
+.flow-stage-tag { font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--t2); margin-bottom: 8px; margin-top: 6px; }
+.flow-title { font-family: var(--display); font-size: 19px; font-weight: 700; color: var(--t1); margin-bottom: 12px; line-height: 1.3; }
+.flow-body { font-size: 14px; color: var(--t2); line-height: 1.7; max-width: 700px; }
+.flow-body strong { color: var(--t1); font-weight: 500; }
+.flow-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+.flow-tag { font-family: var(--mono); font-size: 9px; letter-spacing: .08em; color: var(--t3); background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 3px; padding: 3px 8px; }
+.flow-tag.roadmap { color: var(--t3); border-style: dashed; }
+
+/* VISUAL PANEL (reusable — SVG today, video/iframe later) */
+.visual-panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 40px 0 0; }
+.visual-panel-label { font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--t3); padding: 12px 20px; border-bottom: 1px solid var(--border); }
+.visual-panel-body { padding: 32px; display: flex; align-items: center; justify-content: center; min-height: 160px; }
+.visual-placeholder { width: 100%; border: 1px dashed var(--border-hi); border-radius: 8px; padding: 36px 24px; text-align: center; font-family: var(--mono); font-size: 12px; color: var(--t3); line-height: 1.7; }
+
+/* COPILOT TEASER (within Flow section) */
+.copilot-teaser { margin-top: 48px; border: 1px solid rgba(58,160,216,0.2); background: var(--blue-dim); border-radius: 10px; padding: 24px 28px; display: flex; align-items: center; gap: 20px; justify-content: space-between; flex-wrap: wrap; }
+.copilot-teaser-text { font-size: 14px; color: var(--t2); line-height: 1.6; max-width: 700px; }
+.copilot-teaser-text strong { color: var(--t1); font-weight: 600; }
+.copilot-teaser a { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; color: var(--blue); text-decoration: none; white-space: nowrap; border: 1px solid rgba(58,160,216,0.3); padding: 8px 16px; border-radius: 4px; transition: background .2s; }
+.copilot-teaser a:hover { background: rgba(58,160,216,0.1); }
+
+/* COPILOT SECTION */
+.copilot-points { display: flex; flex-direction: column; gap: 22px; margin-top: 28px; }
+.copilot-point { display: flex; gap: 14px; }
+.copilot-point-icon { width: 28px; height: 28px; border-radius: 6px; background: var(--blue-dim); border: 1px solid rgba(58,160,216,0.2); display: flex; align-items: center; justify-content: center; flex: none; font-family: var(--mono); font-size: 11px; color: var(--blue); }
+.copilot-point-text { font-size: 14px; color: var(--t2); line-height: 1.65; }
+.copilot-point-text strong { color: var(--t1); font-weight: 500; }
+
+/* COPILOT STAGE NOTES */
+
+/* TEMPORAL CO-OPTIMISATION */
+.tco-periods { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 32px; }
+.tco-period-card { background: var(--bg-card); border: 1px solid var(--border); border-left: 3px solid var(--amber); border-radius: 8px; padding: 20px 22px; }
+.tco-period-card.period-2 { border-left-color: var(--blue); }
+.tco-period-card.period-3 { border-left-color: var(--green); }
+.tco-period-label { font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; margin-bottom: 10px; }
+.tco-period-card.period-1 .tco-period-label { color: var(--amber); }
+.tco-period-card.period-2 .tco-period-label { color: var(--blue); }
+.tco-period-card.period-3 .tco-period-label { color: var(--green); }
+.tco-period-text { font-size: 13px; color: var(--t2); line-height: 1.65; }
+.tco-period-text strong { color: var(--t1); font-weight: 500; }
+.tco-legend { display: flex; gap: 20px; margin-top: 10px; flex-wrap: wrap; }
+.tco-legend-item { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--t2); font-family: var(--mono); }
+.tco-legend-swatch { width: 24px; height: 3px; border-radius: 2px; }
+
+/* PILOT FORM */
+.pilot-input { width: 100%; background: var(--bg); border: 1px solid var(--border-hi); border-radius: 5px; padding: 11px 14px; color: var(--t1); font-family: var(--body); font-size: 14px; }
+.pilot-input:focus { outline: none; border-color: rgba(58,160,216,0.5); }
+.pilot-submit { width: 100%; font-size: 14px; font-weight: 600; background: var(--blue); color: #07090f; border: none; padding: 14px; border-radius: 4px; cursor: pointer; transition: opacity .2s; }
+.pilot-submit:hover { opacity: .88; }
+
+/* FOOTER */
+footer { border-top: 1px solid var(--border); padding: 28px 0; }
+.footer-inner { max-width: 1140px; margin: 0 auto; padding: 0 32px; display: flex; justify-content: space-between; align-items: center; }
+.footer-copy { font-family: var(--mono); font-size: 11px; color: var(--t3); letter-spacing: .08em; }
+.footer-links { display: flex; gap: 24px; }
+.footer-links a { font-size: 12px; color: var(--t3); text-decoration: none; transition: color .2s; }
+.footer-links a:hover { color: var(--t2); }
+
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .flow-step { gap: 16px; }
+  .flow-num { width: 36px; height: 36px; font-size: 12px; }
+  .tco-periods { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .hero-stat { flex-direction: column; }
+  .hero-stat-panel:first-child { border-right: none; border-bottom: 1px solid var(--border); }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="/">Ecocomity<span>Chain</span>.AI</a>
+    <div class="nav-links">
+      <div class="nav-dropdown">
+        <a href="#">Solutions</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="/platform/proactive-resilience">
+            <div>
+              <div class="dropdown-item-label">Proactive Resilience</div>
+              <div class="dropdown-item-sub">See risk before it becomes a disruption</div>
+            </div>
+            <span class="dropdown-badge badge-live">Live</span>
+          </a>
+          <a class="dropdown-item" href="/platform/reactive-resilience">
+            <div>
+              <div class="dropdown-item-label">Reactive Resilience</div>
+              <div class="dropdown-item-sub">Respond with constraint-aware plans</div>
+            </div>
+            <span class="dropdown-badge badge-live">Live</span>
+          </a>
+          <a class="dropdown-item" href="#">
+            <div>
+              <div class="dropdown-item-label">Sustainability Intelligence</div>
+              <div class="dropdown-item-sub">Scope 3, DPP, material compliance</div>
+            </div>
+            <span class="dropdown-badge badge-soon">Coming</span>
+          </a>
+          <a class="dropdown-item" href="#">
+            <div>
+              <div class="dropdown-item-label">Value Chain Optimization</div>
+              <div class="dropdown-item-sub">Cost, route, and efficiency intelligence</div>
+            </div>
+            <span class="dropdown-badge badge-soon">Coming</span>
+          </a>
+        </div>
+      </div>
+      <a href="/blog">Blog</a>
+      <a href="#pilot">How It Works</a>
+    </div>
+    <a class="nav-cta" href="#pilot">Request Pilot Access</a>
+  </div>
+</nav>
+
+<div class="breadcrumb">
+  <div class="container">
+    <span>Platform</span><span class="sep">/</span>
+    <span class="current">Reactive Value Chain Resilience</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="container">
+    <p class="hero-eyebrow">Reactive Value Chain Resilience</p>
+    <h1 class="hero-headline">Most platforms stop at the alert.<br><em>ECC starts solving.</em></h1>
+    <p class="hero-body">
+      What follows an alert is usually the same playbook used for the last
+      disruption, and the one before that: build inventory, dual-source,
+      regionalize. <strong>ECC's reactive layer runs a live optimisation
+      solve — against your real capacity and constraints — while the
+      disruption is still unfolding</strong>, and turns the result into a
+      full set of ranked options grounded in 1,000+ documented disruption
+      cases, rather than an answer to the one question someone thought to
+      ask. Few platforms run this kind of solve live, during an active
+      disruption — and fewer still as a deployed product rather than a
+      research prototype.
+    </p>
+    <p class="hero-body" style="font-size:15px;">
+      ECC moves through six stages — detect, enrich, match, solve, execute,
+      learn — fusing real-time intelligence with your operational graph and
+      this knowledge base. A Resilience Copilot travels with your team
+      through every stage, present from the same signal your team sees,
+      through to the plan your team locks.
+    </p>
+
+    <div class="hero-stat">
+      <div class="hero-stat-panel">
+        <span class="hero-stat-label">Industry Average</span>
+        <span class="hero-stat-number">5 days</span>
+        <span class="hero-stat-desc">to begin a disruption response. 83% of supply chains cannot act within 24 hours.</span>
+      </div>
+      <div class="hero-stat-arrow">→</div>
+      <div class="hero-stat-panel">
+        <span class="hero-stat-label">ECC Reactive Layer</span>
+        <span class="hero-stat-number">Minutes</span>
+        <span class="hero-stat-desc">from a verified signal to a ranked, constraint-aware recovery plan.</span>
+      </div>
+    </div>
+
+    <div class="hero-substats">
+      <div class="hero-substat">
+        <span class="hero-substat-num">30–50%</span>
+        <span class="hero-substat-lbl">of annual EBITDA lost in disruptions lasting over 30 days</span>
+      </div>
+      <div class="hero-substat">
+        <span class="hero-substat-num">93%</span>
+        <span class="hero-substat-lbl">of companies apply the same three response levers, regardless of disruption type</span>
+      </div>
+      <div class="hero-substat">
+        <span class="hero-substat-num">3–5 mo</span>
+        <span class="hero-substat-lbl">average recovery time without a structured response</span>
+      </div>
+    </div>
+
+    <div class="hero-actions">
+      <a class="btn-primary" href="#pilot">Request Pilot Access</a>
+      <a class="btn-secondary" href="#flow">See How It Works</a>
+    </div>
+  </div>
+</div>
+
+<!-- THE FLOW -->
+<section class="alt" id="flow">
+  <div class="container">
+    <p class="section-tag">How It Works</p>
+    <h2 class="section-headline">Five stages. One continuous flow. A copilot throughout.</h2>
+    <p class="section-sub">
+      When a disruption signal crosses the threshold for your operations, ECC moves
+      through this sequence — not as five separate tools, but as one flow, with the
+      Resilience Copilot present at every stage.
+    </p>
+
+    <div class="flow-steps">
+
+      <!-- STAGE 1 — DETECT -->
+      <div class="flow-step">
+        <div class="flow-marker">
+          <div class="flow-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="1.6" fill="currentColor" stroke="none"/><path d="M6 18a6 6 0 0 1 6-6"/><path d="M6 18a10.5 10.5 0 0 1 10.5-10.5"/><path d="M6 18a15 15 0 0 1 15-15" opacity="0.4"/></svg></div>
+          <div class="flow-line"></div>
+        </div>
+        <div class="flow-content">
+          <p class="flow-stage-tag">01 — Detect</p>
+          <h3 class="flow-title">A verified signal arrives — not another item in a queue</h3>
+          <p class="flow-body">
+            ECC's reactive layer is fed by a partner intelligence network that monitors
+            global risk events continuously, at a scale most internal teams cannot
+            replicate on their own: <strong>10M+ companies monitored, 1.9M+ articles
+            processed daily across 600+ risk categories</strong>, covering 234 commodities
+            and 26,000+ locations worldwide — with visibility extending
+            <strong>beyond Tier-5 supplier networks</strong>, the depth where most
+            disruptions actually originate. When a signal crosses the threshold for your
+            operational footprint, it doesn't join a dashboard queue. It triggers the
+            flow below.
+          </p>
+          <div class="flow-tags">
+            <span class="flow-tag">Partner intelligence network</span>
+            <span class="flow-tag">10M+ companies monitored</span>
+            <span class="flow-tag">600+ risk categories</span>
+            <span class="flow-tag">Beyond Tier-5 visibility</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- STAGE 2 — ENRICH -->
+      <div class="flow-step">
+        <div class="flow-marker">
+          <div class="flow-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="12" x2="4" y2="6"/><line x1="12" y1="12" x2="20" y2="6"/><line x1="12" y1="12" x2="4" y2="18"/><line x1="12" y1="12" x2="20" y2="18"/><circle cx="12" cy="12" r="2.2"/><circle cx="4" cy="6" r="1.8" fill="#07090f"/><circle cx="20" cy="6" r="1.8" fill="#07090f"/><circle cx="4" cy="18" r="1.8" fill="#07090f"/><circle cx="20" cy="18" r="1.8" fill="#07090f"/></svg></div>
+          <div class="flow-line"></div>
+        </div>
+        <div class="flow-content">
+          <p class="flow-stage-tag">02 — Enrich</p>
+          <h3 class="flow-title">What does this actually touch — and what does it cost?</h3>
+          <p class="flow-body">
+            The Operations Graph — a partial digital twin of your operational network —
+            runs a <strong>ripple-effect analysis</strong> outward from the disrupted
+            entity: which materials, assemblies, plants, and orders sit downstream.
+            That traversal is translated directly into the two numbers your leadership
+            will ask for first — <strong>material impact</strong> (which assemblies,
+            how exposed) and <strong>financial impact</strong> (cost and revenue
+            exposure, scoped to this event). Not an estimate from a spreadsheet.
+            A computed exposure, from the graph, before the war room has finished
+            convening.
+          </p>
+          <div class="flow-tags">
+            <span class="flow-tag">Operations Graph (digital twin)</span>
+            <span class="flow-tag">Ripple-effect analysis</span>
+            <span class="flow-tag">Material impact</span>
+            <span class="flow-tag">Financial impact</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- STAGE 3 — DECIDE -->
+      <!-- STAGE 3 — MATCH -->
+      <div class="flow-step">
+        <div class="flow-marker">
+          <div class="flow-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.2" y1="15.2" x2="20" y2="20"/><line x1="8" y1="8.5" x2="12.5" y2="8" stroke-width="1.1"/><line x1="8" y1="8.5" x2="10" y2="13" stroke-width="1.1"/><line x1="12.5" y1="8" x2="10" y2="13" stroke-width="1.1"/><circle cx="8" cy="8.5" r="0.9" fill="currentColor" stroke="none"/><circle cx="12.5" cy="8" r="0.9" fill="currentColor" stroke="none"/><circle cx="10" cy="13" r="0.9" fill="currentColor" stroke="none"/></svg></div>
+          <div class="flow-line"></div>
+        </div>
+        <div class="flow-content">
+          <p class="flow-stage-tag">03 — Match</p>
+          <h3 class="flow-title">The options your team wouldn't have thought to ask for</h3>
+          <p class="flow-body">
+            This is where <strong>CACM</strong> — Constraint-Aware Context
+            Matching — runs against the Resilience Intelligence Fabric: a
+            research-backed graph of <strong>1,000+ documented disruption
+            cases and 150+ mitigation measures across 20+ disruption
+            domains</strong>, drawn from 25 years of supply chain disruption
+            research. CACM does not retrieve a generic playbook. It matches
+            your specific scenario to the evidence of what has worked in
+            comparable situations before — and surfaces the
+            <strong>full set of strategic options</strong>, checked against
+            your real constraints, rather than answering a single question
+            someone thought to ask. The output is a ranked set of options,
+            each tied to its supporting evidence — the raw material for the
+            next stage.
+          </p>
+          <div class="flow-tags">
+            <span class="flow-tag">CACM — constraint-aware matching</span>
+            <span class="flow-tag">RIF: 1,000+ cases · 150+ measures · 20+ domains</span>
+            <span class="flow-tag">Full option set, ranked</span>
+            <span class="flow-tag">ICA pathways</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- STAGE 4 — SOLVE -->
+      <div class="flow-step" id="solve">
+        <div class="flow-marker">
+          <div class="flow-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 11 10.5 6" stroke-dasharray="2 2" opacity="0.35"/><path d="M13.5 6 18.5 11" stroke-dasharray="2 2" opacity="0.35"/><path d="M5.5 13 10.5 18" stroke-width="2.2"/><path d="M13.5 18 18.5 13" stroke-width="2.2"/><circle cx="4" cy="12" r="1.8" fill="#07090f"/><circle cx="12" cy="5" r="1.8" fill="#07090f"/><circle cx="12" cy="19" r="1.8" fill="#07090f"/><circle cx="20" cy="12" r="1.8" fill="#07090f"/></svg></div>
+          <div class="flow-line"></div>
+        </div>
+        <div class="flow-content">
+          <p class="flow-stage-tag">04 — Solve</p>
+          <h3 class="flow-title">Solving isn't one answer. It's a plan across the whole recovery window.</h3>
+          <p class="flow-body">
+            The ranked options from Match become the inputs to a
+            <strong>cuOpt-enabled solver</strong>, which solves the underlying
+            capacity problem — supply capacity and production capacity —
+            together, as a single optimisation. This is also where
+            <strong>temporal co-optimisation</strong> happens: rather than
+            treating the disruption onset, the gap it leaves, and the return
+            to normal supply as three separate decisions made by three
+            different teams at three different times, ECC solves the entire
+            disrupted-to-recovered window as one multi-period problem. The
+            output is a set of plans across that trade-off space — cost,
+            risk, and time-to-recover — not a single recommendation.
+          </p>
+          <p class="flow-body" style="margin-top:14px;">
+            <strong>One extension is on the roadmap, not in the live platform
+            today:</strong> continuously re-solving as the situation changes
+            during the disruption — a supplier capacity update, a new
+            constraint, a shift in the event itself. Today, ECC solves once
+            per disruption signal, against the most current data available at
+            that point. Re-solving across the life of a disruption is a
+            natural extension of this same architecture.
+          </p>
+          <div class="flow-tags">
+            <span class="flow-tag">cuOpt-enabled solve</span>
+            <span class="flow-tag">Temporal co-optimisation</span>
+            <span class="flow-tag">Plan set across cost / risk / TTR</span>
+            <span class="flow-tag roadmap">Continuous re-solve — roadmap</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- STAGE 5 — EXECUTE -->
+      <div class="flow-step">
+        <div class="flow-marker">
+          <div class="flow-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M9 3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1H9z" fill="currentColor" stroke="none"/><path d="M8.5 12.5 10.5 14.5 15 10" stroke-width="1.8"/></svg></div>
+          <div class="flow-line"></div>
+        </div>
+        <div class="flow-content">
+          <p class="flow-stage-tag">05 — Execute</p>
+          <h3 class="flow-title">By design, the platform recommends. Your team decides.</h3>
+          <p class="flow-body">
+            ECC's flow is intentionally human-in-the-loop. Every plan from
+            Solve — including the full reasoning behind it — is handed to
+            your team to review, adjust, and lock.
+            <strong>This is not a gap waiting to be automated away.</strong>
+            Research on disruption response consistently finds that trust in
+            algorithmic recommendations falls exactly when the stakes are
+            highest — and the more experienced the decision-maker, the more
+            they want to override the system during a real crisis. Keeping
+            the decision point explicit, and making every recommendation
+            explainable enough to defend in that decision, is how ECC is
+            designed to be used during the disruptions that matter most. A
+            Resilience Thinking Agent that can carry an approved action into
+            the relevant system, within defined guardrails, is the natural
+            next step for execution — the human decision point stays, by
+            design, either way.
+          </p>
+          <div class="flow-tags">
+            <span class="flow-tag">Human-in-the-loop, by design</span>
+            <span class="flow-tag">Explainable today</span>
+            <span class="flow-tag roadmap">Thinking Agent — roadmap</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- STAGE 6 — LEARN -->
+      <div class="flow-step">
+        <div class="flow-marker">
+          <div class="flow-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 13.8-5.6"/><path d="M17.8 2.4v4h-4" stroke-linejoin="round"/><path d="M20 12a8 8 0 0 1-13.8 5.6"/><path d="M6.2 21.6v-4h4" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="flow-content">
+          <p class="flow-stage-tag">06 — Learn</p>
+          <h3 class="flow-title">Every disruption processed makes the next one faster to resolve</h3>
+          <p class="flow-body">
+            The plan that gets locked — and, over time, the outcome of
+            executing it — feeds back into the Resilience Intelligence Fabric.
+            The knowledge base doesn't just store the case. It refines the
+            constraint envelopes and evidence that CACM matches against next
+            time. <strong>The platform doesn't reset between disruptions. It
+            compounds.</strong>
+          </p>
+          <div class="flow-tags">
+            <span class="flow-tag">Compounding knowledge base</span>
+            <span class="flow-tag">Continuous enrichment</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- FLOW DIAGRAM PLACEHOLDER -->
+    <div class="visual-panel">
+      <div class="visual-panel-label">Figure — The Reactive Resilience Flow</div>
+      <div class="visual-panel-body" style="display:block;padding:28px 24px 12px;">
+        <svg id="flow-recap" viewBox="0 0 1040 230" xmlns="http://www.w3.org/2000/svg" style="width:100%;overflow:visible;"><defs><marker id="flowarrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L8 5L1 9" fill="none" stroke="#3aa0d8" stroke-width="1.5" stroke-linecap="round"/></marker></defs><line x1="84" y1="56" x2="220" y2="56" stroke="rgba(58,160,216,0.35)" stroke-width="1.5" marker-end="url(#flowarrow)"/><line x1="268" y1="56" x2="404" y2="56" stroke="rgba(58,160,216,0.35)" stroke-width="1.5" marker-end="url(#flowarrow)"/><line x1="452" y1="56" x2="588" y2="56" stroke="rgba(58,160,216,0.35)" stroke-width="1.5" marker-end="url(#flowarrow)"/><line x1="636" y1="56" x2="772" y2="56" stroke="rgba(58,160,216,0.35)" stroke-width="1.5" marker-end="url(#flowarrow)"/><line x1="820" y1="56" x2="956" y2="56" stroke="rgba(58,160,216,0.35)" stroke-width="1.5" marker-end="url(#flowarrow)"/><circle cx="60" cy="56" r="22" fill="#07090f" stroke="#3aa0d8" stroke-width="2"/><g transform="translate(48,44)" style="color:#3aa0d8" stroke="#3aa0d8" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="1.6" fill="currentColor" stroke="none"/><path d="M6 18a6 6 0 0 1 6-6"/><path d="M6 18a10.5 10.5 0 0 1 10.5-10.5"/><path d="M6 18a15 15 0 0 1 15-15" opacity="0.4"/></g><text x="60" y="100" text-anchor="middle" font-family="Space Mono" font-size="10" font-weight="700" fill="#8898b8" letter-spacing="1">01 — DETECT</text><circle cx="244" cy="56" r="22" fill="#07090f" stroke="#3aa0d8" stroke-width="2"/><g transform="translate(232,44)" style="color:#3aa0d8" stroke="#3aa0d8" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="12" x2="4" y2="6"/><line x1="12" y1="12" x2="20" y2="6"/><line x1="12" y1="12" x2="4" y2="18"/><line x1="12" y1="12" x2="20" y2="18"/><circle cx="12" cy="12" r="2.2"/><circle cx="4" cy="6" r="1.8" fill="#07090f"/><circle cx="20" cy="6" r="1.8" fill="#07090f"/><circle cx="4" cy="18" r="1.8" fill="#07090f"/><circle cx="20" cy="18" r="1.8" fill="#07090f"/></g><text x="244" y="100" text-anchor="middle" font-family="Space Mono" font-size="10" font-weight="700" fill="#8898b8" letter-spacing="1">02 — ENRICH</text><circle cx="428" cy="56" r="22" fill="#07090f" stroke="#3aa0d8" stroke-width="2"/><g transform="translate(416,44)" style="color:#3aa0d8" stroke="#3aa0d8" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.2" y1="15.2" x2="20" y2="20"/><line x1="8" y1="8.5" x2="12.5" y2="8" stroke-width="1.1"/><line x1="8" y1="8.5" x2="10" y2="13" stroke-width="1.1"/><line x1="12.5" y1="8" x2="10" y2="13" stroke-width="1.1"/><circle cx="8" cy="8.5" r="0.9" fill="currentColor" stroke="none"/><circle cx="12.5" cy="8" r="0.9" fill="currentColor" stroke="none"/><circle cx="10" cy="13" r="0.9" fill="currentColor" stroke="none"/></g><text x="428" y="100" text-anchor="middle" font-family="Space Mono" font-size="10" font-weight="700" fill="#8898b8" letter-spacing="1">03 — MATCH</text><circle cx="612" cy="56" r="22" fill="#07090f" stroke="#3aa0d8" stroke-width="2"/><g transform="translate(600,44)" style="color:#3aa0d8" stroke="#3aa0d8" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 11 10.5 6" stroke-dasharray="2 2" opacity="0.35"/><path d="M13.5 6 18.5 11" stroke-dasharray="2 2" opacity="0.35"/><path d="M5.5 13 10.5 18" stroke-width="2.2"/><path d="M13.5 18 18.5 13" stroke-width="2.2"/><circle cx="4" cy="12" r="1.8" fill="#07090f"/><circle cx="12" cy="5" r="1.8" fill="#07090f"/><circle cx="12" cy="19" r="1.8" fill="#07090f"/><circle cx="20" cy="12" r="1.8" fill="#07090f"/></g><text x="612" y="100" text-anchor="middle" font-family="Space Mono" font-size="10" font-weight="700" fill="#8898b8" letter-spacing="1">04 — SOLVE</text><circle cx="796" cy="56" r="22" fill="#07090f" stroke="#32d282" stroke-width="2"/><g transform="translate(784,44)" style="color:#32d282" stroke="#32d282" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M9 3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1H9z" fill="currentColor" stroke="none"/><path d="M8.5 12.5 10.5 14.5 15 10" stroke-width="1.8"/></g><text x="796" y="100" text-anchor="middle" font-family="Space Mono" font-size="10" font-weight="700" fill="#8898b8" letter-spacing="1">05 — EXECUTE</text><circle cx="980" cy="56" r="22" fill="#07090f" stroke="#3aa0d8" stroke-width="2"/><g transform="translate(968,44)" style="color:#3aa0d8" stroke="#3aa0d8" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 13.8-5.6"/><path d="M17.8 2.4v4h-4" stroke-linejoin="round"/><path d="M20 12a8 8 0 0 1-13.8 5.6"/><path d="M6.2 21.6v-4h4" stroke-linejoin="round"/></g><text x="980" y="100" text-anchor="middle" font-family="Space Mono" font-size="10" font-weight="700" fill="#8898b8" letter-spacing="1">06 — LEARN</text><rect x="30" y="142" width="980" height="44" rx="8" fill="rgba(58,160,216,0.05)" stroke="rgba(58,160,216,0.2)" stroke-dasharray="4,3"/><text x="520" y="169" text-anchor="middle" font-family="Space Mono" font-size="10" letter-spacing="2" fill="#3aa0d8">RESILIENCE COPILOT — PRESENT AT EVERY STAGE</text><line x1="796" y1="78" x2="796" y2="142" stroke="#32d282" stroke-width="1" stroke-dasharray="3,2"/><text x="796" y="212" text-anchor="middle" font-family="Space Mono" font-size="9" letter-spacing="1.5" fill="#32d282">HUMAN DECISION POINT</text></svg>
+      </div>
+    </div>
+
+    <!-- COPILOT TEASER -->
+    <div class="copilot-teaser">
+      <p class="copilot-teaser-text">
+        <strong>Throughout all five stages — the Resilience Copilot.</strong>
+        A conversational layer that travels with your team through the entire flow,
+        grounded in the same graph, constraints, and evidence CACM used to rank the options.
+      </p>
+      <a href="#copilot">More on the Copilot ↓</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- RESILIENCE COPILOT -->
+<section id="copilot">
+  <div class="container">
+    <p class="section-tag">Throughout Every Stage</p>
+    <h2 class="section-headline">The Resilience Copilot travels with you</h2>
+    <p class="section-sub">
+      Not a separate chatbot bolted onto the platform. A conversational layer
+      present at every stage of the flow above — from the same signal that
+      triggers Detect, through to the plan your team locks in Execute.
+    </p>
+
+    <div class="copilot-points">
+          <div class="copilot-point">
+            <div class="copilot-point-icon">01</div>
+            <p class="copilot-point-text">
+              <strong>The Copilot's context starts where yours does — at the
+              disruption signal itself.</strong> It has access to the same
+              partner intelligence data your team sees in Detect, including
+              the explainability behind each alert: why this was flagged,
+              what evidence supports it, what has changed. Explainability
+              isn't a feature added to the output afterwards — it's part of
+              the data the Copilot works with from the first signal onward.
+            </p>
+          </div>
+          <div class="copilot-point">
+            <div class="copilot-point-icon">02</div>
+            <p class="copilot-point-text">
+              <strong>Beyond explaining what happened, the Copilot answers
+              what-if and trade-off questions directly against the set of
+              plans Solve produced</strong> — "what changes if this supplier's
+              lead time shifts by two weeks," "why was this option ranked
+              below that one." Answering those questions against live
+              optimisation output, not a static write-up, took a substantial
+              engineering investment — and it's what makes the Copilot useful
+              in the room where the plan actually gets decided.
+            </p>
+          </div>
+          <div class="copilot-point">
+            <div class="copilot-point-icon">03</div>
+            <p class="copilot-point-text">
+              <strong>The decision stays with your team — the Copilot's job
+              is to make it faster and better-informed, not to make it for
+              you.</strong> It removes the time spent reconstructing context,
+              so the conversation in the war room starts at "do we agree with
+              this plan," not "what are we even looking at."
+            </p>
+          </div>
+    </div>
+
+    <div class="visual-panel" style="margin-top:32px;">
+      <div class="visual-panel-label">Figure — Your disruption lifecycle × ECC stage × Copilot engagement depth</div>
+      <div class="visual-panel-body" style="display:block;padding:24px 20px 20px;">
+        <svg viewBox="0 0 1080 520" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;"><defs><marker id="arr" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M1 1L8 5L1 9" fill="none" stroke="rgba(58,160,216,0.5)" stroke-width="1.5" stroke-linecap="round"/></marker></defs><rect width="1080" height="520" fill="#07090f"/><rect x="20" y="34" width="1040" height="110" rx="8" fill="rgba(255,255,255,0.025)" stroke="rgba(255,255,255,0.07)" stroke-width="1"/><rect x="20" y="160" width="1040" height="84" rx="8" fill="rgba(58,160,216,0.04)" stroke="rgba(58,160,216,0.15)" stroke-width="1"/><text x="14" y="93" text-anchor="middle" font-family="Space Mono" font-size="8" font-weight="700" fill="#4a5570" letter-spacing="1.5" transform="rotate(-90,14,89)">YOUR TEAM</text><text x="14" y="206" text-anchor="middle" font-family="Space Mono" font-size="8" font-weight="700" fill="#3aa0d8" letter-spacing="1.5" transform="rotate(-90,14,202)">ECC STAGE</text><text x="14" y="354" text-anchor="middle" font-family="Space Mono" font-size="8" font-weight="700" fill="#3aa0d8" letter-spacing="1.5" transform="rotate(-90,14,350)">COPILOT DEPTH</text><line x1="106.66666666666667" y1="148" x2="106.66666666666667" y2="156" stroke="rgba(58,160,216,0.3)" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#arr)"/><line x1="280.0" y1="148" x2="280.0" y2="156" stroke="rgba(58,160,216,0.3)" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#arr)"/><line x1="453.33333333333337" y1="148" x2="453.33333333333337" y2="156" stroke="rgba(58,160,216,0.3)" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#arr)"/><line x1="626.6666666666666" y1="148" x2="626.6666666666666" y2="156" stroke="rgba(58,160,216,0.3)" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#arr)"/><line x1="800.0" y1="148" x2="800.0" y2="156" stroke="rgba(58,160,216,0.3)" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#arr)"/><line x1="973.3333333333334" y1="148" x2="973.3333333333334" y2="156" stroke="rgba(58,160,216,0.3)" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#arr)"/><line x1="30" y1="270.0" x2="1050" y2="270.0" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="4,4"/><text x="26" y="273.0" text-anchor="start" font-family="Space Mono" font-size="7" fill="#4a5570" letter-spacing="1">DEEP</text><line x1="30" y1="350.0" x2="1050" y2="350.0" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="4,4"/><text x="26" y="353.0" text-anchor="start" font-family="Space Mono" font-size="7" fill="#4a5570" letter-spacing="1">MODERATE</text><line x1="30" y1="430.0" x2="1050" y2="430.0" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="4,4"/><text x="26" y="433.0" text-anchor="start" font-family="Space Mono" font-size="7" fill="#4a5570" letter-spacing="1">LIGHT</text><path d="M106.66666666666667,390.0 L280.0,366.0 L453.33333333333337,342.0 L626.6666666666666,270.0 L800.0,326.0 L973.3333333333334,398.0 L973.3333333333334,430 L106.66666666666667,430 Z" fill="rgba(58,160,216,0.10)"/><path d="M106.66666666666667,390.0 L280.0,366.0 L453.33333333333337,342.0 L626.6666666666666,270.0 L800.0,326.0 L973.3333333333334,398.0" fill="none" stroke="#3aa0d8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="106.66666666666667" cy="390.0" r="3.5" fill="#3aa0d8"/><circle cx="280.0" cy="366.0" r="3.5" fill="#3aa0d8"/><circle cx="453.33333333333337" cy="342.0" r="3.5" fill="#3aa0d8"/><circle cx="626.6666666666666" cy="270.0" r="5" fill="#32d282"/><circle cx="626.6666666666666" cy="270.0" r="10" fill="none" stroke="#32d282" stroke-width="1" stroke-dasharray="2,2"/><text x="640.6666666666666" y="264.0" font-family="Space Grotesk" font-size="10" fill="#32d282">What-if questions answered</text><text x="640.6666666666666" y="277.0" font-family="Space Grotesk" font-size="10" fill="#32d282">directly against the plan set</text><circle cx="800.0" cy="326.0" r="3.5" fill="#3aa0d8"/><circle cx="973.3333333333334" cy="398.0" r="3.5" fill="#3aa0d8"/><line x1="30" y1="444" x2="1050" y2="444" stroke="rgba(58,160,216,0.3)" stroke-width="1.5"/><text x="540" y="456" text-anchor="middle" font-family="Space Mono" font-size="9" font-weight="700" fill="#3aa0d8" letter-spacing="2">RESILIENCE COPILOT — ACTIVE THROUGHOUT</text><text x="106.66666666666667" y="89" text-anchor="middle" font-family="Space Grotesk" font-size="12" font-weight="400" fill="#8898b8">Signal arrives</text><text x="106.66666666666667" y="207" text-anchor="middle" font-family="Space Mono" font-size="9" font-weight="700" fill="#8898b8" letter-spacing="1">01 — DETECT</text><text x="280.0" y="81" text-anchor="middle" font-family="Space Grotesk" font-size="12" font-weight="400" fill="#8898b8">Triage:</text><text x="280.0" y="97" text-anchor="middle" font-family="Space Grotesk" font-size="12" font-weight="400" fill="#8898b8">who & what?</text><text x="280.0" y="207" text-anchor="middle" font-family="Space Mono" font-size="9" font-weight="700" fill="#8898b8" letter-spacing="1">02 — ENRICH</text><line x1="193.33333333333334" y1="40" x2="193.33333333333334" y2="138" stroke="rgba(255,255,255,0.05)" stroke-width="1"/><line x1="193.33333333333334" y1="166" x2="193.33333333333334" y2="238" stroke="rgba(255,255,255,0.05)" stroke-width="1"/><text x="453.33333333333337" y="81" text-anchor="middle" font-family="Space Grotesk" font-size="12" font-weight="400" fill="#8898b8">War room convened,</text><text x="453.33333333333337" y="97" text-anchor="middle" font-family="Space Grotesk" font-size="12" font-weight="400" fill="#8898b8">scrambling options</text><text x="453.33333333333337" y="207" text-anchor="middle" font-family="Space Mono" font-size="9" font-weight="700" fill="#8898b8" letter-spacing="1">03 — MATCH</text><line x1="366.6666666666667" y1="40" x2="366.6666666666667" y2="138" stroke="rgba(255,255,255,0.05)" stroke-width="1"/><line x1="366.6666666666667" y1="166" x2="366.6666666666667" y2="238" stroke="rgba(255,255,255,0.05)" stroke-width="1"/><text x="626.6666666666666" y="81" text-anchor="middle" font-family="Space Grotesk" font-size="12" font-weight="600" fill="#dde2f0">Same three levers</text><text x="626.6666666666666" y="97" text-anchor="middle" font-family="Space Grotesk" font-size="12" font-weight="600" fill="#dde2f0">or something better?</text><text x="626.6666666666666" y="207" text-anchor="middle" font-family="Space Mono" font-size="9" font-weight="700" fill="#32d282" letter-spacing="1">04 — SOLVE</text><line x1="540.0" y1="40" x2="540.0" y2="138" stroke="rgba(255,255,255,0.05)" stroke-width="1"/><line x1="540.0" y1="166" x2="540.0" y2="238" stroke="rgba(255,255,255,0.05)" stroke-width="1"/><text x="800.0" y="81" text-anchor="middle" font-family="Space Grotesk" font-size="12" font-weight="400" fill="#8898b8">Plan locked</text><text x="800.0" y="97" text-anchor="middle" font-family="Space Grotesk" font-size="12" font-weight="400" fill="#8898b8">under pressure</text><text x="800.0" y="207" text-anchor="middle" font-family="Space Mono" font-size="9" font-weight="700" fill="#8898b8" letter-spacing="1">05 — EXECUTE</text><line x1="713.3333333333334" y1="40" x2="713.3333333333334" y2="138" stroke="rgba(255,255,255,0.05)" stroke-width="1"/><line x1="713.3333333333334" y1="166" x2="713.3333333333334" y2="238" stroke="rgba(255,255,255,0.05)" stroke-width="1"/><text x="973.3333333333334" y="81" text-anchor="middle" font-family="Space Grotesk" font-size="12" font-weight="400" fill="#8898b8">Lessons</text><text x="973.3333333333334" y="97" text-anchor="middle" font-family="Space Grotesk" font-size="12" font-weight="400" fill="#8898b8">captured (rarely)</text><text x="973.3333333333334" y="207" text-anchor="middle" font-family="Space Mono" font-size="9" font-weight="700" fill="#8898b8" letter-spacing="1">06 — LEARN</text><line x1="886.6666666666667" y1="40" x2="886.6666666666667" y2="138" stroke="rgba(255,255,255,0.05)" stroke-width="1"/><line x1="886.6666666666667" y1="166" x2="886.6666666666667" y2="238" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></svg>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- TEMPORAL CO-OPTIMISATION -->
+<section class="alt" id="temporal">
+  <div class="container">
+    <p class="section-tag">The Mechanism Behind Solve</p>
+    <h2 class="section-headline">One problem, not three.</h2>
+    <p class="section-sub">
+      Classical disruption response treats each period as a separate decision —
+      handle the onset, fill the gap, then plan the return to normal, usually by
+      three different teams at three different times. The solver inside
+      <a href="#solve" style="color:var(--blue);text-decoration:none;border-bottom:1px dashed rgba(58,160,216,0.4);">Stage 04 — Solve</a>
+      treats the entire disrupted-to-recovered window as <strong style="color:var(--t1);">one
+      integrated multi-period problem</strong>, solved simultaneously.
+    </p>
+
+    <div class="visual-panel" style="margin-top:0;">
+      <div class="visual-panel-label">Figure — Temporal Co-Optimisation Across the Recovery Window</div>
+      <div class="visual-panel-body" style="display:block;padding:24px;">
+        <svg id="tco-chart" viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;overflow:visible;">
+          <defs>
+            <marker id="tarr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+              <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round"/>
+            </marker>
+          </defs>
+          <line x1="55" y1="20" x2="55" y2="210" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+          <line x1="55" y1="210" x2="670" y2="210" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+          <line x1="55" y1="55" x2="670" y2="55" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="4,4"/>
+          <line x1="55" y1="100" x2="670" y2="100" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="4,4"/>
+          <line x1="55" y1="155" x2="670" y2="155" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="4,4"/>
+          <text x="47" y="59" text-anchor="end" font-family="Space Mono" font-size="8" fill="#4a5570">100%</text>
+          <text x="47" y="134" text-anchor="end" font-family="Space Mono" font-size="8" fill="#4a5570">50%</text>
+          <text x="47" y="214" text-anchor="end" font-family="Space Mono" font-size="8" fill="#4a5570">0%</text>
+          <line x1="265" y1="18" x2="265" y2="210" stroke="rgba(236,160,48,0.2)" stroke-width="1" stroke-dasharray="4,4"/>
+          <line x1="475" y1="18" x2="475" y2="210" stroke="rgba(58,160,216,0.2)" stroke-width="1" stroke-dasharray="4,4"/>
+          <text x="160" y="14" text-anchor="middle" font-family="Space Mono" font-size="8" fill="#eca030" letter-spacing="1">PERIOD 1 — ONSET</text>
+          <text x="370" y="14" text-anchor="middle" font-family="Space Mono" font-size="8" fill="#3aa0d8" letter-spacing="1">PERIOD 2 — VACUUM</text>
+          <text x="572" y="14" text-anchor="middle" font-family="Space Mono" font-size="8" fill="#32d282" letter-spacing="1">PERIOD 3 — TRANSITION</text>
+          <path d="M55,55 L265,55 L265,178 Q305,183 345,168 Q405,148 475,124 Q545,104 615,64 L665,57" fill="none" stroke="#eca030" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M55,55 L265,55 L265,178 Q305,183 345,168 Q405,148 475,124 Q545,104 615,64 L665,57 L665,210 L55,210Z" fill="rgba(236,160,48,0.06)"/>
+          <path d="M265,210 Q285,192 325,144 Q365,114 425,109 Q475,109 515,119 Q565,134 615,162 L665,178" fill="none" stroke="#3aa0d8" stroke-width="2" stroke-linecap="round" stroke-dasharray="6,3"/>
+          <path d="M265,210 Q285,192 325,144 Q365,114 425,109 Q475,109 515,119 Q565,134 615,162 L665,178 L665,210Z" fill="rgba(58,160,216,0.07)"/>
+          <circle cx="265" cy="55" r="5" fill="#eca030"/>
+          <circle cx="265" cy="178" r="4" fill="rgba(236,160,48,0.5)" stroke="#eca030" stroke-width="1.5"/>
+          <line x1="265" y1="55" x2="265" y2="178" stroke="#eca030" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+          <text x="265" y="228" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#eca030">T₀</text>
+          <text x="55" y="47" font-family="Space Grotesk" font-size="10" fill="rgba(236,160,48,0.7)">Full pre-event capacity</text>
+          <line x1="300" y1="164" x2="350" y2="150" stroke="rgba(236,160,48,0.4)" stroke-width="1"/>
+          <text x="280" y="178" font-family="Space Grotesk" font-size="9" fill="rgba(236,160,48,0.6)">Rerouting accelerates TTR</text>
+          <text x="520" y="100" text-anchor="middle" font-family="Space Grotesk" font-size="9" fill="rgba(50,210,130,0.7)">Planned phase-back</text>
+          <line x1="55" y1="218" x2="670" y2="218" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+          <text x="362" y="232" text-anchor="middle" font-family="Space Mono" font-size="9" fill="#4a5570" letter-spacing="1">TIME →</text>
+        </svg>
+        <div class="tco-legend">
+          <div class="tco-legend-item"><div class="tco-legend-swatch" style="background:#eca030;"></div>Primary supplier capacity</div>
+          <div class="tco-legend-item"><div class="tco-legend-swatch" style="background:#3aa0d8;border-top:2px dashed #3aa0d8;height:0;"></div>Alternate supply (temporally scheduled)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tco-periods">
+      <div class="tco-period-card period-1">
+        <p class="tco-period-label">Period 1 — Disruption Onset</p>
+        <p class="tco-period-text">
+          <strong>ECC immediately initiates rerouting</strong> to accelerate the
+          primary supplier's recovery — using TTR modelled from material
+          physics, not supplier declaration. This shortens the recovery arc
+          rather than simply waiting for it to pass.
+        </p>
+      </div>
+      <div class="tco-period-card period-2">
+        <p class="tco-period-label">Period 2 — Vacuum Window</p>
+        <p class="tco-period-text">
+          <strong>Alternate suppliers are temporally scheduled</strong> — each
+          with different qualification status, lead times, cost profiles, and
+          compliance posture. This is where the conflicting objectives surface
+          directly: the cheapest alternate is rarely the fastest to qualify,
+          and the fastest is rarely the lowest-risk. <strong>ECC's solver works
+          cost, risk, and time-to-recover simultaneously</strong> — not
+          collapsed into one number, but as the trade-off space the plan is
+          chosen from. Not a single sourcing decision. A schedule, optimised
+          across all three.
+        </p>
+      </div>
+      <div class="tco-period-card period-3">
+        <p class="tco-period-label">Period 3 — Phase-Back Transition</p>
+        <p class="tco-period-text">
+          <strong>The handoff is planned from the start.</strong> As primary
+          capacity returns, ECC ramps down alternate supply, ramps up primary,
+          and manages inventory through the transition — minimising total
+          recovery cost. All three periods solved simultaneously, not
+          sequentially.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- RIF / CACM DEEP-DIVE + 4I -->
+<section id="architecture">
+  <div class="container">
+    <p class="section-tag">The Science Behind the Flow</p>
+    <h2 class="section-headline">Why the response is possible at the depth it operates</h2>
+    <p class="section-sub">
+      The six-stage flow above runs because of a specific architectural decision made
+      at the foundation: two graphs, not one. Understanding why they are separate —
+      and what connects them — explains what makes the Decide and Solve stages
+      qualitatively different from anything a generic SCRM platform or a GenAI
+      assistant can produce.
+    </p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-bottom:40px;">
+
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:28px 26px;">
+        <p class="section-tag" style="margin-bottom:10px;">Graph 1</p>
+        <h3 style="font-family:var(--display);font-size:16px;font-weight:700;color:var(--t1);margin-bottom:12px;line-height:1.3;">Operations Graph<br><span style="font-size:13px;color:var(--t2);font-weight:400;">Your live supply chain reality</span></h3>
+        <p style="font-size:13.5px;color:var(--t2);line-height:1.65;margin-bottom:14px;">BOM structures, plants, inventory, supplier tiers, lead times, constraints, orders — the customer's operational network as it actually exists at the moment of a disruption. Answers: <strong style="color:var(--t1);">what is impacted, and what is feasible right now?</strong></p>
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--t3);">Updated continuously from ERP and SCM systems</div>
+      </div>
+
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:28px 26px;">
+        <p class="section-tag" style="margin-bottom:10px;">Graph 2</p>
+        <h3 style="font-family:var(--display);font-size:16px;font-weight:700;color:var(--t1);margin-bottom:12px;line-height:1.3;">Resilience Research KG<br><span style="font-size:13px;color:var(--t2);font-weight:400;">25 years of disruption evidence</span></h3>
+        <p style="font-size:13.5px;color:var(--t2);line-height:1.65;margin-bottom:14px;">1,000+ documented disruption cases across 20+ domains, 150+ mitigation measures (100+ ICA, 50+ PCA), constraint envelopes, evidence pointers — all structured as a queryable graph. Answers: <strong style="color:var(--t1);">what has worked before, in situations like this?</strong></p>
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--t3);">Continuously enriched from research, case studies, outcomes</div>
+      </div>
+
+    </div>
+
+    <div style="background:var(--blue-dim);border:1px solid rgba(58,160,216,0.2);border-radius:10px;padding:28px 32px;margin-bottom:40px;">
+      <p class="section-tag" style="margin-bottom:8px;">Connecting layer</p>
+      <h3 style="font-family:var(--display);font-size:17px;font-weight:700;color:var(--t1);margin-bottom:12px;">RIF connects the two. CACM is the algorithm inside it.</h3>
+      <p style="font-size:14px;color:var(--t2);line-height:1.7;max-width:720px;">The Resilience Intelligence Fabric normalises the disruption signal into a structured scenario, retrieves and ranks relevant evidence from the Research KG, validates every candidate action against the Operations Graph — and packages the output for the solver. CACM is the matching engine inside RIF: not a similarity search, but a constraint-aware synthesis that produces actions that are both evidence-backed and feasible <em>for this customer, at this moment</em>.</p>
+    </div>
+
+    <div style="margin-bottom:32px;">
+      <p class="section-tag" style="margin-bottom:16px;">What the knowledge base covers</p>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:7px;padding:14px 16px;">
+          <div style="font-family:var(--mono);font-size:24px;font-weight:700;color:var(--blue);line-height:1;margin-bottom:6px;">20+</div>
+          <div style="font-size:12px;color:var(--t2);line-height:1.45;">Disruption domains covered</div>
+        </div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:7px;padding:14px 16px;">
+          <div style="font-family:var(--mono);font-size:24px;font-weight:700;color:var(--blue);line-height:1;margin-bottom:6px;">150+</div>
+          <div style="font-size:12px;color:var(--t2);line-height:1.45;">Mitigation measures, constraint-tagged</div>
+        </div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:7px;padding:14px 16px;">
+          <div style="font-family:var(--mono);font-size:24px;font-weight:700;color:var(--blue);line-height:1;margin-bottom:6px;">1,000+</div>
+          <div style="font-size:12px;color:var(--t2);line-height:1.45;">Historical disruption cases</div>
+        </div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:7px;padding:14px 16px;">
+          <div style="font-family:var(--mono);font-size:24px;font-weight:700;color:var(--blue);line-height:1;margin-bottom:6px;">25 yrs</div>
+          <div style="font-size:12px;color:var(--t2);line-height:1.45;">Coverage from 2000 to present</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ICA vs PCA -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:40px;">
+      <div style="border:1px solid rgba(58,160,216,0.25);border-radius:8px;padding:22px 24px;">
+        <p style="font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--blue);margin-bottom:10px;">ICA — Immediate Corrective Actions</p>
+        <p style="font-size:13.5px;color:var(--t2);line-height:1.65;">The options that restore production and deliveries quickly — ranked by cost, lead time, and feasibility. This is what the flow surfaces in the hours after a signal arrives.</p>
+      </div>
+      <div style="border:1px solid rgba(50,210,130,0.25);border-radius:8px;padding:22px 24px;">
+        <p style="font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--green);margin-bottom:10px;">PCA — Permanent Corrective Actions</p>
+        <p style="font-size:13.5px;color:var(--t2);line-height:1.65;">Structural changes that prevent the same disruption from happening again. Mined from patterns across incidents — where the organisation was exposed, and which levers remove that exposure permanently.</p>
+      </div>
+    </div>
+
+    <!-- 4I science -->
+    <div style="background:var(--bg-raised);border:1px solid var(--border);border-radius:10px;padding:30px 32px;">
+      <p class="section-tag" style="margin-bottom:8px;">The scientific foundation</p>
+      <h3 style="font-family:var(--display);font-size:17px;font-weight:700;color:var(--t1);margin-bottom:14px;">Four properties that matter in disruption response — and the research that confirms them</h3>
+      <p style="font-size:14px;color:var(--t2);line-height:1.7;margin-bottom:20px;">ECC's response architecture was built around four properties that the system must have to be useful under crisis conditions. In 2025, Simchi-Levi, Dai, Menache, and Wu published a framework in <em>Operations Research</em> (SSRN 5511218) that independently formalised the same four properties — Insight, Interpretability, Interactivity, and Improvisation — as the requirements for any system combining GenAI with mathematical optimisation in operational contexts. The convergence validates the architecture, not the other way around.</p>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;">
+        <div style="padding:16px 18px;background:var(--bg-card);border-radius:7px;border:1px solid var(--border);">
+          <div style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--blue);letter-spacing:.12em;text-transform:uppercase;margin-bottom:7px;">Insight</div>
+          <p style="font-size:13px;color:var(--t2);line-height:1.6;">Generating the full set of response options — not answering the one question someone thought to ask. The autonomous option generation gap is where ECC operates.</p>
+        </div>
+        <div style="padding:16px 18px;background:var(--bg-card);border-radius:7px;border:1px solid var(--border);">
+          <div style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--blue);letter-spacing:.12em;text-transform:uppercase;margin-bottom:7px;">Interpretability</div>
+          <p style="font-size:13px;color:var(--t2);line-height:1.6;">Every recommendation comes with its reasoning traced to the specific constraint or evidence record that produced it. Planners can defend it in a boardroom.</p>
+        </div>
+        <div style="padding:16px 18px;background:var(--bg-card);border-radius:7px;border:1px solid var(--border);">
+          <div style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--blue);letter-spacing:.12em;text-transform:uppercase;margin-bottom:7px;">Interactivity</div>
+          <p style="font-size:13px;color:var(--t2);line-height:1.6;">What-if and trade-off questions answered directly against the live plan set — not a static write-up — through the Resilience Copilot that runs alongside the entire flow.</p>
+        </div>
+        <div style="padding:16px 18px;background:var(--bg-card);border-radius:7px;border:1px solid var(--border);">
+          <div style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--blue);letter-spacing:.12em;text-transform:uppercase;margin-bottom:7px;">Improvisation</div>
+          <p style="font-size:13px;color:var(--t2);line-height:1.6;">Re-solving as the situation changes. Today ECC solves once per signal against current data; continuous re-solving across the life of a disruption is the natural next extension of the same architecture.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESEARCH LIBRARY -->
+<section class="alt" id="research">
+  <div class="container">
+    <p class="section-tag">Research Library</p>
+    <h2 class="section-headline">The research behind the architecture</h2>
+    <p class="section-sub">
+      Two research papers — available for download with a work email. The first
+      documents the market gap in prescriptive optimisation; the second explains
+      the architecture that closes it.
+    </p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:32px;">
+
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:28px 26px;">
+        <p style="font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--t3);margin-bottom:10px;">Research Paper 01</p>
+        <h3 style="font-family:var(--display);font-size:16px;font-weight:700;color:var(--t1);line-height:1.25;margin-bottom:12px;">The Missing Phase: Why Supply Chain Disruption Response Remains Unoptimised</h3>
+        <p style="font-size:13px;color:var(--t2);line-height:1.65;margin-bottom:20px;">Evidence from McKinsey, Gartner, and academic literature on the $47M/year blind spot in SCRM, why planning tools fail during live disruptions, why GenAI alone is insufficient, and why the respond-and-recover phases have no incumbent covering them with formal optimisation.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;">
+          <span style="font-family:var(--mono);font-size:9px;color:var(--t3);background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:3px;padding:3px 8px;">15 pages</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--t3);background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:3px;padding:3px 8px;">April 2026</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--t3);background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:3px;padding:3px 8px;">Market research</span>
+        </div>
+        <button onclick="openResearchGate('optimization')" style="font-size:13px;font-weight:600;background:var(--blue);color:#07090f;border:none;padding:11px 22px;border-radius:4px;cursor:pointer;width:100%;transition:opacity .2s;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Download PDF →</button>
+      </div>
+
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:28px 26px;">
+        <p style="font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--t3);margin-bottom:10px;">Research Paper 02</p>
+        <h3 style="font-family:var(--display);font-size:16px;font-weight:700;color:var(--t1);line-height:1.25;margin-bottom:12px;">The Resilience Intelligence Fabric: Converting Disruptions into Recovery Plans</h3>
+        <p style="font-size:13px;color:var(--t2);line-height:1.65;margin-bottom:20px;">A deep-dive into the two-graph architecture (Operations Graph + Research Knowledge Graph), the RIF connecting layer, and the CACM matching algorithm — with the ICA/PCA framework and the knowledge-base breadth that makes constraint-aware option generation possible.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;">
+          <span style="font-family:var(--mono);font-size:9px;color:var(--t3);background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:3px;padding:3px 8px;">18 pages</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--t3);background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:3px;padding:3px 8px;">January 2026</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--t3);background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:3px;padding:3px 8px;">Architecture</span>
+        </div>
+        <button onclick="openResearchGate('rifcacm')" style="font-size:13px;font-weight:600;background:var(--blue);color:#07090f;border:none;padding:11px 22px;border-radius:4px;cursor:pointer;width:100%;transition:opacity .2s;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Download PDF →</button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PILOT -->
+<section id="pilot">
+  <div class="container" style="max-width:720px;">
+    <p class="section-tag">Pilot Programme</p>
+    <h2 class="section-headline">Request pilot access</h2>
+    <p class="section-sub">
+      ECC is accepting a limited number of pilot partners from automotive OEMs and
+      Tier-1 suppliers. Pilots run on your infrastructure — your Azure environment,
+      your data. Nothing leaves your perimeter.
+    </p>
+
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:36px 40px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+        <input class="pilot-input" type="text" placeholder="Full name" />
+        <input class="pilot-input" type="email" placeholder="Work email" />
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+        <input class="pilot-input" type="text" placeholder="Company" />
+        <input class="pilot-input" type="text" placeholder="Job title" />
+      </div>
+      <select class="pilot-input" style="width:100%;margin-bottom:24px;">
+        <option value="" disabled selected>Primary use case</option>
+        <option>Reactive Resilience — disruption response optimisation</option>
+        <option>Proactive Resilience — supply chain risk visibility</option>
+        <option>Both segments</option>
+      </select>
+      <button class="pilot-submit" onclick="submitPilotReactive()">
+        Submit Application
+      </button>
+      <p style="font-size:11.5px;color:var(--t3);margin-top:16px;text-align:center;line-height:1.5;">
+        We review applications within 5 business days. Pilot eligibility criteria: automotive OEM or Tier-1 supplier, minimum 500 active supplier relationships.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- RESEARCH GATE MODAL -->
+<div id="researchGateModal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.72);align-items:center;justify-content:center;padding:24px;">
+  <div style="background:var(--bg-card);border:1px solid var(--border-hi);border-radius:12px;padding:36px 40px;max-width:440px;width:100%;position:relative;">
+    <button onclick="closeResearchGate()" style="position:absolute;top:16px;right:20px;background:none;border:none;color:var(--t3);font-size:18px;cursor:pointer;line-height:1;">&#x2715;</button>
+    <p style="font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);margin-bottom:10px;">Research Library</p>
+    <h3 style="font-family:var(--display);font-size:20px;font-weight:700;color:var(--t1);margin-bottom:8px;line-height:1.25;" id="researchGateTitle">Download Research Paper</h3>
+    <p style="font-size:13px;color:var(--t2);margin-bottom:24px;line-height:1.6;">Enter your work email and company to receive the PDF.</p>
+    <input id="researchEmail" type="email" placeholder="Work email" style="width:100%;background:var(--bg);border:1px solid var(--border-hi);border-radius:5px;padding:11px 14px;color:var(--t1);font-family:var(--body);font-size:14px;margin-bottom:12px;">
+    <input id="researchCompany" type="text" placeholder="Company name" style="width:100%;background:var(--bg);border:1px solid var(--border-hi);border-radius:5px;padding:11px 14px;color:var(--t1);font-family:var(--body);font-size:14px;margin-bottom:20px;">
+    <button id="researchSubmitBtn" onclick="submitResearchGate()" style="width:100%;font-size:14px;font-weight:600;background:var(--blue);color:#07090f;border:none;padding:13px;border-radius:4px;cursor:pointer;transition:opacity .2s;">Get the PDF</button>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-copy">© 2026 EcocomityChain.AI · All rights reserved</span>
+    <div class="footer-links">
+      <a href="#">Privacy</a><a href="#">Security</a><a href="#">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Research gate modal
+var _researchTarget = 'optimization';
+var _pdfUrls = {
+  optimization: 'https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/resources/ECC_Optimization_Research_Report.pdf',
+  rifcacm:      'https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/resources/ECC_RIF_CACM_Research_Report.pdf'
+};
+var _pdfTitles = {
+  optimization: 'The Missing Phase: Disruption Response Remains Unoptimised',
+  rifcacm:      'The Resilience Intelligence Fabric & CACM'
+};
+function openResearchGate(which) {
+  _researchTarget = which;
+  document.getElementById('researchGateTitle').textContent = 'Download: ' + _pdfTitles[which];
+  document.getElementById('researchEmail').value = '';
+  document.getElementById('researchCompany').value = '';
+  var btn = document.getElementById('researchSubmitBtn');
+  btn.textContent = 'Get the PDF';
+  btn.style.background = 'var(--blue)';
+  btn.style.color = '#07090f';
+  btn.disabled = false;
+  var modal = document.getElementById('researchGateModal');
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closeResearchGate() {
+  document.getElementById('researchGateModal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+async function submitResearchGate() {
+  var email = document.getElementById('researchEmail').value;
+  var company = document.getElementById('researchCompany').value;
+  var btn = document.getElementById('researchSubmitBtn');
+  if (!email || !company) {
+    btn.textContent = 'Please fill both fields';
+    setTimeout(function() { btn.textContent = 'Get the PDF'; }, 2000);
+    return;
+  }
+  btn.textContent = 'One moment...';
+  btn.disabled = true;
+  try {
+    await fetch('https://formspree.io/f/mykawezp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ email: email, company: company, paper: _pdfTitles[_researchTarget], _subject: 'ECC Research Paper Download — ' + _pdfTitles[_researchTarget] })
+    });
+  } catch(e) {}
+  btn.textContent = 'Opening PDF...';
+  btn.style.background = 'var(--green)';
+  btn.style.color = '#07090f';
+  setTimeout(function() {
+    window.open(_pdfUrls[_researchTarget], '_blank');
+    closeResearchGate();
+  }, 700);
+}
+document.getElementById('researchGateModal').addEventListener('click', function(e) {
+  if (e.target === this) closeResearchGate();
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && document.getElementById('researchGateModal').style.display === 'flex') closeResearchGate();
+});
+
+// Pilot form
+async function submitPilotReactive() {
+  var btn = document.querySelector('.pilot-submit');
+  var inputs = document.querySelectorAll('.pilot-input');
+  var data = { _subject: 'ECC Pilot Access Application — Reactive Resilience Page' };
+  var filled = true;
+  inputs.forEach(function(i) {
+    if (!i.value) filled = false;
+    data[i.placeholder || i.name || 'field'] = i.value;
+  });
+  if (!filled) {
+    btn.textContent = 'Please complete all fields.';
+    setTimeout(function() { btn.textContent = 'Submit Application'; }, 2200);
+    return;
+  }
+  btn.textContent = 'Submitting...';
+  btn.disabled = true;
+  try {
+    await fetch('https://formspree.io/f/mqeoqpaq', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(data)
+    });
+  } catch(e) {}
+  btn.textContent = 'Application received — we\'ll be in touch.';
+  btn.style.background = 'var(--green)';
+  btn.style.color = '#07090f';
+}
+</script>
+</body>
+</html>
