@@ -37,7 +37,7 @@
 > Full research in the comments — free to download. If you've lived through a major disruption and want to share what the response actually looked like, I'd genuinely like to hear it.
 
 **After 2–3 hours** (regardless of engagement volume): drop this in first comment:
-> Full research paper: [URL to /platform/reactive-resilience/#research]
+> Full research paper:  - https://www.ecocomitychain.ai/platform/reactive-resilience/#research
 
 **Note on timing:** Post on Tuesday or Wednesday, 8–10am IST. These are peak engagement windows for LinkedIn in the APAC/Europe overlap that covers automotive and supply chain leaders.
 
