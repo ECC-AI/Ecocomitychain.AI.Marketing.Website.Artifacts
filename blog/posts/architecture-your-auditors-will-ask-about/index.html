@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Enterprise procurement teams are asking a new qualifying question when evaluating supply chain AI platforms: can you explain how your AI reaches its decisions, and can you document that for an auditor? ISO 42001, CSRD, and EUDR are the commercial and regulatory context behind that shift.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The Architecture Your Auditors Will Ask About">
+<meta property="og:description" content="Enterprise procurement teams are asking a new qualifying question when evaluating supply chain AI platforms: can you explain how your AI reaches its decisions, and can you document that for an auditor? ISO 42001, CSRD, and EUDR are the commercial and regulatory context behind that shift.">
+<meta property="og:image" content="https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/blog/assets/signal-and-proof/SP-4_header.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="480">
+<meta property="og:url" content="https://www.ecocomitychain.ai/blog/posts/architecture-your-auditors-will-ask-about/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Architecture Your Auditors Will Ask About">
+<meta name="twitter:description" content="Enterprise procurement teams are asking a new qualifying question when evaluating supply chain AI platforms: can you explain how your AI reaches its decisions, and can you document that for an auditor? ISO 42001, CSRD, and EUDR are the commercial and regulatory context behind that shift.">
+<meta name="twitter:image" content="https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/blog/assets/signal-and-proof/SP-4_header.png">
+<title>The Architecture Your Auditors Will Ask About — EcocomityChain.AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #07090f;
+  --bg-2:      #0d1117;
+  --bg-3:      #111620;
+  --text:      #dde2f0;
+  --text-2:    #8898b8;
+  --text-3:    #4a5570;
+  --amber:     #eca030;
+  --amber-dim: rgba(236,160,48,0.10);
+  --teal:      #0f9c7a;
+  --teal-dim:  rgba(15,156,122,0.10);
+  --purple:    #6b58ff;
+  --purple-dim:rgba(107,88,255,0.10);
+  --border:    rgba(255,255,255,0.08);
+  --font-sans: 'Space Grotesk', system-ui, sans-serif;
+  --font-mono: 'Space Mono', monospace;
+  --max-w:     720px;
+}
+
+html { background: var(--bg); color: var(--text); font-family: var(--font-sans); }
+body { min-height: 100vh; }
+
+.site-nav {
+  border-bottom: 0.5px solid var(--border);
+  padding: 0 40px; height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0;
+  background: rgba(7,9,15,0.92);
+  backdrop-filter: blur(8px); z-index: 100;
+}
+.nav-brand { font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--text); text-decoration: none; letter-spacing: 0.02em; }
+.nav-brand span { color: var(--amber); }
+.nav-back { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); text-decoration: none; letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.15s; }
+.nav-back:hover { color: var(--text-2); }
+
+.post-hero { max-width: var(--max-w); margin: 0 auto; padding: 72px 24px 52px; }
+.series-tag { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--amber); margin-bottom: 24px; }
+.series-tag::before { content: ''; display: block; width: 18px; height: 0.5px; background: var(--amber); }
+.post-title { font-size: clamp(26px, 4.5vw, 38px); font-weight: 700; line-height: 1.2; color: var(--text); margin-bottom: 20px; letter-spacing: -0.02em; }
+.post-subtitle { font-size: 18px; font-weight: 400; line-height: 1.6; color: var(--text-2); margin-bottom: 36px; }
+.post-meta { display: flex; align-items: center; gap: 20px; font-family: var(--font-mono); font-size: 11px; color: var(--text-3); letter-spacing: 0.06em; padding-top: 24px; border-top: 0.5px solid var(--border); }
+.meta-divider { color: var(--border); }
+
+.post-body { max-width: var(--max-w); margin: 0 auto; padding: 0 24px 80px; }
+.post-body p { font-size: 17px; line-height: 1.8; color: var(--text-2); margin-bottom: 24px; }
+.post-body p:first-child { color: var(--text); }
+.post-body h2 { font-size: 22px; font-weight: 600; color: var(--text); margin: 52px 0 20px; letter-spacing: -0.01em; }
+.post-body h3 { font-size: 17px; font-weight: 600; color: var(--text); margin: 36px 0 14px; }
+.post-body em { color: var(--text); font-style: italic; }
+.post-body strong { color: var(--text); font-weight: 600; }
+
+.series-nudge {
+  background: var(--bg-2);
+  border: 0.5px solid var(--border);
+  border-left: 2px solid var(--purple);
+  border-radius: 0 6px 6px 0;
+  padding: 18px 24px;
+  margin: 0 0 36px;
+}
+.series-nudge p {
+  font-size: 14px !important;
+  color: var(--text-3) !important;
+  line-height: 1.7 !important;
+  margin-bottom: 0 !important;
+}
+.series-nudge a { color: var(--purple); text-decoration: none; }
+.series-nudge a:hover { text-decoration: underline; }
+
+.pull-quote { border-left: 2px solid var(--amber); margin: 36px 0; padding: 20px 28px; background: var(--amber-dim); border-radius: 0 6px 6px 0; }
+.pull-quote p { font-size: 16px !important; font-style: italic; color: var(--text) !important; margin-bottom: 10px !important; line-height: 1.7 !important; }
+.pull-quote .attribution { font-family: var(--font-mono); font-size: 10px; color: var(--amber) !important; letter-spacing: 0.1em; text-transform: uppercase; font-style: normal; margin-bottom: 0 !important; }
+
+.stat-block { background: var(--bg-2); border: 0.5px solid var(--border); border-radius: 8px; padding: 28px 32px; margin: 36px 0; display: flex; align-items: flex-start; gap: 24px; }
+.stat-number { font-family: var(--font-mono); font-size: 40px; font-weight: 700; color: var(--amber); line-height: 1; white-space: nowrap; }
+.stat-desc { font-size: 15px; line-height: 1.6; color: var(--text-2); margin-bottom: 0 !important; }
+.stat-source { font-family: var(--font-mono); font-size: 10px; color: var(--text-3); letter-spacing: 0.08em; margin-top: 8px; margin-bottom: 0 !important; }
+
+.convergence-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 36px 0;
+}
+.conv-item {
+  background: var(--bg-2);
+  border: 0.5px solid var(--border);
+  border-radius: 8px;
+  padding: 20px 22px;
+}
+.conv-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 8px;
+}
+.conv-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+.conv-desc {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-2);
+  margin-bottom: 10px !important;
+}
+.conv-req {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--teal);
+  text-transform: uppercase;
+  margin-bottom: 0 !important;
+}
+
+.principle-block {
+  background: var(--bg-3); border: 0.5px solid var(--amber);
+  border-radius: 8px; padding: 36px 40px; margin: 44px 0; text-align: center;
+}
+.principle-block p { font-size: 20px !important; font-weight: 500; color: var(--text) !important; line-height: 1.6 !important; margin-bottom: 0 !important; }
+.principle-block .principle-label { font-family: var(--font-mono); font-size: 11px !important; font-weight: 400 !important; color: var(--amber); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 16px !important; }
+
+.checklist {
+  background: var(--bg-2);
+  border: 0.5px solid var(--border);
+  border-radius: 8px;
+  padding: 24px 28px;
+  margin: 36px 0;
+}
+.checklist-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 16px;
+}
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 0.5px solid var(--border);
+}
+.checklist-item:last-child { border-bottom: none; }
+.check-mark {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--teal);
+  white-space: nowrap;
+  padding-top: 3px;
+  flex-shrink: 0;
+}
+.check-text { font-size: 14px; line-height: 1.6; color: var(--text-2); }
+.check-text strong { color: var(--text); font-weight: 600; }
+
+.section-rule { border: none; border-top: 0.5px solid var(--border); margin: 52px 0; }
+
+.series-nav { max-width: var(--max-w); margin: 0 auto; padding: 40px 24px 80px; border-top: 0.5px solid var(--border); }
+.series-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3); margin-bottom: 20px; }
+.series-posts { display: flex; flex-direction: column; gap: 12px; }
+.series-item { display: flex; align-items: baseline; gap: 14px; padding: 14px 20px; border: 0.5px solid var(--border); border-radius: 6px; text-decoration: none; transition: border-color 0.15s; }
+.series-item:hover { border-color: rgba(255,255,255,0.18); }
+.series-item.active { border-color: var(--amber); background: var(--amber-dim); }
+.series-item.done { border-color: var(--border); }
+.series-num { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); white-space: nowrap; }
+.series-item.active .series-num { color: var(--amber); }
+.series-item.done .series-num { color: var(--teal); }
+.series-item.upcoming .series-title-item { color: var(--text-3); }
+.series-divider { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3); margin: 28px 0 12px; padding-top: 24px; border-top: 0.5px solid var(--border); }
+.series-item.companion { border-style: dashed; }
+.companion-num { font-family: var(--font-mono); font-size: 10px; color: var(--teal); border: 0.5px solid var(--teal); border-radius: 3px; padding: 1px 5px; }
+.series-title-item { font-size: 14px; color: var(--text-2); line-height: 1.4; }
+.series-item.active .series-title-item { color: var(--text); }
+.series-item.upcoming .series-title-item { color: var(--text-3); }
+
+.site-footer { border-top: 0.5px solid var(--border); padding: 32px 40px; display: flex; align-items: center; justify-content: space-between; }
+.footer-brand { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); }
+.footer-brand span { color: var(--amber); }
+.footer-copy { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); }
+
+@media (max-width: 600px) {
+  .site-nav { padding: 0 20px; }
+  .post-hero, .post-body, .series-nav { padding-left: 20px; padding-right: 20px; }
+  .stat-block { flex-direction: column; gap: 12px; }
+  .convergence-grid { grid-template-columns: 1fr; }
+  .site-footer { flex-direction: column; gap: 12px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a class="nav-brand" href="/">ECC<span>.</span>AI</a>
+  <a class="nav-back" href="/blog">← All Posts</a>
+</nav>
+
+<header class="post-hero">
+  <div class="series-tag">The Signal and the Proof &nbsp;·&nbsp; Post 04 of 05</div>
+  <h1 class="post-title">The Architecture Your Auditors Will Ask About</h1>
+  <p class="post-subtitle">Enterprise procurement teams are asking a new qualifying question when evaluating supply chain AI platforms. ISO 42001, CSRD, and EUDR are the commercial and regulatory context behind that shift — and why the answer depends on decisions made before the first line of platform code was written.</p>
+  <img src="https://ecc-ai.github.io/Ecocomitychain.AI.Marketing.Website.Artifacts/blog/assets/signal-and-proof/SP-4_header.png" alt="The Signal and the Proof — Post 04 of 05: The Architecture Your Auditors Will Ask About" style="width:100%;border-radius:8px;border:1px solid var(--border);margin:32px 0 8px;display:block;">
+  <div class="post-meta">
+    <span>EcocomityChain.AI</span>
+    <span class="meta-divider">·</span>
+    <span>June 2026</span>
+    <span class="meta-divider">·</span>
+    <span>8 min read</span>
+    <span class="meta-divider">·</span>
+    <span>Governance · Compliance</span>
+  </div>
+</header>
+
+<main class="post-body">
+
+  <div class="series-nudge">
+    <p>This is the fourth post in a five-part series on explainability, accountability, and the architecture of trustworthy supply chain intelligence. It stands alone — but the full argument runs across all five. <a href="/blog/posts/supply-chain-ai-making-decisions-can-it-say-why/">Post 02</a> covers the practitioner and board-level evidence base. <a href="/blog/posts/more-ai-power-more-explainability-not-less/">Post 03</a> covers the architectural reasons why current explainability tools are insufficient. Series navigation is at the bottom of this page.</p>
+  </div>
+
+  <p>In 2025, something changed in how enterprise procurement teams evaluate supply chain AI platforms.</p>
+
+  <p>The technical criteria are familiar — integration capability, data coverage, analytical depth, time-to-value. What changed was the addition of a criterion that had previously been an afterthought at the bottom of vendor scorecards, if it appeared at all: can you explain how your AI reaches its decisions, and can you document that reasoning chain for an auditor?</p>
+
+  <p>This is no longer a differentiating question. It is a qualifying one. Vendors who cannot answer it clearly are increasingly being eliminated before technical evaluation begins.</p>
+
+  <p>Understanding why this shift happened — and what it means for how supply chain risk platforms are built and selected — requires looking at three forces that arrived in the same window: a commercial standard that is now landing in bid rooms, a set of sustainability and due diligence regulations that are creating traceability obligations across value chains, and a broader shift in enterprise AI governance expectations that has moved from boardroom discussion to procurement checklist.</p>
+
+  <hr class="section-rule">
+
+  <h2>The commercial standard that changed the bid room</h2>
+
+  <p>ISO 42001 is the international standard for AI Management Systems, published in 2023. For its first year it was treated as a voluntary framework — aspirational guidance that progressive technology organisations might pursue. By 2025 that characterisation was already outdated.</p>
+
+  <div class="stat-block">
+    <div class="stat-number">83%</div>
+    <div>
+      <p class="stat-desc">of Fortune 500 procurement teams now plan to require ISO 42001 alignment from technology vendors by 2027, according to a 2026 Gartner survey. Microsoft and Google have already earned certification — signalling that major technology providers may begin flowing the same requirement down to their own supplier base. What began as a voluntary framework has become a hard commercial prerequisite in enterprise procurement evaluations.</p>
+      <p class="stat-source">Source · Gartner Survey · 2026</p>
+    </div>
+  </div>
+
+  <p>The practical requirements ISO 42001 places on AI systems that support significant business decisions are specific. Board-approved AI policies with named ownership of AI outputs. Auditable risk registers documenting how AI-driven decisions are made and reviewed. Supplier controls that flow through vendor tiers. Versioned documentation of AI system behaviour. And critically — event logging and explainability: the ability to trace any AI output back to the computation that produced it.</p>
+
+  <div class="pull-quote">
+    <p>"We'll produce the documentation later" means instant rejection in procurement evaluations that apply ISO 42001 criteria. The minimum requirements must be demonstrable at the point of evaluation — not promised as a roadmap item.</p>
+    <p class="attribution">Enterprise AI Procurement · 2026 Practices</p>
+  </div>
+
+  <p>The insurance industry has also begun pricing AI liability risk differently for ISO 42001-aligned organisations. Certified companies are receiving premium adjustments that uncertified competitors are not. The standard has crossed the line from governance best practice to commercial differentiator — and for technology vendors selling into regulated industrial environments, it is becoming a precondition of sale.</p>
+
+  <p>The Deloitte 2025 Global CPO Survey defined an AI governance framework for procurement across five explicit dimensions: accountability, meaning clear ownership of AI outputs; transparency, meaning explainable decision logic; fairness, covering bias monitoring; risk management, covering security and compliance; and data governance, covering quality standards and access controls. Explainability is not a sixth dimension added for completeness. It is the second item on a five-point framework that CPOs are now using to evaluate the AI systems their organisations buy.</p>
+
+  <hr class="section-rule">
+
+  <h2>Four regulatory instruments pointing in the same direction</h2>
+
+  <p>The ISO 42001 commercial shift did not happen in isolation. It is the leading edge of a broader regulatory convergence that has been building since 2022 and accelerated significantly in 2024 and 2025.</p>
+
+  <div class="convergence-grid">
+    <div class="conv-item">
+      <div class="conv-label">ISO 42001</div>
+      <div class="conv-title">AI Management Systems Standard</div>
+      <p class="conv-desc">Requires event logging, full decision traceability, and explainability for AI systems used in significant business decisions. Certification-eligible — now appearing as a procurement prerequisite.</p>
+      <p class="conv-req">→ Requires: audit trail at decision time</p>
+    </div>
+    <div class="conv-item">
+      <div class="conv-label">CSRD</div>
+      <div class="conv-title">Corporate Sustainability Reporting Directive</div>
+      <p class="conv-desc">Mandates annual Scope 3 and value chain disclosures using a digital tagging system. Reporting must be transparent, verifiable, and traceable to source data. AI systems producing sourcing intelligence feed directly into these disclosures.</p>
+      <p class="conv-req">→ Requires: traceable sourcing data provenance</p>
+    </div>
+    <div class="conv-item">
+      <div class="conv-label">EUDR</div>
+      <div class="conv-title">EU Deforestation Regulation</div>
+      <p class="conv-desc">All products entering the EU market must be traceable back to production origin with five-year record retention. Buyers must prove the sourcing decisions they made were documented and defensible at the time they were made.</p>
+      <p class="conv-req">→ Requires: documented decision provenance</p>
+    </div>
+    <div class="conv-item">
+      <div class="conv-label">CSDDD</div>
+      <div class="conv-title">Corporate Sustainability Due Diligence Directive</div>
+      <p class="conv-desc">Requires companies to demonstrate documented due diligence processes across their value chains for human rights and environmental impacts. An AI system that cannot produce a reasoning chain is not a due diligence system.</p>
+      <p class="conv-req">→ Requires: documented due diligence chain</p>
+    </div>
+  </div>
+
+  <p>These are not equivalent instruments — they cover different subject matter, carry different enforcement mechanisms, and apply to different organisational scopes. What they share is a structural requirement: decisions made about supply chains must be documented at the time they are made, traceable to the evidence that supported them, and producible on request to auditors, regulators, and trading partners.</p>
+
+  <p>An AI system that produces risk scores without a recoverable reasoning chain does not satisfy this requirement. It produces outputs. It does not produce evidence. The distinction is not semantic — it is the difference between an auditable decision and an assertion that a decision was made.</p>
+
+  <p>On the EU AI Act specifically: supply chain risk intelligence platforms in the B2B procurement context do not currently fall under the Act's Annex III high-risk categories as written. The honest framing is that the Act's scope does not yet reach this domain directly. What the Act does signal — unambiguously — is the direction of regulatory expectation: AI systems used in consequential business decisions should be explainable, auditable, and subject to human oversight. That direction will not reverse. The specific instruments that operationalise it will continue to arrive.</p>
+
+  <hr class="section-rule">
+
+  <h2>What the evaluation question actually tests</h2>
+
+  <p>When a procurement committee asks "can you explain how your AI reaches its decisions?" they are not asking for a demonstration of a UI panel that summarises a risk score. They have seen many of those. What the question actually tests is architectural:</p>
+
+  <div class="checklist">
+    <div class="checklist-label">What auditors and procurement committees are now testing</div>
+    <div class="checklist-item">
+      <span class="check-mark">01 ·</span>
+      <span class="check-text"><strong>Complete reasoning chain.</strong> Can every computation that contributed to this score be traced, with declared impact direction, to the specific engine that produced it — and was that chain captured at computation time, not reconstructed afterwards?</span>
+    </div>
+    <div class="checklist-item">
+      <span class="check-mark">02 ·</span>
+      <span class="check-text"><strong>Human-readable audit trail.</strong> Can the reasoning chain be rendered in prose that a compliance officer can present to an auditor without technical translation — and does that prose accurately reflect the underlying computation, not approximate it?</span>
+    </div>
+    <div class="checklist-item">
+      <span class="check-mark">03 ·</span>
+      <span class="check-text"><strong>Machine-readable evidence.</strong> Can the same reasoning chain be consumed by downstream systems — AI copilots, regulatory reporting tools, risk management platforms — without losing fidelity in translation?</span>
+    </div>
+    <div class="checklist-item">
+      <span class="check-mark">04 ·</span>
+      <span class="check-text"><strong>Scalability under complexity.</strong> As the platform adds more analytical depth — more AI capability, deeper tier coverage, richer signal integration — does the audit trail become richer, or does it become harder to produce?</span>
+    </div>
+    <div class="checklist-item">
+      <span class="check-mark">05 ·</span>
+      <span class="check-text"><strong>Independence from model opacity.</strong> Is explainability a structural property of the architecture — present regardless of which engine produced a step — or is it a feature layer that depends on the model's own transparency?</span>
+    </div>
+  </div>
+
+  <p>Most current supply chain AI platforms can answer yes to item two — they produce readable summaries. Very few can answer yes to items three, four, and five, because those questions probe whether explainability is architectural or cosmetic. A readable summary produced by an LLM reasoning over a final score does not constitute an audit trail. It constitutes a narrative. The prior post in this series covers the technical reasons for this distinction in detail — it is worth reading for any team that needs to evaluate vendor claims carefully.</p>
+
+  <hr class="section-rule">
+
+  <h2>The architectural property that determines the answer</h2>
+
+  <p>The five evaluation questions above all ultimately probe the same underlying architectural question: was explainability designed into this platform before the first scoring component was built, or was it added on top of an existing pipeline?</p>
+
+  <p>This is not a question about vendor intention or product roadmap. It is a question about when decisions were made. A platform that captures structured evidence at the moment of computation — threading it through every engine, accumulating it in a schema that is independent of the engine that produced it — answers all five questions by design. The audit trail is not a feature. It is a structural byproduct of how the system works.</p>
+
+  <p>A platform that applies explanation techniques to its outputs after the fact — reconstructing what the model might have considered from the score and its inputs — cannot answer questions three, four, and five reliably, regardless of how good the reconstruction is. The reasoning context that existed during computation is gone. What remains is an approximation. As the previous post in this series documents, those approximations become less reliable, not more, as the underlying models become more capable.</p>
+
+  <div class="principle-block">
+    <p class="principle-label">The governance principle</p>
+    <p>An AI system that cannot produce its own audit trail<br>is not a risk management system.<br>It is a source of assertions.</p>
+  </div>
+
+  <p>The governance and regulatory context described in this post is not a future horizon. ISO 42001 is in procurement evaluations today. CSRD reporting obligations are active. EUDR enforcement is underway. CSDDD timelines are known. The platforms that will earn and retain the trust of compliance teams, procurement committees, and boards over the next two years are not the ones that are planning to add explainability. They are the ones that built it in before they needed to.</p>
+
+  <hr class="section-rule">
+
+  <h2>What this means at the point of platform evaluation</h2>
+
+  <p>For procurement and digital transformation teams evaluating supply chain risk AI platforms in 2026, the governance layer of the evaluation is no longer optional or deferrable. It belongs in the first round of evaluation — not because compliance is the primary use case, but because the architectural decisions that determine compliance readiness are the same decisions that determine analytical quality, audit defensibility, and long-term platform trust.</p>
+
+  <p>A platform that captures a complete, deterministic reasoning chain at computation time is more trustworthy analytically than one that reconstructs it. It is more defensible in a board review. It is more compatible with the documentation obligations CSRD, EUDR, and CSDDD create. And it is more likely to satisfy ISO 42001 evaluation criteria without requiring a separate explainability programme to be built around it.</p>
+
+  <p>The question is not whether your organisation will eventually need to answer for how its supply chain AI makes decisions. The question is whether the platform you select today will be able to answer that question when it is asked.</p>
+
+  <hr class="section-rule">
+
+  <p style="font-size: 15px; color: var(--text-3); font-style: italic; line-height: 1.7;">The fourth and final post in this series addresses the architectural philosophy behind these design choices — why a neurosymbolic approach to supply chain intelligence resolves the tension between AI capability and explainability at a structural level, and what that means for how the platform evolves as more powerful AI components are added.</p>
+
+</main>
+
+  <nav class="series-nav">
+    <p class="series-label">The Signal and the Proof &middot; Five-Post Series</p>
+    <div class="series-posts">
+    <a class="series-item done" href="/blog/posts/cross-cutting-context-objects-explainability/">
+      <span class="series-num">01</span>
+      <span class="series-title-item">Cross-Cutting Context Objects: Threading Structured Evidence Through a Multi-Engine Pipeline</span>
+    </a>
+    <a class="series-item done" href="/blog/posts/supply-chain-ai-making-decisions-can-it-say-why/">
+      <span class="series-num">02</span>
+      <span class="series-title-item">Supply Chain AI Is Making Decisions. Can It Say Why?</span>
+    </a>
+    <a class="series-item done" href="/blog/posts/more-ai-power-more-explainability-not-less/">
+      <span class="series-num">03</span>
+      <span class="series-title-item">More AI Power Should Mean More Explainability, Not Less</span>
+    </a>
+    <a class="series-item active" href="/blog/posts/architecture-your-auditors-will-ask-about/">
+      <span class="series-num">04</span>
+      <span class="series-title-item">The Architecture Your Auditors Will Ask About <em style="font-size:12px;color:var(--amber);">&mdash; You are here</em></span>
+    </a>
+    <a class="series-item upcoming" href="#">
+      <span class="series-num">05</span>
+      <span class="series-title-item">Why We Built It This Way: The Neurosymbolic Case for Supply Chain Intelligence</span>
+    </a>
+    <div class="series-divider">Also from this series &mdash; technical deep dive</div>
+    <a class="series-item companion upcoming" href="#">
+      <span class="series-num companion-num">TC</span>
+      <span class="series-title-item">A Reference Architecture for Two-Level Explainability in Graph-Based Supply Chain Risk AI <em style="font-size:11px;color:var(--text-3);">&mdash; Technical Companion</em></span>
+    </a>
+    </div>
+  </nav>
+
+<footer class="site-footer">
+  <div class="footer-brand">ECC<span>.</span>AI &nbsp;·&nbsp; EcocomityChain.AI</div>
+  <div class="footer-copy">© 2026 EcocomityChain.AI. All rights reserved.</div>
+</footer>
+
+</body>
+</html>
