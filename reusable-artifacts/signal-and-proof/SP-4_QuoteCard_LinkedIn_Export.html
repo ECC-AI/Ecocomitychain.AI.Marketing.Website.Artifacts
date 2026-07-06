@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1200">
+<title>SP-3 · LinkedIn Quote Card · 1200×628</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1200px; height: 628px; overflow: hidden; background: #07090f; }
+.card {
+  width: 1200px; height: 628px;
+  background: #07090f;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.035) 1px, transparent 1px);
+  background-size: 32px 32px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: 52px 88px;
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+}
+.top-label {
+  font-family: 'Space Mono', monospace; font-size: 11px;
+  letter-spacing: 0.2em; color: #3a4460; text-transform: uppercase;
+}
+.body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.line-dim { font-size: 32px; font-weight: 400; color: #3d4860; line-height: 1.5; }
+.outcome-a { font-weight: 600; color: #5448a8; font-size: 32px; }
+.divider { display: flex; align-items: center; gap: 14px; margin: 28px 0; }
+.rule { flex: 1; height: 0.5px; background: #141b2e; }
+.diamond { font-size: 9px; color: #2a3350; }
+.line-bright { font-size: 32px; font-weight: 400; color: #8898b8; line-height: 1.5; }
+.outcome-b { font-weight: 700; color: #eca030; font-size: 36px; }
+.tags { display: flex; gap: 10px; margin-top: 28px; flex-wrap: wrap; }
+.tag {
+  font-family: 'Space Mono', monospace; font-size: 11px;
+  letter-spacing: 0.12em; color: #5dcaa5;
+  border: 0.5px solid #0f6e56; border-radius: 4px;
+  padding: 5px 12px; text-transform: uppercase;
+}
+.bottom-attr {
+  font-family: 'Space Mono', monospace; font-size: 11px;
+  letter-spacing: 0.1em; color: #3a4460; text-align: right;
+}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="top-label">The Signal and the Proof &nbsp;·&nbsp; Post 04</div>
+  <div class="body">
+    <div>
+      <div class="line-dim">No audit trail at computation time</div>
+      <div class="line-dim">&rarr; a <span class="outcome-a">source of assertions.</span></div>
+    </div>
+    <div class="divider">
+      <div class="rule"></div>
+      <div class="diamond">&#9670;</div>
+      <div class="rule"></div>
+    </div>
+    <div>
+      <div class="line-bright">Audit trail built into the architecture</div>
+      <div class="line-bright">&rarr; <span class="outcome-b">evidence that holds up.</span></div>
+    </div>
+    <div class="tags">
+      <div class="tag">ISO 42001</div>
+      <div class="tag">CSRD</div>
+      <div class="tag">EUDR</div>
+      <div class="tag">CSDDD</div>
+    </div>
+  </div>
+  <div class="bottom-attr">EcocomityChain.AI</div>
+</div>
+</body>
+</html>
