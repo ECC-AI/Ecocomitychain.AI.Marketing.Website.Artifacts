@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1200">
+<title>SP-4 · Blog Header · 1200×480</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1200px; height: 480px; overflow: hidden; background: #07090f; }
+.header {
+  width: 1200px; height: 480px;
+  background: #07090f;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: 52px 88px;
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  position: relative; overflow: hidden;
+}
+.bg-num {
+  position: absolute; right: 60px; top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Space Mono', monospace;
+  font-size: 200px; font-weight: 700;
+  color: rgba(255,255,255,0.022);
+  letter-spacing: -0.04em; line-height: 1;
+  user-select: none;
+}
+.top-row {
+  display: flex; align-items: center; gap: 16px;
+  font-family: 'Space Mono', monospace; font-size: 11px;
+  letter-spacing: 0.16em; color: #3a4460; text-transform: uppercase;
+  position: relative; z-index: 1;
+}
+.dot { width: 4px; height: 4px; border-radius: 50%; background: #eca030; flex-shrink: 0; }
+.mid { flex: 1; display: flex; flex-direction: column; justify-content: center; position: relative; z-index: 1; }
+.title {
+  font-size: 44px; font-weight: 700; color: #dde2f0;
+  line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 20px;
+}
+.title span { color: #eca030; }
+.rule-row { display: flex; align-items: center; gap: 12px; }
+.rule-line { width: 40px; height: 0.5px; background: #eca030; }
+.rule-text {
+  font-family: 'Space Mono', monospace; font-size: 10px;
+  letter-spacing: 0.14em; color: #4a5570; text-transform: uppercase;
+}
+.bottom-row {
+  display: flex; align-items: center; justify-content: space-between;
+  position: relative; z-index: 1;
+}
+.brand { font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.14em; color: #3a4460; }
+.brand span { color: #eca030; }
+.meta { font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: #3a4460; }
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="bg-num">04</div>
+  <div class="top-row">
+    <div class="dot"></div>
+    The Signal and the Proof &nbsp;·&nbsp; Post 04 of 05
+  </div>
+  <div class="mid">
+    <div class="title">The Architecture Your<br><span>Auditors</span> Will Ask About</div>
+    <div class="rule-row">
+      <div class="rule-line"></div>
+      <div class="rule-text">Governance &nbsp;·&nbsp; ISO 42001 &nbsp;·&nbsp; CSRD &nbsp;·&nbsp; 9 min read</div>
+    </div>
+  </div>
+  <div class="bottom-row">
+    <div class="brand">ECC<span>.</span>AI &nbsp;·&nbsp; EcocomityChain.AI</div>
+    <div class="meta">June 2026</div>
+  </div>
+</div>
+</body>
+</html>
